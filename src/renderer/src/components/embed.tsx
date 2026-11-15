@@ -108,7 +108,8 @@ const PURIFY_SCHEMES = [
 /** 既定のスキームに openSchemes を足した ALLOWED_URI_REGEXP（形は DOMPurify の既定に合わせる） */
 function uriRegExp(openSchemes: readonly string[]): RegExp {
   const names = [...PURIFY_SCHEMES, ...openSchemes.filter((s) => !FORBIDDEN_SCHEMES.includes(s))]
-  const list = names.map((s) => s.replace(/[.+-]/g, '\\$&')).join('|')
+  // スキーム名は読み込みで [a-z][a-z\d+.-]* に限っているが、正規表現の記号はすべてエスケープしておく
+  const list = names.map((s) => s.replace(/[\\^$.*+?()[\]{}|-]/g, '\\$&')).join('|')
   return new RegExp(`^(?:(?:${list}):|[^a-z]|[a-z+.\\-]+(?:[^a-z+.\\-:]|$))`, 'i')
 }
 
