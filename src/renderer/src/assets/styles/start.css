@@ -1,0 +1,68 @@
+/* 開始画面 */
+
+.fatal .item {
+  margin-top: 16px;
+}
+
+.start-screen {
+  max-width: 640px;
+  padding: 32px 24px;
+}
+
+.start-screen h1 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.start-version {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.start-screen h2 {
+  margin-top: 32px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.start-error {
+  color: var(--error);
+}
+
+.start-recent {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.start-recent button {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.start-recent button:hover {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.start-recent-name {
+  font-weight: 600;
+}
+
+.start-recent .path {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

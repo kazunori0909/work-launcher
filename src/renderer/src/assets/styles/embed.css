@@ -1,0 +1,92 @@
+/* 埋め込みの md・html */
+
+/* 埋め込み・マニュアルの md と html */
+.markdown,
+.embed-html {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.markdown > :first-child,
+.embed-html > :first-child {
+  margin-top: 0;
+}
+
+.markdown > :last-child,
+.embed-html > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown h1,
+.markdown h2 {
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.markdown h1 {
+  font-size: 1.6em;
+}
+
+.markdown h2 {
+  font-size: 1.3em;
+}
+
+.markdown h3 {
+  font-size: 1.1em;
+}
+
+.markdown a,
+.embed-html a {
+  color: var(--accent);
+}
+
+.markdown code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--bg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.markdown pre {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  overflow-x: auto;
+}
+
+.markdown pre code {
+  padding: 0;
+  background: none;
+}
+
+.markdown blockquote {
+  margin-left: 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--border);
+  color: var(--muted);
+}
+
+.markdown table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.markdown th,
+.markdown td {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+}
+
+.markdown img,
+.embed-html img {
+  max-width: 100%;
+}
+
+.markdown ul.contains-task-list {
+  padding-left: 1.2em;
+  list-style: none;
+}

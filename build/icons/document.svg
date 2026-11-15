@@ -1,0 +1,21 @@
+<!-- work.launcher のファイルのアイコン。紙の上に工具箱を小さく載せる -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef2f8"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <!-- 白い紙の上では工具の金属部分が見えなくなるため濃くする -->
+  <style>.tool-metal { fill: #8fa3c0; }</style>
+  <path d="M232 64h400l224 224v608a48 48 0 0 1-48 48H232a48 48 0 0 1-48-48V112a48 48 0 0 1 48-48z" fill="url(#paper)" filter="url(#shadow)"/>
+  <path d="M632 64v176a48 48 0 0 0 48 48h176z" fill="#c9d6ea"/>
+  <!-- 下の帯（アプリの青） -->
+  <path d="M184 800h672v96a48 48 0 0 1-48 48H232a48 48 0 0 1-48-48z" fill="#1f6fe5"/>
+  <g transform="translate(520 500) scale(0.62) translate(-512 -528)">
+    {{toolbox}}
+  </g>
+</svg>

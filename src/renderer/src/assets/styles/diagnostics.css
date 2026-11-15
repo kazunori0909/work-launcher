@@ -1,0 +1,73 @@
+/* 設定のエラー・読み込めないとき */
+
+.diagnostics {
+  margin: 12px 16px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.diagnostics summary {
+  cursor: pointer;
+}
+
+.diagnostics ul {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.diagnostics li {
+  display: flex;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+.diagnostics li.error .message {
+  color: var(--error);
+}
+
+.diagnostics li.warning .message {
+  color: var(--warning);
+}
+
+.diagnostics .where {
+  color: var(--muted);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
+.fatal {
+  padding: 24px;
+}
+
+.fatal h1 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.path,
+.status {
+  color: var(--muted);
+}
+
+.status {
+  padding: 24px;
+}
+
+/* 閉じる前の beforeClose を待っている間の帯 */
+.closing {
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+}

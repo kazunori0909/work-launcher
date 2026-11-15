@@ -1,0 +1,63 @@
+/* 左に一覧・右に本文の画面（ヘルプ） */
+
+/* 左に一覧、右に本文（ヘルプ） */
+.sidenav {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.sidenav-list {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex: 0 0 200px;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 分類の見出しと、その下の章（二階層） */
+.sidenav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidenav-group-label {
+  padding: 0 10px 2px;
+  color: var(--muted);
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.sidenav-list button {
+  margin-left: 8px;
+  padding: 6px 10px;
+  border: none;
+  border-left: 2px solid var(--border);
+  border-radius: 0 6px 6px 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidenav-list button:hover {
+  background: var(--surface);
+}
+
+.sidenav-list button.active {
+  border-left-color: var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sidenav-body {
+  flex: 1;
+  min-width: 0;
+  max-width: 880px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}

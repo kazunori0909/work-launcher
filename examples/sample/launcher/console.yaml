@@ -1,0 +1,9 @@
+# コンソールの色分け（書き方は docs/config.md 6章）
+rules:
+  - pattern: "\\b(error|failed)\\b"
+    flags: i
+    level: error
+  - pattern: '^WARN'
+    level: warn
+  - pattern: "\\bdone\\b"
+    level: success

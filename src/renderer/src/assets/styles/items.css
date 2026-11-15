@@ -1,0 +1,174 @@
+/* 項目（ボタン・グループ・ボタングループ・select） */
+
+.items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.item {
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.item,
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.item:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.item:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.item-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
+.item-heading {
+  flex-basis: 100%;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.item-heading:first-child {
+  margin-top: 0;
+}
+
+.item-error {
+  flex-basis: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.item-error {
+  border: 1px solid var(--error);
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+.item-embed {
+  flex-basis: 100%;
+  min-width: 0;
+}
+
+/* グループ（枠）。中身に合わせた幅で、ほかの項目と同じく横に並ぶ */
+.item-group {
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.item-group > legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ボタングループ。隣り合うボタンの枠をつなげて1つの塊に見せる */
+.item-buttons {
+  display: inline-flex;
+}
+
+.item-buttons > .item {
+  border-radius: 0;
+}
+
+/* 2つ目以降は操作ボタンなので詰める */
+.item-buttons > .item + .item {
+  margin-left: -1px;
+  padding-inline: 10px;
+}
+
+.item-buttons > .item:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.item-buttons > .item:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+.item-buttons > .item:only-child {
+  border-radius: 6px;
+}
+
+.item-buttons > .item:hover:not(:disabled) {
+  position: relative;
+  z-index: 1;
+}
+
+.item-buttons > .item-error {
+  flex-basis: auto;
+}
+
+.item-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.item-select-label {
+  color: var(--muted);
+}
+
+.item-select select {
+  padding: 9px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.item-select select:hover,
+.item-select select:focus {
+  border-color: var(--accent);
+}
+
+.item-radio,
+.item-checkbox {
+  padding-block: 9px;
+}
+
+.item-radio {
+  gap: 12px;
+}
+
+.item-radio label,
+.item-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.item-radio input,
+.item-checkbox input {
+  margin: 0;
+  accent-color: var(--accent);
+}

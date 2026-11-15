@@ -1,0 +1,18 @@
+<!-- アプリのアイコン。{{inset}} は背景の余白（Mac は 100、Windows は 40）で、scripts/make-icons.mjs が埋める -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d8bff"/>
+      <stop offset="1" stop-color="#0a5ad4"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect x="{{inset}}" y="{{inset}}" width="{{size}}" height="{{size}}" rx="{{radius}}" fill="url(#bg)" filter="url(#shadow)"/>
+  <!-- 背景の上半分をうすく明るくする -->
+  <rect x="{{inset}}" y="{{inset}}" width="{{size}}" height="{{size}}" rx="{{radius}}" fill="#fff" opacity="0.06"/>
+  <g transform="translate(512 528) scale({{scale}}) translate(-512 -528)">
+    {{toolbox}}
+  </g>
+</svg>

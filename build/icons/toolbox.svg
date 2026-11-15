@@ -1,0 +1,29 @@
+<!-- 工具箱の絵。座標は 1024 四方で、app.svg・document.svg の {{toolbox}} に差し込む。
+     工具の金属部分（.tool-metal）の色は、差し込む側の <style> で変えられる -->
+<defs>
+  <linearGradient id="box" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#ffbe55"/>
+    <stop offset="1" stop-color="#f28b0c"/>
+  </linearGradient>
+  <mask id="wrench-notch">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <rect x="589" y="200" width="42" height="96" rx="8" fill="#000"/>
+  </mask>
+</defs>
+<!-- 中から出ている工具: ドライバー（左）とスパナ（右） -->
+<g transform="rotate(-16 430 480)">
+  <rect x="404" y="244" width="52" height="136" rx="24" fill="#ffd94a"/>
+  <rect class="tool-metal" x="420" y="372" width="20" height="120" rx="6" fill="#dfe7f2"/>
+</g>
+<g class="tool-metal" transform="rotate(18 610 480)" fill="#eef3fa" mask="url(#wrench-notch)">
+  <circle cx="610" cy="300" r="66"/>
+  <rect x="582" y="320" width="56" height="170" rx="14"/>
+</g>
+<!-- 取っ手 -->
+<path d="M398 462v-62a42 42 0 0 1 42-42h144a42 42 0 0 1 42 42v62" fill="none" stroke="#14336a" stroke-width="42" stroke-linecap="round"/>
+<!-- 箱 -->
+<path d="M240 470h544a40 40 0 0 1 40 40v230a60 60 0 0 1-60 60H260a60 60 0 0 1-60-60V510a40 40 0 0 1 40-40z" fill="url(#box)"/>
+<!-- ふたの境目と留め金 -->
+<rect x="200" y="572" width="624" height="20" fill="#b85f00" opacity="0.45"/>
+<rect x="458" y="544" width="108" height="76" rx="18" fill="#14336a"/>
+<rect x="488" y="571" width="48" height="22" rx="8" fill="#ffd94a"/>

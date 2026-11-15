@@ -1,0 +1,161 @@
+/* Info ページ */
+
+/* Info ページ */
+.info {
+  max-width: 1200px;
+}
+
+.info-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* 幅があればシステムとツールを横に並べ、狭ければ縦1列 */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.info-card {
+  min-width: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.info-card.wide {
+  grid-column: 1 / -1;
+}
+
+.info-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.info-card h2 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 枠ごとのコピーボタン。目立たせず、触れたときだけ濃くする */
+.info-copy {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.info-copy:hover,
+.info-copy:focus-visible {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.info-note,
+.info-hint {
+  margin: 0;
+  color: var(--muted);
+}
+
+.info-table {
+  border-collapse: collapse;
+}
+
+.info-table th,
+.info-table td {
+  padding: 3px 16px 3px 0;
+  vertical-align: top;
+  text-align: left;
+}
+
+.info-table th {
+  min-width: 110px;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.info-table td {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.info-table td.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.info-table td.missing {
+  color: var(--muted);
+}
+
+.info-table td .detail {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.info-table td.note {
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+/* ドライブは1つずつ小さな枠にし、数が多ければ折り返す（Windows の C: D: E: など） */
+.drives {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.drive {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.drive-name {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drive-size {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.usage {
+  display: block;
+  height: 6px;
+  margin: 6px 0 4px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.usage > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.usage > span.high {
+  background: var(--error);
+}

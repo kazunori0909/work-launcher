@@ -1,0 +1,559 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`サンプル案件の読み込み結果 1`] = `
+{
+  "consoleRules": [
+    {
+      "color": undefined,
+      "flags": "i",
+      "level": "error",
+      "pattern": "\\b(error|failed)\\b",
+    },
+    {
+      "color": undefined,
+      "flags": undefined,
+      "level": "warn",
+      "pattern": "^WARN",
+    },
+    {
+      "color": undefined,
+      "flags": undefined,
+      "level": "success",
+      "pattern": "\\bdone\\b",
+    },
+  ],
+  "project": {
+    "cwd": undefined,
+    "info": {
+      "env": [
+        "PATH",
+        "JAVA_HOME",
+      ],
+      "registry": [
+        {
+          "name": "LongPathsEnabled",
+          "path": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\\LongPathsEnabled",
+        },
+        {
+          "name": "Windows Ver.",
+          "path": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DisplayVersion",
+        },
+        {
+          "name": "UEインストールパス",
+          "path": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EpicGames\\Unreal Engine\\INSTALLDIR",
+        },
+      ],
+      "tools": [
+        {
+          "name": "git",
+        },
+        {
+          "name": "node",
+        },
+        {
+          "name": "python",
+        },
+        {
+          "name": "java",
+        },
+        {
+          "name": "steam",
+        },
+        {
+          "name": "epic",
+        },
+      ],
+    },
+    "pages": [
+      {
+        "cwd": undefined,
+        "icon": "house",
+        "id": "main",
+        "items": [
+          {
+            "id": undefined,
+            "kind": "heading",
+            "text": "開く",
+          },
+          {
+            "confirm": undefined,
+            "icon": "search",
+            "id": undefined,
+            "kind": "url",
+            "label": undefined,
+            "params": {
+              "q": "ほげほげ",
+            },
+            "tooltip": undefined,
+            "url": "https://www.google.com/search",
+          },
+          {
+            "confirm": undefined,
+            "icon": undefined,
+            "id": undefined,
+            "kind": "open",
+            "label": undefined,
+            "path": "launcher",
+            "tooltip": undefined,
+          },
+          {
+            "id": undefined,
+            "kind": "break",
+          },
+          {
+            "id": undefined,
+            "items": [
+              {
+                "confirm": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "excel",
+                "label": undefined,
+                "path": "docs/サンプル 仕様書.xlsx",
+                "readonly": true,
+                "tooltip": undefined,
+              },
+              {
+                "confirm": undefined,
+                "icon": "pencil-line",
+                "id": undefined,
+                "kind": "excel",
+                "label": "",
+                "path": "docs/サンプル 仕様書.xlsx",
+                "readonly": false,
+                "tooltip": "編集モードで開く",
+              },
+            ],
+            "kind": "buttons",
+          },
+          {
+            "id": undefined,
+            "kind": "heading",
+            "text": "sample-scripts.js",
+          },
+          {
+            "confirm": undefined,
+            "fn": "hello",
+            "icon": undefined,
+            "id": undefined,
+            "kind": "function",
+            "label": undefined,
+            "tooltip": undefined,
+          },
+          {
+            "confirm": undefined,
+            "fn": "slowCount",
+            "icon": undefined,
+            "id": undefined,
+            "kind": "function",
+            "label": undefined,
+            "tooltip": undefined,
+          },
+        ],
+        "title": "メイン",
+      },
+      {
+        "cwd": undefined,
+        "icon": "flask-conical",
+        "id": "sample",
+        "items": [
+          {
+            "icon": "terminal",
+            "id": undefined,
+            "items": [
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "bat",
+                "scripts": {
+                  "bat": "@echo off
+echo こんにちは、bat です（%DATE% %TIME%）
+",
+                },
+                "tooltip": "Windows だけで動く",
+              },
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "sh",
+                "scripts": {
+                  "sh": "echo "こんにちは、sh です（$(date '+%Y/%m/%d %H:%M:%S')）"",
+                },
+                "tooltip": "Windows では Git Bash で動く",
+              },
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "PowerShell",
+                "scripts": {
+                  "powershell": "Write-Output "こんにちは、PowerShell $($PSVersionTable.PSVersion) です"
+Write-Output "OS: $([System.Environment]::OSVersion.VersionString)"
+Write-Output "日時: $(Get-Date -Format 'yyyy/MM/dd HH:mm:ss')"
+",
+                },
+                "tooltip": "Mac では pwsh（PowerShell 7）が要る",
+              },
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "Python",
+                "scripts": {
+                  "python": "import datetime, platform
+print(f"こんにちは、Python {platform.python_version()} です")
+print(f"OS: {platform.system()} {platform.release()}")
+print(f"日時: {datetime.datetime.now():%Y/%m/%d %H:%M:%S}")
+",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "kind": "break",
+              },
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "作業フォルダを表示",
+                "scripts": {
+                  "bat": "@echo off
+echo cwd: %CD%
+",
+                  "sh": "echo "cwd: $(pwd)"
+echo "HOME: \${HOME}"
+",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "confirm": undefined,
+                "cwd": "launcher",
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "設定フォルダの中身（cwd 指定）",
+                "scripts": {
+                  "bat": "dir /b",
+                  "sh": "ls",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "入力待ちを含む",
+                "scripts": {
+                  "bat": "@echo off
+echo 入力待ちの前
+pause
+echo 入力待ちの後
+",
+                  "sh": "echo "入力待ちの前"
+read -p "続けるには Enter: " answer
+echo "入力待ちの後"
+",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "kind": "break",
+              },
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "失敗する",
+                "scripts": {
+                  "bat": "@echo off
+echo WARN: これは警告
+echo ERROR: これは失敗
+exit /b 1
+",
+                  "sh": "echo "WARN: これは警告"
+echo "ERROR: これは失敗"
+exit 1
+",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "confirm": "30 秒かかります。実行しますか？",
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "長い処理（停止の確認用）",
+                "scripts": {
+                  "bat": "@echo off
+for /l %%i in (1,1,30) do (
+  echo %%i
+  ping -n 2 127.0.0.1 > nul
+)
+echo done
+",
+                  "sh": "for i in $(seq 1 30); do echo "$i"; sleep 1; done
+echo done
+",
+                },
+                "tooltip": undefined,
+              },
+            ],
+            "kind": "group",
+            "title": "コマンド",
+          },
+          {
+            "icon": "folder",
+            "id": undefined,
+            "items": [
+              {
+                "id": undefined,
+                "items": [
+                  {
+                    "confirm": undefined,
+                    "icon": undefined,
+                    "id": undefined,
+                    "kind": "excel",
+                    "label": undefined,
+                    "path": "docs/サンプル 仕様書.xlsx",
+                    "readonly": true,
+                    "tooltip": undefined,
+                  },
+                  {
+                    "confirm": undefined,
+                    "icon": "pencil-line",
+                    "id": undefined,
+                    "kind": "excel",
+                    "label": "",
+                    "path": "docs/サンプル 仕様書.xlsx",
+                    "readonly": false,
+                    "tooltip": "編集モードで開く",
+                  },
+                ],
+                "kind": "buttons",
+              },
+              {
+                "id": undefined,
+                "items": [
+                  {
+                    "confirm": undefined,
+                    "icon": undefined,
+                    "id": undefined,
+                    "kind": "word",
+                    "label": undefined,
+                    "path": "docs/サンプル 手順書.docx",
+                    "readonly": true,
+                    "tooltip": undefined,
+                  },
+                  {
+                    "confirm": undefined,
+                    "icon": "pencil-line",
+                    "id": undefined,
+                    "kind": "word",
+                    "label": "",
+                    "path": "docs/サンプル 手順書.docx",
+                    "readonly": false,
+                    "tooltip": "編集モードで開く",
+                  },
+                ],
+                "kind": "buttons",
+              },
+            ],
+            "kind": "group",
+            "title": "資料",
+          },
+          {
+            "kind": "break",
+          },
+          {
+            "icon": "list",
+            "id": undefined,
+            "items": [
+              {
+                "change": "onTargetChange",
+                "control": "select",
+                "default": undefined,
+                "id": "target",
+                "kind": "select",
+                "label": "接続先",
+                "name": "target",
+                "options": [
+                  {
+                    "label": "dev",
+                    "value": "dev",
+                  },
+                  {
+                    "label": "stg",
+                    "value": "stg",
+                  },
+                  {
+                    "label": "本番",
+                    "value": "prod",
+                  },
+                ],
+                "remember": true,
+                "tooltip": "選択肢は記憶します",
+              },
+            ],
+            "kind": "group",
+            "title": "選択（select）",
+          },
+          {
+            "icon": "circle-dot",
+            "id": undefined,
+            "items": [
+              {
+                "control": "radio",
+                "default": undefined,
+                "id": "mode",
+                "kind": "select",
+                "label": "モード",
+                "name": "mode",
+                "options": [
+                  {
+                    "label": "debug",
+                    "value": "debug",
+                  },
+                  {
+                    "label": "release",
+                    "value": "release",
+                  },
+                ],
+                "remember": false,
+                "tooltip": undefined,
+              },
+            ],
+            "kind": "group",
+            "title": "ラジオボタン（radio）",
+          },
+          {
+            "icon": "square-check",
+            "id": undefined,
+            "items": [
+              {
+                "control": "checkbox",
+                "default": "",
+                "id": "dry",
+                "kind": "select",
+                "label": "試しに実行",
+                "name": "dry",
+                "options": [
+                  {
+                    "label": "on",
+                    "value": "--dry-run",
+                  },
+                  {
+                    "label": "off",
+                    "value": "",
+                  },
+                ],
+                "remember": true,
+                "tooltip": undefined,
+              },
+            ],
+            "kind": "group",
+            "title": "チェックボックス（checkbox）",
+          },
+          {
+            "icon": "server",
+            "id": undefined,
+            "items": [
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": {
+                  "TARGET_ENV": "\${select:target}",
+                },
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "値を表示",
+                "scripts": {
+                  "bat": "@echo off
+echo 接続先=\${select:target} モード=\${select:mode} \${select:dry}
+",
+                  "sh": "echo "接続先=\${select:target} モード=\${select:mode} \${select:dry}"",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "confirm": "\${select:target} の値で関数を呼びますか？",
+                "fn": "showSelect",
+                "icon": undefined,
+                "id": undefined,
+                "kind": "function",
+                "label": undefined,
+                "tooltip": undefined,
+              },
+            ],
+            "kind": "group",
+            "title": "選んだ値を使う",
+          },
+        ],
+        "title": "サンプル",
+      },
+      {
+        "cwd": undefined,
+        "icon": undefined,
+        "id": "help",
+        "items": [
+          {
+            "confirm": undefined,
+            "content": "この案件のヘルプです。設定に \`id: help\` のページを書くと、ヘルプの最初の章に出ます。
+",
+            "icon": undefined,
+            "id": undefined,
+            "kind": "markdown",
+            "label": undefined,
+            "tooltip": undefined,
+          },
+        ],
+        "title": undefined,
+      },
+    ],
+    "scripts": [
+      "launcher/scripts",
+    ],
+    "styles": [
+      "launcher/style.css",
+    ],
+    "title": "Sample Project",
+  },
+}
+`;

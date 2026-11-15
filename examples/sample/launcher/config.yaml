@@ -1,0 +1,52 @@
+# 動作確認用のサンプル案件の設定（書き方は docs/config.md）
+version: 1
+title: Sample Project
+style: launcher/style.css
+info:
+  env: [PATH, JAVA_HOME]
+  tools: [git, node, python, java, steam, epic]
+  registry: # Windowsのみ
+    - HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled
+    - name: Windows Ver.
+      path: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DisplayVersion
+    - name: UEインストールパス
+      path: HKEY_LOCAL_MACHINE\SOFTWARE\EpicGames\Unreal Engine\INSTALLDIR
+pages:
+  #
+  # メインページ
+  #
+  - id: main
+    title: メイン
+    icon: house
+    items:
+      # URL検索や開く系のサンプル
+      - heading: 開く
+      - url: https://www.google.com/search
+        params:
+          q: ほげほげ
+        icon: search
+      - open: launcher
+      - break:
+
+      # ボタングループ: ファイル名のボタンの横に操作ボタンを添える
+      - buttons:
+        - excel: docs/サンプル 仕様書.xlsx
+          readonly: true
+        - excel: docs/サンプル 仕様書.xlsx
+          label: ""
+          icon: pencil-line
+          tooltip: 編集モードで開く
+      # 事前作成しているスクリプトファイルの呼び出しサンプル
+      # launcher/scripts/sample-scripts.js に hello() と slowCount() が定義されている
+      - heading: sample-scripts.js
+      - function: hello
+      - function: slowCount
+
+  # 別ファイルからページ追加
+  - include: launcher/pages/sample-page.yaml
+
+  # ヘルプ
+  - id: help
+    items:
+      - md: |
+          この案件のヘルプです。設定に `id: help` のページを書くと、ヘルプの最初の章に出ます。

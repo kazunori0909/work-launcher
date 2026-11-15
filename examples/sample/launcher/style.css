@@ -1,0 +1,5 @@
+/* 案件ごとの見た目（使える CSS 変数は docs/config.md） */
+:root {
+  --header-bg: #1a7f37;
+  --header-text: #ffffff;
+}
