@@ -1,10 +1,16 @@
 # 動作確認用のサンプル案件の設定（書き方は docs/config.md）
+
 version: 1
 title: Sample Project
 style: launcher/style.css
+
 # 外部に開いてよい URL のスキーム。省略時は [http, https, mailto]。
 # file を消すと、下の「file: のリンク」は開けなくなる（url はコンソールにエラー、リンクは押しても何も起きない）
 openSchemes: [http, https, mailto, file]
+
+#--------------------------------------
+# PC, Macの情報
+#--------------------------------------
 info:
   env: [PATH, JAVA_HOME]
   tools: [git, node, python, java, steam, epic]
@@ -14,6 +20,10 @@ info:
       path: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DisplayVersion
     - name: UEインストールパス
       path: HKEY_LOCAL_MACHINE\SOFTWARE\EpicGames\Unreal Engine\INSTALLDIR
+
+#--------------------------------------
+# ページ設定
+#--------------------------------------
 pages:
   #
   # メインページ
