@@ -2,6 +2,9 @@
 version: 1
 title: Sample Project
 style: launcher/style.css
+# 外部に開いてよい URL のスキーム。省略時は [http, https, mailto]。
+# file を消すと、下の「file: のリンク」は開けなくなる（url はコンソールにエラー、リンクは押しても何も起きない）
+openSchemes: [http, https, mailto, file]
 info:
   env: [PATH, JAVA_HOME]
   tools: [git, node, python, java, steam, epic]
@@ -26,6 +29,19 @@ pages:
           q: ほげほげ
         icon: search
       - open: launcher
+      - break:
+
+      # file: のリンクと URL（最上位の openSchemes で file を許可している）
+      - heading: "file: のリンク"
+      - md: |
+          - Windows: [メモ帳](file:///C:/Windows/System32/notepad.exe)
+          - Mac: [hosts](file:///etc/hosts)
+      - url: file:///C:/Windows/System32/notepad.exe
+        label: "メモ帳（Windows）"
+        icon: notepad-text
+      - url: file:///etc/hosts
+        label: "hosts（Mac）"
+        icon: file-text
       - break:
 
       # ボタングループ: ファイル名のボタンの横に操作ボタンを添える

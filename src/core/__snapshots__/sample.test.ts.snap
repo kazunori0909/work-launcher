@@ -64,7 +64,12 @@ exports[`サンプル案件の読み込み結果 1`] = `
         },
       ],
     },
-    "openSchemes": undefined,
+    "openSchemes": [
+      "http",
+      "https",
+      "mailto",
+      "file",
+    ],
     "pages": [
       {
         "cwd": undefined,
@@ -96,6 +101,46 @@ exports[`サンプル案件の読み込み結果 1`] = `
             "label": undefined,
             "path": "launcher",
             "tooltip": undefined,
+          },
+          {
+            "id": undefined,
+            "kind": "break",
+          },
+          {
+            "id": undefined,
+            "kind": "heading",
+            "text": "file: のリンク",
+          },
+          {
+            "confirm": undefined,
+            "content": "- Windows: [メモ帳](file:///C:/Windows/System32/notepad.exe)
+- Mac: [hosts](file:///etc/hosts)
+",
+            "icon": undefined,
+            "id": undefined,
+            "kind": "markdown",
+            "label": undefined,
+            "tooltip": undefined,
+          },
+          {
+            "confirm": undefined,
+            "icon": "notepad-text",
+            "id": undefined,
+            "kind": "url",
+            "label": "メモ帳（Windows）",
+            "params": undefined,
+            "tooltip": undefined,
+            "url": "file:///C:/Windows/System32/notepad.exe",
+          },
+          {
+            "confirm": undefined,
+            "icon": "file-text",
+            "id": undefined,
+            "kind": "url",
+            "label": "hosts（Mac）",
+            "params": undefined,
+            "tooltip": undefined,
+            "url": "file:///etc/hosts",
           },
           {
             "id": undefined,
