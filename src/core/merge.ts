@@ -24,6 +24,7 @@ export function mergeProject(base: Project, local?: Project): Project {
     cwd: local.cwd ?? base.cwd,
     styles: [...base.styles, ...local.styles],
     scripts: [...new Set([...base.scripts, ...local.scripts])],
+    openSchemes: local.openSchemes ?? base.openSchemes,
     pages,
     info: mergeInfo(base.info, local.info)
   }

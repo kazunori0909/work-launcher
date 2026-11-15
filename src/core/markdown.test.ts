@@ -2,17 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { dirOf, pathFromFileUrl, resolveAsset, resolveLink } from './markdown'
 
 describe('resolveLink', () => {
-  it('http・https・mailto は外部リンク', () => {
+  it('スキーム付きは外部リンク（開いてよいかはメインが openSchemes で確かめる）', () => {
     expect(resolveLink('https://example.com/a?b=1', '')).toEqual({
       type: 'external',
       url: 'https://example.com/a?b=1'
     })
     expect(resolveLink('mailto:a@example.com', 'x')).toMatchObject({ type: 'external' })
+    expect(resolveLink('file:///etc/passwd', '')).toMatchObject({ type: 'external' })
   })
 
-  it('それ以外のスキームは開かない', () => {
-    expect(resolveLink('javascript:alert(1)', '')).toMatchObject({ type: 'invalid' })
-    expect(resolveLink('file:///etc/passwd', '')).toMatchObject({ type: 'invalid' })
+  it('Windows のドライブ文字はスキームにしない', () => {
+    expect(resolveLink('C:\\tools\\a.exe', '')).toMatchObject({ type: 'file' })
   })
 
   it('相対パスは baseDir 起点、/ 始まりは launcherDir 起点', () => {

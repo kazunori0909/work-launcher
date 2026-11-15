@@ -110,6 +110,8 @@ export interface Project {
   styles: string[]
   /** function で読み込む JS（未展開のパス。フォルダなら中の .js すべて）。案件 → ローカルの順 */
   scripts: string[]
+  /** 外部に開いてよい URL のスキーム（正規化済み）。省略時は DEFAULT_OPEN_SCHEMES（core/schemes.ts） */
+  openSchemes?: string[]
   pages: Page[]
   info: InfoConfig
 }

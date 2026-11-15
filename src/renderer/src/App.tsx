@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { itemAt, itemLabel, pathKey, walkItems } from '../../core/items'
 import { resolveLink } from '../../core/markdown'
+import { DEFAULT_OPEN_SCHEMES } from '../../core/schemes'
 import { HELP_ID, INFO_ID, pageLayout } from '../../core/pages'
 import type { Diagnostic, Project } from '../../core/types'
 import { Console } from './components/Console'
@@ -59,9 +60,10 @@ function App(): React.JSX.Element {
     [reportError]
   )
   const mdfiles = view?.mdfiles
+  const openSchemes = view?.project?.openSchemes ?? DEFAULT_OPEN_SCHEMES
   const embed = useMemo<EmbedContextValue>(
-    () => ({ mdfiles: mdfiles ?? {}, onLink }),
-    [mdfiles, onLink]
+    () => ({ mdfiles: mdfiles ?? {}, onLink, openSchemes }),
+    [mdfiles, onLink, openSchemes]
   )
 
   if (!view) return <div className="status">読み込み中…</div>

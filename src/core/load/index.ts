@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { mergeProject } from '../merge'
+import { FORBIDDEN_SCHEMES, normalizeScheme } from '../schemes'
 import type { Diagnostic, Page, Project } from '../types'
 import { readInfo } from './info'
 import { PAGE_ID, readItems } from './items'
@@ -27,7 +28,7 @@ export interface LoadResult {
   diagnostics: Diagnostic[]
 }
 
-const TOP_KEYS = ['version', 'title', 'cwd', 'style', 'scripts', 'pages', 'info']
+const TOP_KEYS = ['version', 'title', 'cwd', 'style', 'scripts', 'openSchemes', 'pages', 'info']
 const PAGE_KEYS = ['id', 'title', 'icon', 'cwd', 'items', 'replace']
 
 export async function loadProject(launcherDir: string, readFile: ReadFile): Promise<LoadResult> {
@@ -78,9 +79,24 @@ async function readProject(
       isBase && raw.scripts === undefined
         ? DEFAULT_SCRIPTS
         : r.strings(raw.scripts, file, 'scripts'),
+    openSchemes: readOpenSchemes(r, raw.openSchemes, file),
     pages,
     info: readInfo(r, raw.info, file)
   }
+}
+
+/** openSchemes を正規化して読む。書いていなければ undefined（既定を使う） */
+function readOpenSchemes(r: Reader, v: unknown, file: string): string[] | undefined {
+  if (v === undefined) return undefined
+  const schemes: string[] = []
+  for (const x of r.list(v, file, 'openSchemes')) {
+    const name = typeof x === 'string' ? normalizeScheme(x) : undefined
+    if (name === undefined)
+      r.error(file, `openSchemes にはスキーム名（http・file など）を並べてください: ${String(x)}`)
+    else if (FORBIDDEN_SCHEMES.includes(name)) r.error(file, `openSchemes に ${name} は書けません`)
+    else if (!schemes.includes(name)) schemes.push(name)
+  }
+  return schemes
 }
 
 async function readPageEntry(r: Reader, entry: unknown, file: string): Promise<Page | undefined> {

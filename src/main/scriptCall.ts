@@ -72,7 +72,8 @@ export async function callFunction(
     child.on('message', (m: HostMessage) => {
       if (m.type === 'log') session.sendRun({ type: 'message', level: 'info', text: m.text })
       else if (m.type === 'open') openPath(m.path, ctx).then(report)
-      else if (m.type === 'openUrl') openUrl(m.url, m.params, ctx).then(report)
+      else if (m.type === 'openUrl')
+        openUrl(m.url, m.params, ctx, session.view?.project?.openSchemes).then(report)
       else if (m.type === 'done') finish({})
       else finish({ error: m.message })
     })

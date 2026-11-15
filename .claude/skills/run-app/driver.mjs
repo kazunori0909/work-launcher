@@ -45,6 +45,7 @@ const COMMANDS = {
   // ウィンドウを閉じたあとも待てるよう、ページではなく Node で待つ
   sleep: (ms) => new Promise((r) => setTimeout(r, Number(ms))),
   click: (sel) => page.click(sel),
+  mclick: (sel) => page.click(sel, { button: 'middle' }),
   /** select の値を選ぶ: select <セレクタ> <値> */
   select: async (rest) => {
     const i = rest.lastIndexOf(' ')

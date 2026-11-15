@@ -77,6 +77,13 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
       <p>
         既定のブラウザで開きます。<code>params</code> は自動で URL エンコードして付けます。
       </p>
+      <p>
+        開けるのは <code>http</code>・<code>https</code>・<code>mailto</code> の URL だけです（md /
+        html のリンク、<code>ctx.openUrl</code> も同じ）。社内の共有フォルダへの{' '}
+        <code>file://</code>
+        なども開くときは、最上位に <code>openSchemes: [http, https, mailto, file]</code>{' '}
+        のように並べます。
+      </p>
       <SampleView example={EXAMPLES.url} platform={platform} />
 
       <h3>説明を書く（md / html）</h3>

@@ -42,6 +42,7 @@ description: WorkLauncher の実機（Electron）を Playwright で起動し、�
 | `wait <セレクタ>`        | 要素が出るまで待つ（最大30秒。beforeOpen の間は案件の画面が出ない） |
 | `sleep <ミリ秒>`         | 待つ（ウィンドウを閉じたあとも使える）                              |
 | `click <セレクタ>`       | クリックする                                                        |
+| `mclick <セレクタ>`      | 中ボタンでクリックする（リンクの中クリックの確かめ）                |
 | `select <セレクタ> <値>` | select の値を選ぶ（最初に当たった要素）                             |
 | `text <セレクタ>`        | 文字を出す                                                          |
 | `ss <名前>`              | スクリーンショットを `SHOT_DIR/<名前>.png` に撮る                   |

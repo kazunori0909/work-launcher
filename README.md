@@ -47,7 +47,9 @@ WorkLauncher is meant for personal and team use. It assumes that you write your 
 
 - `exec` buttons (bat / sh / PowerShell / Python) run as soon as you click them
 - `command` in `info.tools` runs in a shell when you open the Info tab
-- `open` and `url` items can open any file (including programs) or URL
+- `open` items can open any file (including programs)
+- `url` items and links open only the URL schemes listed in `openSchemes`
+  (default: `http`, `https`, `mailto`). Adding `file` lets them open local and shared files too
 - `scripts` (JavaScript) asks once per project folder before running; after you allow it,
   it is not asked again even if the files change
 
