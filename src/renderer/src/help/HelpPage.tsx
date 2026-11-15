@@ -21,18 +21,20 @@ import { Variables } from './sections/Variables'
 interface HelpSection {
   id: string
   title: string
-  /** 章の本文（Section で囲んで返す）。「この案件」の章は無し（設定の help ページを出す） */
+  /** 章の本文（Section で囲んで返す）。案件の章は無し（設定の help ページを出す） */
   Body?: (props: SectionProps) => React.JSX.Element
 }
 
-/** 章の一覧。サイドメニューでは分類ごとに二階層で出す */
-const SECTION_GROUPS: readonly { label: string; sections: readonly HelpSection[] }[] = [
+/** 章の一覧。サイドメニューでは分類ごとに二階層で出す（label が無い分類は見出しを出さない） */
+const SECTION_GROUPS: readonly { label?: string; sections: readonly HelpSection[] }[] = [
   {
     label: 'まず読む',
     sections: [
       { id: 'start', title: 'はじめに', Body: Start },
       { id: 'edit', title: '設定ファイルの編集', Body: Edit },
-      { id: 'pages', title: 'ページの追加', Body: Pages }
+      { id: 'pages', title: 'ページの追加', Body: Pages },
+      { id: 'errors', title: 'エラーが出たとき', Body: Errors },
+      { id: 'licenses', title: 'ライセンス', Body: LicensesSection }
     ]
   },
   {
@@ -52,20 +54,11 @@ const SECTION_GROUPS: readonly { label: string; sections: readonly HelpSection[]
       { id: 'info', title: 'Info ページ', Body: Info },
       { id: 'look', title: 'タイトルと見た目', Body: Look }
     ]
-  },
-  {
-    label: '困ったとき',
-    sections: [{ id: 'errors', title: 'エラーが出たとき', Body: Errors }]
-  },
-  {
-    label: 'このアプリについて',
-    sections: [{ id: 'licenses', title: 'ライセンス', Body: LicensesSection }]
   }
 ]
 
 /** 設定に書いた help ページの項目を出す章 */
 const PROJECT_ID = 'project'
-const PROJECT_TITLE = 'この案件'
 
 interface Props extends SectionProps {
   /** 表示中の章の ID。無ければ最初の章 */
@@ -73,14 +66,20 @@ interface Props extends SectionProps {
   onSelect(id: string): void
   /** 設定に help ページがあれば、その項目（最初の章として出す） */
   projectHelp?: ReactNode
+  /** 最初の章の名前（案件名。ヘッダーと同じ） */
+  projectTitle: string
 }
 
 /** 左に分類ごとの章の一覧（二階層）、右に選んだ章の本文 */
-export function HelpPage({ selected, onSelect, projectHelp, ...props }: Props): React.JSX.Element {
-  const projectSection: HelpSection = { id: PROJECT_ID, title: PROJECT_TITLE }
-  const groups = projectHelp
-    ? [{ label: PROJECT_TITLE, sections: [projectSection] }, ...SECTION_GROUPS]
-    : SECTION_GROUPS
+export function HelpPage({
+  selected,
+  onSelect,
+  projectHelp,
+  projectTitle,
+  ...props
+}: Props): React.JSX.Element {
+  const projectSection: HelpSection = { id: PROJECT_ID, title: projectTitle }
+  const groups = projectHelp ? [{ sections: [projectSection] }, ...SECTION_GROUPS] : SECTION_GROUPS
   const sections = groups.flatMap((g) => g.sections)
   const active = sections.find((s) => s.id === selected) ?? sections[0]
 
@@ -88,8 +87,8 @@ export function HelpPage({ selected, onSelect, projectHelp, ...props }: Props): 
     <div className="sidenav">
       <nav className="sidenav-list">
         {groups.map((g) => (
-          <div key={g.label} className="sidenav-group">
-            <div className="sidenav-group-label">{g.label}</div>
+          <div key={g.label ?? PROJECT_ID} className="sidenav-group">
+            {g.label && <div className="sidenav-group-label">{g.label}</div>}
             {g.sections.map(({ id, title }) => (
               <button
                 key={id}
@@ -109,7 +108,7 @@ export function HelpPage({ selected, onSelect, projectHelp, ...props }: Props): 
         {active.Body ? (
           <active.Body {...props} />
         ) : (
-          <Section id={PROJECT_ID} title={PROJECT_TITLE}>
+          <Section id={PROJECT_ID} title={projectTitle}>
             {projectHelp}
           </Section>
         )}

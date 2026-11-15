@@ -7,17 +7,18 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
   return (
     <Section id="elements" title="ボタン以外の要素">
       <p>
-        選んだ値は、ほかのボタンで <code>{'${select:ID}'}</code>、function では{' '}
-        <code>ctx.select.ID</code> で使います。
+        値を選ぶための部品です。選んだ値は、ほかのボタンのコマンドやパスに{' '}
+        <code>{'${select:ID}'}</code> と書いて差し込みます。function からは{' '}
+        <code>ctx.select.ID</code> で読めます。
       </p>
       <h3>早見表</h3>
       <CheatSheet cheats={ELEMENT_CHEATS} platform={platform} />
 
       <h3>選択（select）</h3>
       <p>
-        選択肢を置き、選んだ値をほかのボタンで <code>{'${select:ID}'}</code>{' '}
-        として使います（コマンド・<code>env</code>・パス・URL・<code>confirm</code>）。 function
-        では <code>ctx.select.ID</code> で受け取ります。
+        ドロップダウンから1つ選びます。<code>{'${select:ID}'}</code> はコマンドのほか、
+        <code>env</code>、パス、URL、<code>confirm</code>{' '}
+        の文にも書けます。下の例では、接続先を選んでからデプロイのボタンを押します。
       </p>
       <SampleView example={EXAMPLES.select} platform={platform} />
       <Table
@@ -31,15 +32,16 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
         ]}
       />
       <p>
-        記憶した値は、この PC のアプリの中に案件ごとに置きます（案件のファイルには書きません）。
-        同じ ID の select を別のページにも置くと、同じ値を共有します。
+        記憶した値は、この PC
+        のアプリの中に案件ごとに保存します。案件のファイルは書き換えないので、リポジトリに差分は出ません。同じ
+        ID の select を別のページにも置くと、どちらも同じ値になります。
       </p>
 
       <h3>ラジオボタン（radio）</h3>
       <p>
-        選択肢を横に並べ、1つを選びます。書き方は select と同じで、<code>select</code> の代わりに{' '}
-        <code>radio</code> と書きます。値も select と同じく <code>{'${select:ID}'}</code>・
-        <code>ctx.select.ID</code> で使います。
+        選択肢を横に並べて、1つを選びます。選択肢が少ないときは、ドロップダウンより一目でわかります。
+        <code>select</code> を <code>radio</code> に変えるだけで、ほかの書き方も値の使い方も select
+        と同じです。
       </p>
       <SampleView example={EXAMPLES.radio} platform={platform} />
       <Table
@@ -55,9 +57,9 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
 
       <h3>チェックボックス（checkbox）</h3>
       <p>
-        オン・オフを切り替えます。それぞれのときの値を <code>on</code>・<code>off</code>{' '}
-        に書き、select と同じく <code>{'${select:ID}'}</code>・<code>ctx.select.ID</code>{' '}
-        で使います。
+        オンとオフを切り替えます。それぞれのときに差し込む値を <code>on</code> と <code>off</code>{' '}
+        に書きます。下の例では、チェックが入っているときだけ <code>--dry-run</code>{' '}
+        を付けて実行します。
       </p>
       <SampleView example={EXAMPLES.checkbox} platform={platform} />
       <Table
@@ -71,7 +73,10 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
           ['remember', 'select と同じ']
         ]}
       />
-      <p>ID は select・radio・checkbox で共通です。種類が違っても、同じ ID は同じ値を指します。</p>
+      <p>
+        ID は select、radio、checkbox の3つで共通です。種類が違っても、同じ ID
+        なら同じ値を指します。
+      </p>
     </Section>
   )
 }

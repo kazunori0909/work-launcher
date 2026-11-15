@@ -12,16 +12,17 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
     <Section id="display" title="グループとアイコン">
       <h3>グループ（group）</h3>
       <p>
-        <code>items</code> に並べた項目を枠で囲みます。値は枠の見出しで、
-        <code>group:</code> だけなら見出しを出しません。グループの中にグループは置けません。
+        <code>items</code> に並べた項目を枠で囲みます。<code>group</code> の値が枠の見出しになり、
+        <code>group:</code>{' '}
+        とだけ書けば見出しのない枠になります。グループの中にグループは入れられません。
       </p>
       <SampleView example={EXAMPLES.group} platform={platform} />
 
       <h3>ボタングループ（buttons）</h3>
       <p>
-        並べたボタンをくっつけて、1つの塊にします。ふだんは読み取り専用で開き、編集するときだけ横の小さなボタンで開く、
-        のように使います。<code>label: &apos;&apos;</code>{' '}
-        でアイコンだけのボタンになります。中に置けるのはボタンだけです。
+        いくつかのボタンを隙間なくくっつけて、1つの塊に見せます。よく使うのは、読み取り専用で開くボタンの横に、編集用の小さなボタンを添える形です。
+        <code>label: &apos;&apos;</code>{' '}
+        と書くとアイコンだけのボタンになります。中に置けるのはボタンだけです。
       </p>
       <SampleView example={EXAMPLES.buttons} platform={platform} />
 
@@ -37,8 +38,8 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
         >
           Lucide
         </a>{' '}
-        のアイコン名を書きます。下の一覧で探し、押すと <code>icon: 名前</code> をコピーできます。
-        無い名前を書くと、画面上部に警告が出ます。
+        （オープンソースのアイコン集）の名前を書きます。下の一覧で英語の名前を検索し、押すと{' '}
+        <code>icon: 名前</code> がコピーされます。無い名前を書いたときは、画面上部に警告が出ます。
       </p>
       <Table
         head={['種類', '書かなかったときのアイコン']}
@@ -50,7 +51,7 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
         ]}
       />
       <p>
-        アイコンを出したくないときは <code>icon: &quot;&quot;</code> と書きます。
+        アイコンを消したいときは <code>icon: &quot;&quot;</code> と書きます。
       </p>
       <IconBrowser />
     </Section>
