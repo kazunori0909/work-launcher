@@ -32,7 +32,7 @@ export function registerActionHandlers(sessionOf: SessionOf): void {
       case 'open':
         return openPath(item.path, ctx)
       case 'url':
-        return openUrl(item.url, item.params, ctx)
+        return openUrl(item.url, item.params, ctx, project.openSchemes)
       case 'function':
         return callFunction(item.fn, project.scripts, ctx, session)
       case 'excel':

@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+import { EmbedContext } from '../../components/embedContext'
 import { SampleView, Section, Table } from '../parts'
 import { EXAMPLES } from '../examples'
 import { IconBrowser } from '../IconBrowser'
@@ -5,6 +7,7 @@ import type { SectionProps } from '../parts'
 
 /** ヘルプの章「グループとアイコン」 */
 export function Display({ platform }: SectionProps): React.JSX.Element {
+  const { onLink } = useContext(EmbedContext)
   return (
     <Section id="display" title="グループとアイコン">
       <h3>グループ（group）</h3>
@@ -25,7 +28,13 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
       <h3>アイコン（icon）</h3>
       <p>
         <code>icon</code> に{' '}
-        <a href="https://lucide.dev/icons/" target="_blank" rel="noreferrer">
+        <a
+          href="https://lucide.dev/icons/"
+          onClick={(e) => {
+            e.preventDefault()
+            onLink(e.currentTarget.href, '')
+          }}
+        >
           Lucide
         </a>{' '}
         のアイコン名を書きます。下の一覧で探し、押すと <code>icon: 名前</code> をコピーできます。

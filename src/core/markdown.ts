@@ -5,15 +5,12 @@
 export const FILE_SCHEME = 'wl-file'
 const ROOT = `${FILE_SCHEME}://project/`
 
-/** ブラウザで開いてよいリンクのスキーム */
-const EXTERNAL_PROTOCOLS = ['http:', 'https:', 'mailto:']
-
 export type LinkTarget =
+  /** スキーム付きの URL。開いてよいかはメインが openSchemes で確かめる（core/schemes.ts） */
   | { type: 'external'; url: string }
   /** 案件フォルダ内のファイル（launcherDir からの相対、`/` 区切り） */
   | { type: 'file'; path: string }
   | { type: 'anchor' }
-  | { type: 'invalid'; reason: string }
 
 const SCHEME = /^[a-z][a-z\d+.-]+:/i
 
@@ -29,16 +26,7 @@ function baseUrl(baseDir: string): string {
  */
 export function resolveLink(href: string, baseDir: string): LinkTarget {
   if (href.startsWith('#')) return { type: 'anchor' }
-  if (SCHEME.test(href)) {
-    let url: URL
-    try {
-      url = new URL(href)
-    } catch {
-      return { type: 'invalid', reason: `リンクが正しくありません: ${href}` }
-    }
-    if (EXTERNAL_PROTOCOLS.includes(url.protocol)) return { type: 'external', url: url.toString() }
-    return { type: 'invalid', reason: `開けないリンクです: ${href}` }
-  }
+  if (SCHEME.test(href)) return { type: 'external', url: href }
   const path = projectPath(href, baseDir)
   return path ? { type: 'file', path } : { type: 'anchor' }
 }

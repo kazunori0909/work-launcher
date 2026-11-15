@@ -64,6 +64,7 @@ exports[`サンプル案件の読み込み結果 1`] = `
         },
       ],
     },
+    "openSchemes": undefined,
     "pages": [
       {
         "cwd": undefined,

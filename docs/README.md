@@ -38,7 +38,8 @@
 | 9   | グループと選択 ✅   | 枠・ボタングループ・select             |
 | 10  | イベント ✅         | change・起動・終了の前後に関数を呼ぶ   |
 | 11  | リファクタリング ✅ | 構成の整理とテストの軽量化             |
-| 12  | 公開の準備 🚧       | 作り直しと GitHub のセキュリティ設定   |
+| 12  | 公開の準備 ✅       | 作り直しと GitHub のセキュリティ設定   |
+| 13  | URL のスキーム 🚧   | 外部に開くスキームを許可リストで絞る   |
 
 ## 次に扱う候補
 
@@ -49,8 +50,3 @@
 - 設定ファイルの JSON Schema を作り、エディタで補完と誤りの指摘を出す（Phase 11 の C のあとが作りやすい）（→ phase11）
 - eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
-- 外部に開く URL のスキームを絞る（2026-11 のセキュリティ確認で見つけた懸念）。
-  `setWindowOpenHandler`（main/windows.ts）は URL を確かめずに `shell.openExternal` に渡すため、
-  埋め込みのリンクを中クリックすると `resolveLink` の許可リスト（http・https・mailto）を通らず、
-  相対リンクが `file://` になって Windows では exe が起動しうる（未確認）。
-  `url` 項目と `ctx.openUrl`（main/open.ts の `openUrl`）もスキームを制限していない

@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
-import { app, BrowserWindow, dialog, Menu, session, shell } from 'electron'
+import { app, BrowserWindow, dialog, Menu, session } from 'electron'
 import type { MenuItemConstructorOptions, WebContents } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -142,10 +142,9 @@ function createWindow(launcherDir: string | undefined): void {
   })
   window.on('ready-to-show', () => window.show())
 
-  window.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+  // 新しいウィンドウは開かない。リンクは画面側で link:open に回し、openSchemes で確かめてから開く
+  // （ここに来る URL は、相対リンクが案件フォルダではなくアプリの中を起点に解決されている）
+  window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
 
   // 埋め込みの html・md のリンクで画面が移らないようにする（リンクは画面側で link:open に回す）
   window.webContents.on('will-navigate', (event, url) => {

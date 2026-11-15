@@ -452,3 +452,60 @@ rules:
     expect(r.diagnostics).toHaveLength(2)
   })
 })
+
+describe('openSchemes', () => {
+  const top = 'pages:\n  - id: top\n    items: []\n'
+
+  it('省略したら undefined（既定を使う）', async () => {
+    const r = await loadFiles({ [CONFIG]: `version: 1\n${top}` })
+    expect(r.project?.openSchemes).toBeUndefined()
+  })
+
+  it('正規化して読み、重複を除く', async () => {
+    const r = await loadFiles({
+      [CONFIG]: `version: 1\nopenSchemes: [HTTPS, 'file:', https]\n${top}`
+    })
+    expect(r.diagnostics).toEqual([])
+    expect(r.project?.openSchemes).toEqual(['https', 'file'])
+  })
+
+  it('スキームとして書けないものはエラーにし、残りを使う', async () => {
+    const r = await loadFiles({
+      [CONFIG]: `version: 1\nopenSchemes: [https, 'http://', 3]\n${top}`
+    })
+    expect(r.project?.openSchemes).toEqual(['https'])
+    expect(r.diagnostics.map((d) => d.message)).toEqual([
+      'openSchemes にはスキーム名（http・file など）を並べてください: http://',
+      'openSchemes にはスキーム名（http・file など）を並べてください: 3'
+    ])
+  })
+
+  it('javascript などは書けない', async () => {
+    const r = await loadFiles({
+      [CONFIG]: `version: 1\nopenSchemes: [https, JavaScript, data]\n${top}`
+    })
+    expect(r.project?.openSchemes).toEqual(['https'])
+    expect(r.diagnostics.map((d) => d.message)).toEqual([
+      'openSchemes に javascript は書けません',
+      'openSchemes に data は書けません'
+    ])
+  })
+
+  it('空の並びなら何も開かない', async () => {
+    const r = await loadFiles({ [CONFIG]: `version: 1\nopenSchemes: []\n${top}` })
+    expect(r.project?.openSchemes).toEqual([])
+  })
+
+  it('ローカル設定に書いたら置き換える', async () => {
+    const r = await loadFiles({
+      [CONFIG]: `version: 1\nopenSchemes: [https]\n${top}`,
+      [LOCAL]: 'openSchemes: [http, https, file]\n'
+    })
+    expect(r.project?.openSchemes).toEqual(['http', 'https', 'file'])
+    const kept = await loadFiles({
+      [CONFIG]: `version: 1\nopenSchemes: [https]\n${top}`,
+      [LOCAL]: 'title: mine\n'
+    })
+    expect(kept.project?.openSchemes).toEqual(['https'])
+  })
+})

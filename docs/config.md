@@ -55,6 +55,7 @@ scripts: # function で読む JS（→ 3.2。省略時は launcher/scripts/）
   - launcher/scripts/
   - tools/deploy.js
 cwd: ../scripts # 実行系の作業フォルダの既定（→ 3.3）
+openSchemes: [http, https, mailto, file] # 外部に開いてよいスキーム（→ 3.5）
 pages:
   - id: top # 予約 ID。最初に開くページ
     title: メイン
@@ -69,15 +70,16 @@ info: # → 7章
   tools: [git, node]
 ```
 
-| キー      | 必須 | 内容                                  |
-| --------- | ---- | ------------------------------------- |
-| `version` | ○    | 仕様のバージョン。いまは `1`          |
-| `title`   |      | 案件名。省略時はフォルダ名            |
-| `style`   |      | 当てる CSS ファイル（→ 8章）          |
-| `scripts` |      | function で読む JS・フォルダ（→ 3.2） |
-| `cwd`     |      | 実行系の作業フォルダの既定（→ 3.3）   |
-| `pages`   | ○    | ページの並び（表示順）                |
-| `info`    |      | Info ページの設定                     |
+| キー          | 必須 | 内容                                  |
+| ------------- | ---- | ------------------------------------- |
+| `version`     | ○    | 仕様のバージョン。いまは `1`          |
+| `title`       |      | 案件名。省略時はフォルダ名            |
+| `style`       |      | 当てる CSS ファイル（→ 8章）          |
+| `scripts`     |      | function で読む JS・フォルダ（→ 3.2） |
+| `cwd`         |      | 実行系の作業フォルダの既定（→ 3.3）   |
+| `openSchemes` |      | 外部に開いてよいスキーム（→ 3.5）     |
+| `pages`       | ○    | ページの並び（表示順）                |
+| `info`        |      | Info ページの設定                     |
 
 ### ページ
 
@@ -260,7 +262,9 @@ info: # → 7章
 
 - 相対パスは `${launcherDir}` 起点。md ファイルの中だけは、その md ファイルの位置が起点
   （例外的にファイル起点）。`/` 始まりは `${launcherDir}` 起点
-- `http`・`https`・`mailto` のリンクは既定のブラウザ（メーラー）で開く。ほかのスキームは開かない
+- スキーム付きのリンク（`https://…` など）は、`openSchemes`（→ 3.5）で許可したものだけ開く。既定は `http`・`https`・`mailto`
+  （許可していないスキームのリンクは、押しても何も起きない）
+- 中クリックもクリックと同じに扱う（新しいウィンドウは開かない）
 - ファイル・フォルダへのリンクは OS の既定のアプリで開く（`open` と同じ）
 - `#見出し` のリンクはページ内のその見出しへ移る（見出しの id は GitHub と同じ付け方）
 - 画像はランチャーのフォルダの中のファイルと `https` の URL を表示する。フォルダの外の画像は表示しない
@@ -276,6 +280,20 @@ info: # → 7章
 
 - 既定のブラウザで開く
 - `url` に既にクエリがあれば `params` は `&` で後ろに足す
+
+開いてよいスキーム（`openSchemes`）:
+
+```yaml
+openSchemes: [http, https, mailto, file] # config.yaml の最上位
+```
+
+- `url` 項目・md / html のリンク・`ctx.openUrl` のどれも、ここに並べたスキームの URL だけを開く。
+  `url` 項目・`ctx.openUrl` はコンソールにエラーを出して開かない。リンクは押しても何も起きない
+- `javascript`・`vbscript`・`data` は書けない
+- 省略時は `[http, https, mailto]`。書いたらその並びで置き換える（足すときも既定の 3 つを書く）
+- `file` を許すと、`file:///C:/share/a.xlsx` や `file://server/share/資料.pdf` を、パスに直して `open` と同じく開く
+  （無ければエラー、Mac のフォルダは Finder）。exe なども開けてしまうので、必要な案件でだけ許す
+- 大文字・小文字は区別しない。`file:` のように末尾の `:` を付けてもよい
 
 ### 3.6 改行と見出し（break / heading）
 
@@ -410,7 +428,7 @@ info: # → 7章
 | 既存と同じ `id` の項目          | その項目を同じ位置で置き換え（※）     |
 | 新しい ID のページ              | 最後に追加                            |
 | ページの `title`・`icon`・`cwd` | 上書き                                |
-| `title`・`cwd`                  | 上書き                                |
+| `title`・`cwd`・`openSchemes`   | 上書き                                |
 | `style`                         | 案件の CSS の後に当てる               |
 | `scripts`                       | 後ろに追加                            |
 | `info.env`・`info.tools`        | 後ろに追加（同名は上書き）            |
