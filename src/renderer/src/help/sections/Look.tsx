@@ -6,8 +6,11 @@ export function Look(): React.JSX.Element {
     <Section id="look" title="タイトルと見た目">
       <p>
         <code>title</code>{' '}
-        は画面上部とウィンドウのタイトルに出ます。複数のランチャーを並べたときの見分けに使います。
-        <code>style</code> に CSS ファイルを書くと見た目を変えられます。
+        は画面上部とウィンドウのタイトルに出ます。いくつもの案件を開いているときの見分けに使えます。
+      </p>
+      <p>
+        上部の帯の色を案件ごとに変えておくと、もっと区別しやすくなります。<code>style</code> に CSS
+        ファイルを書けば、色などの見た目を変えられます。
       </p>
       <Code>{`# launcher/config.yaml
 title: 案件名
@@ -19,8 +22,9 @@ style: launcher/style.css
   --header-text: #ffffff;
 }`}</Code>
       <p>
-        ほかに <code>--accent</code>（選択中のタブ）・<code>--bg</code>・<code>--surface</code>・
-        <code>--text</code>・<code>--muted</code>・<code>--border</code> を変えられます。
+        ほかに変えられる色は <code>--accent</code>（選択中のタブ）、<code>--bg</code>、
+        <code>--surface</code>、<code>--text</code>、<code>--muted</code>、<code>--border</code>{' '}
+        です。
       </p>
     </Section>
   )

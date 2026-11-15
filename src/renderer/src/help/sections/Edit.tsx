@@ -10,7 +10,7 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
   return (
     <Section id="edit" title="設定ファイルの編集">
       <p>
-        いま開いているランチャーのフォルダは次のとおりです。設定ファイルはお使いのエディタで開いて編集します。
+        設定ファイルは、ふだん使っているエディタで開いて編集します。いま開いているランチャーのフォルダはここです。
       </p>
       <div className="help-row">
         <code>{launcherDir ?? NOT_OPEN}</code>
@@ -20,11 +20,18 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
           </button>
         )}
       </div>
-      <p>保存すると自動で読み直します。開いているタブと実行中のコマンドはそのままです。</p>
       <p>
-        自分だけの設定は <code>launcher/config.local.yaml</code> に書きます。書き方は同じで、
-        共通の設定（<code>config.yaml</code>）に重ねて使われます。
+        保存すると、アプリが自動で読み直します。開いているタブや実行中のコマンドは止まりません。
       </p>
+
+      <h3>自分だけの設定</h3>
+      <p>
+        自分の PC だけで使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
+        に書きます。書き方は <code>config.yaml</code>{' '}
+        と同じで、アプリは共通の設定にこのファイルを重ねて読みます。<code>.gitignore</code>{' '}
+        に入れておけば、ほかの人の画面には出ません。
+      </p>
+      <p>重ね方は、書いたものによって変わります。</p>
       <Table
         plain
         head={['ローカルに書いたもの', '結果']}

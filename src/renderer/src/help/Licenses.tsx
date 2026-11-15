@@ -16,11 +16,11 @@ export function Licenses(): React.JSX.Element {
 
       <h3>使っているソフトウェア</h3>
       <p>
-        WorkLauncher は Electron（Chromium・Node.js を含む）の上で動きます。Electron と Chromium
-        のライセンス文は、アプリに同梱の <code>LICENSE.electron.txt</code>・
-        <code>LICENSES.chromium.html</code>{' '}
-        にあります。そのほかに次のライブラリを使っています（名前を押すと本文が出ます）。
+        WorkLauncher は Electron の上で動いていて、Electron には Chromium と Node.js
+        が入っています。Electron と Chromium のライセンス文は、アプリに同梱した{' '}
+        <code>LICENSE.electron.txt</code> と <code>LICENSES.chromium.html</code> にあります。
       </p>
+      <p>ほかに使っているライブラリを並べました。名前を押すと、ライセンスの本文が開きます。</p>
       {list === undefined ? null : list.length === 0 ? (
         <p className="muted">一覧はビルドしたアプリでだけ出ます。</p>
       ) : (
