@@ -47,6 +47,8 @@
 
 - ポータブル版の起動の遅さ（毎回の展開で約9秒）への対処（→ phase6）
 - 設定ファイルの JSON Schema を作り、エディタで補完と誤りの指摘を出す（Phase 11 の C のあとが作りやすい）（→ phase11）
+- eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
+- TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
 - 外部に開く URL のスキームを絞る（2026-11 のセキュリティ確認で見つけた懸念）。
   `setWindowOpenHandler`（main/windows.ts）は URL を確かめずに `shell.openExternal` に渡すため、
   埋め込みのリンクを中クリックすると `resolveLink` の許可リスト（http・https・mailto）を通らず、
