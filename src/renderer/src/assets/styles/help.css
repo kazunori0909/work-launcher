@@ -50,6 +50,48 @@
   overflow-x: auto;
 }
 
+/* コード見本の色（highlight.js のクラス） */
+.hljs-comment {
+  color: var(--code-comment);
+}
+
+.hljs-keyword,
+.hljs-bullet,
+.hljs-selector-pseudo {
+  color: var(--code-keyword);
+}
+
+.hljs-string,
+.hljs-regexp {
+  color: var(--code-string);
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-property,
+.hljs-built_in {
+  color: var(--code-attr);
+}
+
+.hljs-title,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: var(--code-func);
+}
+
+.hljs-name,
+.hljs-selector-tag,
+.lang-yaml .hljs-attr {
+  color: var(--code-tag);
+}
+
+.hljs-subst {
+  color: var(--text);
+}
+
 .sample {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

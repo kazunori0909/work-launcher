@@ -9,7 +9,7 @@ export function Info(): React.JSX.Element {
         の情報をまとめて出します。問い合わせや不具合の報告では、「テキストでコピー」を押せばそのまま貼り付けられます。枠ごとにコピーしたいときは、見出しの右上のボタンを押します。
       </p>
       <p>環境変数、ツールのバージョン、レジストリは、設定に書いたものだけを出します。</p>
-      <Code>{`info:
+      <Code lang="yaml">{`info:
   env: [JAVA_HOME, PATH]       # 表示する環境変数
   tools:
     - git                      # 組み込み: git node npm python java docker dotnet

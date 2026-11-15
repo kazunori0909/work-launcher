@@ -22,7 +22,7 @@ export function Events(): React.JSX.Element {
           ['beforeClose', '閉じるとき（ウィンドウを閉じる・アプリを終了する）。終わるまで閉じない']
         ]}
       />
-      <Code>{`// launcher/scripts/events.js（要るものだけ書く）
+      <Code lang="javascript">{`// launcher/scripts/events.js（要るものだけ書く）
 module.exports = {
   async beforeOpen(ctx) {
     ctx.log(\`接続先: \${ctx.select.target}\`)
@@ -51,10 +51,10 @@ module.exports = {
         select、radio、checkbox に <code>change: 関数名</code>{' '}
         を書くと、画面で値を変えたときにその関数を呼びます。
       </p>
-      <Code>{`- select: target
+      <Code lang="yaml">{`- select: target
   options: [dev, prod]
   change: onTargetChange`}</Code>
-      <Code>{`module.exports = {
+      <Code lang="javascript">{`module.exports = {
   onTargetChange(ctx) {
     const { id, value, previous } = ctx.changed
     ctx.log(\`\${id}: \${previous} → \${value}\`)

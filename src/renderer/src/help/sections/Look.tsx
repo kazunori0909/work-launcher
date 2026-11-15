@@ -12,11 +12,10 @@ export function Look(): React.JSX.Element {
         上部の帯の色を案件ごとに変えておくと、もっと区別しやすくなります。<code>style</code> に CSS
         ファイルを書けば、色などの見た目を変えられます。
       </p>
-      <Code>{`# launcher/config.yaml
+      <Code lang="yaml">{`# launcher/config.yaml
 title: 案件名
-style: launcher/style.css
-
-/* launcher/style.css */
+style: launcher/style.css`}</Code>
+      <Code lang="css">{`/* launcher/style.css */
 :root {
   --header-bg: #1a7f37;     /* 上部の帯の色 */
   --header-text: #ffffff;

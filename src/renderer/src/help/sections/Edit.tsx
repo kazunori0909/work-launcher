@@ -10,7 +10,7 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
   return (
     <Section id="edit" title="設定ファイルの編集">
       <p>
-        設定ファイルは、ふだん使っているエディタで開いて編集します。いま開いているランチャーのフォルダはここです。
+        いま開いているランチャーのフォルダはここです。
       </p>
       <div className="help-row">
         <code>{launcherDir ?? NOT_OPEN}</code>

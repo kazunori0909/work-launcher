@@ -6,6 +6,8 @@ import { ItemList } from '../components/PageView'
 import { SelectContext } from '../components/selectContext'
 import type { SelectContextValue } from '../components/selectContext'
 import type { Cheat, Example } from './examples'
+import { highlight } from './highlight'
+import type { CodeLang } from './highlight'
 
 // ヘルプの章で使う部品（章の枠・コード・表・見本・早見表）
 
@@ -33,8 +35,12 @@ export function Section(props: {
   )
 }
 
-export function Code({ children }: { children: string }): React.JSX.Element {
-  return <pre className="code">{children}</pre>
+/** コードの見本。lang を書けば色を付ける（フォルダ構成の図など、コードでないものは書かない） */
+export function Code({ children, lang }: { children: string; lang?: CodeLang }): React.JSX.Element {
+  const html = useMemo(() => (lang ? highlight(children, lang) : undefined), [children, lang])
+  if (html === undefined) return <pre className="code">{children}</pre>
+  // highlight は中の文字をエスケープして返す
+  return <pre className={`code lang-${lang}`} dangerouslySetInnerHTML={{ __html: html }} />
 }
 
 /** 1列目はキー名としてコード書式にする（plain なら普通の文字） */
@@ -124,7 +130,7 @@ function CheatRow({ cheat, platform }: { cheat: Cheat; platform: string }): Reac
         <div className="cheat-note">{cheat.note}</div>
       </td>
       <td>
-        <pre className="code">{cheat.yaml}</pre>
+        <Code lang="yaml">{cheat.yaml}</Code>
       </td>
       <td>
         <SelectContext.Provider value={selections}>
@@ -160,7 +166,7 @@ export function SampleView({
 
   return (
     <div className="sample">
-      <Code>{example.yaml}</Code>
+      <Code lang="yaml">{example.yaml}</Code>
       <div className="preview">
         <span className="preview-label">表示</span>
         <SelectContext.Provider value={selections}>

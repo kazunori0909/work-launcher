@@ -13,7 +13,7 @@ export function Pages(): React.JSX.Element {
         ページが増えて <code>config.yaml</code> が長くなったら、<code>include</code>{' '}
         で別のファイルに分けられます。1つのファイルには1ページ分を書きます。
       </p>
-      <Code>{`pages:
+      <Code lang="yaml">{`pages:
   - id: top
     title: メイン
     icon: house

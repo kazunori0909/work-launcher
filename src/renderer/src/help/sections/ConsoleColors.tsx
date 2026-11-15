@@ -12,7 +12,7 @@ export function ConsoleColors(): React.JSX.Element {
         ルールは <code>launcher/console.yaml</code>{' '}
         に書きます。アプリは上から順に照合して、最初に当たったルールを使います。
       </p>
-      <Code>{`rules:
+      <Code lang="yaml">{`rules:
   - pattern: "\\\\b(error|failed)\\\\b"   # 正規表現
     flags: i                          # 大文字小文字を区別しない
     level: error                      # error / warn / info / success / debug
