@@ -7,23 +7,24 @@
 - [x] `release.yml` の権限をジョブごとに分け、アクションを SHA に固定し、attestation を付ける
 - [x] `dependabot.yml`・`SECURITY.md` を足す
 - [x] README・リリースノートに、PR の運用と attestation の確かめ方を書く
-- [ ] gitleaks でツリーに秘密情報が無いことを確かめる
-- [ ] 作者を noreply アドレスにして、1 コミットにまとめる
+- [x] gitleaks でツリーに秘密情報が無いことを確かめる
+- [x] 作者を noreply アドレスにして、1 コミットにまとめる
 
 ## 作り直し（元に戻せない。直前にユーザーに確認する）
 
-- [ ] 今のリポジトリを削除する
-- [ ] Public で作り直して push する
+- [x] 今のリポジトリを削除する
+- [x] Public で作り直して push する
 
 ## GitHub の設定
 
-- [ ] `main` の Ruleset
-- [ ] タグ `v*` の Ruleset
-- [ ] Environment `release`
-- [ ] Actions（SHA 固定の必須、使えるアクション、外部の人の PR の承認）
-- [ ] Immutable releases
-- [ ] Secret scanning・Push protection・Dependabot alerts / security updates・CodeQL・Private vulnerability reporting
-- [ ] GitHub の Email 設定（Keep my email addresses private・Block command line pushes。ユーザーが画面で行う）
+- [x] `main` の Ruleset
+- [x] タグ `v*` の Ruleset
+- [x] Environment `release`
+- [x] Actions（SHA 固定の必須、使えるアクション、外部の人の PR の承認）
+- [x] Immutable releases
+- [x] Secret scanning・Push protection・Dependabot alerts / security updates・CodeQL・Private vulnerability reporting
+      （non-provider patterns と validity checks は、API で有効にしても disabled のまま。GitHub Secret Protection が要る）
+- [x] GitHub の Email 設定（Keep my email addresses private・Block command line pushes。ユーザーが画面で行う）
 
 ## 確かめる
 
@@ -32,4 +33,4 @@
 
 ## 共通
 
-- [ ] 個人情報チェック（追跡ファイルに実値が混入していないか）
+- [x] 個人情報チェック（追跡ファイルに実値が混入していないか）
