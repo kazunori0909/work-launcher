@@ -6,18 +6,17 @@
 
 ## 日本語
 
-Windows と macOS で使える、日々の作業のためのデスクトップランチャーです。
-リポジトリに `launcher/config.yaml` を置いて、ページとボタンを作ります。ボタンでは、コマンドの実行
-（bat / sh / PowerShell / Python）、ファイル・フォルダを開く、URL を開く、JavaScript の関数を呼ぶ、ができます。
-自分だけの設定は `launcher/config.local.yaml` に書きます。
-隣に空の `work.launcher` ファイルを置くと、ダブルクリックで案件を開けます。
+WorkLauncher は、案件でよく使うコマンドや資料をボタンにまとめておくデスクトップアプリです。Windows と macOS で動きます。
 
-- 設定の書き方: [docs/config.md](docs/config.md)
-- アプリ内のヘルプ: アプリの最後のタブ
+ボタンは、リポジトリに置いた `launcher/config.yaml` に書きます。コマンドの実行（bat / sh / PowerShell / Python）、ファイルやフォルダを開く、URL を開く、JavaScript の関数を呼ぶ、といったボタンが作れます。自分の PC だけで使うボタンは `launcher/config.local.yaml` に書きます。
+
+`launcher/` と並べて空の `work.launcher` ファイルを置いておくと、それをダブルクリックするだけで WorkLauncher が起動し、その案件のボタンが並びます。
+
+設定の書き方は [docs/config.md](docs/config.md) にあります。アプリの最後のタブ「ヘルプ」にも、見本つきの説明があります。
 
 ### インストール
 
-[Releases](../../releases) のページからダウンロードします。
+[Releases](../../releases) のページから、使う環境に合ったファイルをダウンロードします。
 
 | ファイル                                          | 対象                                      |
 | ------------------------------------------------- | ----------------------------------------- |
@@ -25,51 +24,43 @@ Windows と macOS で使える、日々の作業のためのデスクトップ�
 | `work-launcher-<ver>-win-x64-portable.exe`        | Windows（ポータブル版。インストール不要） |
 | `work-launcher-<ver>-mac-apple-silicon-arm64.dmg` | Mac（Apple Silicon: M1 以降）             |
 | `work-launcher-<ver>-mac-intel-x64.dmg`           | Mac（Intel）                              |
-| `work-launcher-sample-<ver>.zip`                  | 始めるためのサンプル案件                  |
+| `work-launcher-sample-<ver>.zip`                  | 試しに使えるサンプル案件                  |
 
-Mac の種類は「Apple メニュー > この Mac について」で分かります。「チップ: Apple M…」なら Apple Silicon、
-「プロセッサ: … Intel …」なら Intel です。
+どちらの Mac かは「Apple メニュー > この Mac について」で確かめられます。「チップ: Apple M…」と出れば Apple Silicon、「プロセッサ: … Intel …」と出れば Intel です。
 
-インストール版では、案件の `work.launcher` をダブルクリックする、アプリのアイコンにドロップする、
-「ファイル > 案件を開く…」（Cmd+O / Ctrl+O）のどれかで案件を開けます。
+インストール版では、案件の `work.launcher` をダブルクリックするか、アプリのアイコンにドロップすると、その案件の画面が出ます。メニューの「ファイル > 案件を開く…」（Cmd+O / Ctrl+O）から選ぶこともできます。
 
-サンプルを試すときは、`work-launcher-sample-<ver>.zip` を展開して `sample/work.launcher` をダブルクリックします
-（ポータブル版は、exe を `work.launcher` の隣に置いて exe を起動します）。`sample/launcher/config.yaml` を書き換えて保存すると、
-画面にすぐ反映されます。書き方はアプリの「ヘルプ」タブを見てください。
+まず試すなら、`work-launcher-sample-<ver>.zip` を展開して `sample/work.launcher` をダブルクリックしてください。ポータブル版の場合は、exe を `work.launcher` と同じフォルダに置いて exe を起動します。`sample/launcher/config.yaml` を書き換えて保存すると、すぐに画面へ反映されます。
 
-アプリには署名がないため、初回の起動で OS が警告を出します。
+アプリには署名がないので、初めて起動するときに OS が警告を出します。次の手順で開けます。
 
-- **Windows**: 「Windows によって PC が保護されました」→「詳細情報」→「実行」
-- **macOS**: 「“WorkLauncher”は開いていません」→「システム設定 > プライバシーとセキュリティ」を開いて下にスクロールし、
-  WorkLauncher の「このまま開く」を押す（最初の 1 回だけ）
+- Windows: 「Windows によって PC が保護されました」と出たら、「詳細情報」を押してから「実行」を押す
+- macOS: 「“WorkLauncher”は開いていません」と出たら、「システム設定 > プライバシーとセキュリティ」を開いて下へスクロールし、WorkLauncher の「このまま開く」を押す（初回だけ）
 
 ### セキュリティ
 
-WorkLauncher は、個人とチームで使うことを想定しています。`config.local.yaml` は自分で書き、共有の `launcher/` の設定は
-信頼できる人が書いたもの（たとえばチームのリポジトリでレビューしたもの）である、という前提です。
+WorkLauncher は、個人やチームの中で使う前提で作っています。`config.local.yaml` は自分で書き、共有の `launcher/` の設定は信頼できる人が書いたもの、たとえばチームのリポジトリでレビューを通したものだけを使う、という想定です。
 
-**案件を開くことは、その案件を信頼することです。** 設定は PC で何でも動かせます。
+設定に書いたコマンドやスクリプトは、あなたの PC の上で何でも実行できます。そのため、WorkLauncher を使うときは、その案件の設定を信頼できるかどうかを先に考えてください。具体的には次のように動きます。
 
-- `exec` のボタン（bat / sh / PowerShell / Python）は、押すとすぐに動く
-- `info.tools` の `command` は、Info タブを開いたときにシェルで動く
-- `open` の項目は、どのファイル（プログラムを含む）も開ける
-- `url` の項目とリンクは、`openSchemes` に並べたスキームの URL だけを開く（既定は `http`・`https`・`mailto`）。
-  `file` を足すと、手元や共有フォルダのファイルも開けるようになる
-- `scripts`（JavaScript）は、案件フォルダごとに 1 回だけ、動かす前に確認する。一度許可すると、ファイルが変わっても聞き直さない
+- コマンドのボタン（bat / sh / PowerShell / Python）は、押すとすぐに実行する
+- `info.tools` の `command` は、Info タブを開いたときにシェルで実行する
+- `open` は、プログラムを含めてどのファイルでも開ける
+- `url` とリンクが開くのは、`openSchemes` に並べたスキームの URL だけ（既定は `http`・`https`・`mailto`）。`file` を足すと、手元や共有フォルダのファイルも開けるようになる
 
-知らない人から受け取った案件は開かないでください。`launcher/` の変更はコードと同じようにレビューしてください。
-ほかの人も編集できる共有フォルダでは特に注意してください。
+`scripts`（JavaScript）だけは、動かす前に案件フォルダごとに1回確認します。ただし一度許可すると、あとでファイルが変わっても聞き直しません。
 
-WorkLauncher は、自分からはインターネットに何も送りません（テレメトリも自動更新もありません）。
-ネットワークにつながるのは、次のときだけです。
+知らない人から受け取ったファイルは使わないでください。`launcher/` の変更は、コードと同じようにレビューしてください。ほかの人も書き込める共有フォルダに置いた案件は、特に気をつけてください。
 
-- md / html の埋め込みが `https://` の画像を表示するとき（ページを表示したときに読む）
-- リンクや `url` の項目を押したとき（ブラウザで開く）
+WorkLauncher が自分からインターネットに何かを送ることはありません。テレメトリも自動更新もありません。ネットワークを使うのは、次の3つの場合だけです。
+
+- md / html の埋め込みに `https://` の画像があり、そのページを表示したとき
+- リンクや `url` のボタンを押して、ブラウザで開いたとき
 - 自分で書いたコマンドやスクリプトがネットワークを使うとき
 
 ### 開発
 
-Node.js 24 が要ります（`mise.toml` で [mise](https://mise.jdx.dev/) に固定しています）。
+Node.js 24 が必要です。バージョンは `mise.toml` で [mise](https://mise.jdx.dev/) に固定しています。
 
 ```bash
 npm install
@@ -80,50 +71,42 @@ npm run build
 
 ### リリース
 
-`main` は保護しています。変更は PR で入れ、CI（Windows と macOS での lint・typecheck・test）が通ってからマージします。
-`v*` のタグを push できるのは管理者だけです。
+`main` は保護しています。変更は PR で入れ、CI（Windows と macOS での lint・typecheck・test）が通ってからマージします。`v*` のタグを push できるのは管理者だけです。
 
 1. ブランチで `package.json` の `version` を上げ（例: `0.1.0`）、PR を作ってマージする
-2. `git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0`（注釈付きタグにすると、タグのページに
-   最後のコミットのメッセージではなくバージョンが出る）
-3. GitHub Actions が Windows と macOS でビルドし、ファイルを添えた**下書き**の Release を作る
-   （タグと `package.json` のバージョンが合っている必要がある）
-4. Releases のページで下書きを確かめ、ノートを直して **Publish release** を押す。
-   公開した Release は変えられない（Immutable releases）
+2. `git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0` を実行する。注釈付きタグにしておくと、タグのページに最後のコミットのメッセージではなくバージョンが出る
+3. GitHub Actions が Windows と macOS でビルドし、ファイルを添えた下書きの Release を作る。タグと `package.json` のバージョンが一致していないと失敗する
+4. Releases のページで下書きを確かめ、ノートを直してから「Publish release」を押す。公開した Release はあとから変えられない（Immutable releases）
 
-リリースせずにビルドだけしたいときは、Actions タブから **Release** ワークフローを手動で動かします。
-ファイルは、その実行の Artifacts に置かれます。
+リリースせずにビルドだけしたいときは、Actions タブから Release ワークフローを手動で実行します。できたファイルは、その実行の Artifacts に置かれます。
 
 #### ダウンロードしたファイルを確かめる
 
-ファイルには署名がありません。どの Release にも `SHA256SUMS.txt` と build provenance の attestation が付いていて、
-このリポジトリのワークフローでビルドしたファイルであることを確かめられます。
+ファイルに署名はありませんが、どの Release にも `SHA256SUMS.txt` と build provenance の attestation（ビルド元の証明）を付けています。これで、このリポジトリのワークフローがビルドしたファイルかどうかを確かめられます。
 
 ```bash
 gh attestation verify work-launcher-0.1.0-win-x64-setup.exe -R kazunori0909/work-launcher
 ```
 
-セキュリティの問題の報告は [SECURITY.md](SECURITY.md) を見てください。
+セキュリティの問題を見つけたときは、[SECURITY.md](SECURITY.md) の手順で報告してください。
 
 ### ライセンス
 
-[MIT](LICENSE)。アプリに入れているライブラリのライセンスは、アプリの「ヘルプ > ライセンス」に一覧があります。
-ビルドのときに `scripts/licenses.mjs` が集めています。
+[MIT](LICENSE) ライセンスです。アプリに入っているライブラリのライセンスは、アプリの「ヘルプ > ライセンス」で一覧できます。この一覧は、ビルドのときに `scripts/licenses.mjs` が集めています。
 
 ## English
 
-A desktop launcher for your daily work, for Windows and macOS.
-Put `launcher/config.yaml` in a repository to define pages and buttons that run
-commands (bat / sh / PowerShell / Python), open files and folders, open URLs, or call
-JavaScript functions. Personal overrides go in `launcher/config.local.yaml`.
-An empty `work.launcher` file next to it opens the project with a double-click.
+WorkLauncher is a desktop app that puts the commands and documents you use for a project behind buttons. It runs on Windows and macOS.
 
-- Configuration spec: [docs/config.md](docs/config.md) (Japanese)
-- Built-in help: the last tab in the app
+You write the buttons in `launcher/config.yaml` in your repository. A button can run a command (bat / sh / PowerShell / Python), open a file or folder, open a URL, or call a JavaScript function. Buttons that only you need go in `launcher/config.local.yaml`.
+
+Put an empty `work.launcher` file next to `launcher/`, and double-clicking it starts WorkLauncher with that project's buttons.
+
+The configuration is described in [docs/config.md](docs/config.md) (Japanese). The last tab in the app, Help, also explains it with live examples. The app's menus and help are in Japanese.
 
 ### Install
 
-Download from the [Releases](../../releases) page.
+Download the file for your system from the [Releases](../../releases) page.
 
 | File                                              | For                                       |
 | ------------------------------------------------- | ----------------------------------------- |
@@ -131,53 +114,43 @@ Download from the [Releases](../../releases) page.
 | `work-launcher-<ver>-win-x64-portable.exe`        | Windows, no install (commit it to a repo) |
 | `work-launcher-<ver>-mac-apple-silicon-arm64.dmg` | Mac with Apple Silicon (M1 or later)      |
 | `work-launcher-<ver>-mac-intel-x64.dmg`           | Mac with Intel                            |
-| `work-launcher-sample-<ver>.zip`                  | Sample project to start from              |
+| `work-launcher-sample-<ver>.zip`                  | A sample project to try                   |
 
-Not sure which Mac you have? Open **Apple menu > About This Mac**: if it shows **Chip: Apple M…**,
-use Apple Silicon; if it shows **Processor: … Intel …**, use Intel.
+To check which Mac you have, open "Apple menu > About This Mac". If it shows "Chip: Apple M…", you have Apple Silicon; if it shows "Processor: … Intel …", you have Intel.
 
-The installed app opens a project by double-clicking its `work.launcher`, dropping it on the
-app icon, or File > Open Project (Cmd+O / Ctrl+O).
+With the installed app, double-click a project's `work.launcher` or drop it on the app icon. You can also pick one from the menu "ファイル > 案件を開く…" (File > Open Project, Cmd+O / Ctrl+O).
 
-To try the sample, unzip `work-launcher-sample-<ver>.zip` and double-click `sample/work.launcher`
-(or put the portable exe next to it and run the exe). Edit `sample/launcher/config.yaml` and save;
-the window updates right away. See the Help tab in the app for how to write it.
+To try the sample, unzip `work-launcher-sample-<ver>.zip` and double-click `sample/work.launcher`. With the portable version, put the exe in the same folder as `work.launcher` and run the exe. Edit `sample/launcher/config.yaml` and save, and the window updates right away.
 
-The apps are not code-signed, so the OS warns on first launch:
+The apps are not code-signed, so the OS shows a warning the first time you run them:
 
-- **Windows**: "Windows protected your PC" → **More info** → **Run anyway**
-- **macOS**: "Apple could not verify…" → open **System Settings > Privacy & Security**, scroll down,
-  and click **Open Anyway** for WorkLauncher (needed once)
+- Windows: when "Windows protected your PC" appears, click "More info", then "Run anyway"
+- macOS: when "Apple could not verify…" appears, open "System Settings > Privacy & Security", scroll down, and click "Open Anyway" for WorkLauncher (only the first time)
 
 ### Security
 
-WorkLauncher is meant for personal and team use. It assumes that you write your own
-`config.local.yaml`, and that the shared `launcher/` settings come from people you trust
-(for example, reviewed in your team's repository).
+WorkLauncher is made for personal and team use. It assumes that you write your own `config.local.yaml`, and that the shared `launcher/` settings come from people you trust, for example settings reviewed in your team's repository.
 
-**Opening a project means trusting it.** The settings can run anything on your PC:
+Commands and scripts in the settings can run anything on your PC. Before you use WorkLauncher with a project, make sure you trust its settings. In practice:
 
-- `exec` buttons (bat / sh / PowerShell / Python) run as soon as you click them
+- Command buttons (bat / sh / PowerShell / Python) run as soon as you click them
 - `command` in `info.tools` runs in a shell when you open the Info tab
-- `open` items can open any file (including programs)
-- `url` items and links open only the URL schemes listed in `openSchemes`
-  (default: `http`, `https`, `mailto`). Adding `file` lets them open local and shared files too
-- `scripts` (JavaScript) asks once per project folder before running; after you allow it,
-  it is not asked again even if the files change
+- `open` can open any file, including programs
+- `url` buttons and links open only the URL schemes listed in `openSchemes` (default: `http`, `https`, `mailto`). Adding `file` lets them open local and shared files too
 
-Do not open projects from unknown sources. Review changes to `launcher/` as you would review
-code, especially in shared folders that others can edit.
+Only `scripts` (JavaScript) asks before running, once per project folder. After you allow it, it does not ask again, even if the files change.
 
-WorkLauncher sends nothing to the internet by itself (no telemetry, no automatic updates).
-Network access happens only when:
+Do not use files from people you do not know. Review changes to `launcher/` the way you review code, and take extra care with projects in shared folders that others can write to.
 
-- a markdown / html embed shows an image from an `https://` URL (loaded when the page is shown)
-- you click a link or a `url` item (it opens in your browser)
-- your own commands and scripts access the network
+WorkLauncher never sends anything to the internet on its own. There is no telemetry and no automatic update. It uses the network only when:
+
+- an md / html embed has an image from an `https://` URL and you view that page
+- you click a link or a `url` button and it opens in your browser
+- your own commands or scripts use the network
 
 ### Development
 
-Requires Node.js 24 (pinned with [mise](https://mise.jdx.dev/) in `mise.toml`).
+You need Node.js 24. The version is pinned in `mise.toml` for [mise](https://mise.jdx.dev/).
 
 ```bash
 npm install
@@ -188,32 +161,25 @@ npm run build
 
 ### Release
 
-`main` is protected: changes go through a pull request, and CI (lint, typecheck and test on
-Windows and macOS) must pass before merging. Only the admin can push `v*` tags.
+`main` is protected. Changes go in through pull requests, and CI (lint, typecheck and test on Windows and macOS) must pass before merging. Only the admin can push `v*` tags.
 
-1. On a branch, bump `version` in `package.json` (e.g. `0.1.0`), open a pull request and merge it
-2. `git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0` (an annotated tag, so the tag page
-   shows the version instead of the last commit message)
-3. GitHub Actions builds on Windows and macOS and creates a **draft** release with the files
-   (the tag must match `package.json`)
-4. Check the draft on the Releases page, edit the notes, and click **Publish release**.
-   Published releases cannot be changed (immutable releases)
+1. On a branch, bump `version` in `package.json` (e.g. `0.1.0`), then open a pull request and merge it
+2. Run `git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0`. With an annotated tag, the tag page shows the version instead of the last commit message
+3. GitHub Actions builds on Windows and macOS and creates a draft release with the files. It fails if the tag does not match the version in `package.json`
+4. Check the draft on the Releases page, edit the notes, and click "Publish release". A published release cannot be changed (immutable releases)
 
-To build without releasing, run the **Release** workflow manually from the Actions tab;
-the files are attached to the run as artifacts.
+To build without releasing, run the Release workflow manually from the Actions tab. The files are attached to that run as artifacts.
 
 #### Verifying a download
 
-The files are not code-signed. Each release has `SHA256SUMS.txt` and a build provenance
-attestation, which shows that the file was built by this repository's workflow:
+The files are not code-signed, but every release comes with `SHA256SUMS.txt` and a build provenance attestation. With them, you can check that a file was built by this repository's workflow:
 
 ```bash
 gh attestation verify work-launcher-0.1.0-win-x64-setup.exe -R kazunori0909/work-launcher
 ```
 
-To report a security problem, see [SECURITY.md](SECURITY.md).
+To report a security problem, follow [SECURITY.md](SECURITY.md).
 
 ### License
 
-[MIT](LICENSE). The licenses of the bundled libraries are listed in the app
-(Help > ライセンス) and collected at build time by `scripts/licenses.mjs`.
+[MIT](LICENSE). The licenses of the libraries bundled in the app are listed under "ヘルプ > ライセンス" (Help > Licenses) in the app. `scripts/licenses.mjs` collects them at build time.
