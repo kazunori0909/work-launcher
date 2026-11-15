@@ -41,6 +41,7 @@
 | 12  | 公開の準備 ✅       | 作り直しと GitHub のセキュリティ設定   |
 | 13  | URL のスキーム ✅   | 外部に開くスキームを許可リストで絞る   |
 | 14  | ポータブル起動 ✅   | zip で埋め込み、約8秒を約3.7秒にした   |
+| 15  | コードの色付け ✅   | ヘルプのコード見本に highlight.js で色 |
 
 ## 次に扱う候補
 
@@ -51,3 +52,5 @@
 - 設定ファイルの JSON Schema を作り、エディタで補完と誤りの指摘を出す（Phase 11 の C のあとが作りやすい）（→ phase11）
 - eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
+- 設定の md に書いたコードブロックにも色を付ける（rehype-highlight。配色の CSS は使い回せる）（→ phase15）
+- ヘルプのインラインコードがハイフンで折り返す（`--border` が「--」と「border」に分かれる）（→ phase15）

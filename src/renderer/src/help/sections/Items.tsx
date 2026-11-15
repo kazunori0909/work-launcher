@@ -100,7 +100,7 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
         に書いた <code>&lt;script&gt;</code> は動きません。
       </p>
       <SampleView example={EXAMPLES.embed} platform={platform} />
-      <Code>{`- md: launcher/notes/release.md   # 1行で .md で終わればファイルを読む`}</Code>
+      <Code lang="yaml">{`- md: launcher/notes/release.md   # 1行で .md で終わればファイルを読む`}</Code>
       <p>
         値が1行で <code>.md</code>{' '}
         で終わるときだけ、ファイルのパスとして読みます。それ以外は本文として扱います。
@@ -124,7 +124,7 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
         を実行してよいかの確認が出ます。
       </p>
       <SampleView example={EXAMPLES.function} platform={platform} />
-      <Code>{`// launcher/scripts/logs.js
+      <Code lang="javascript">{`// launcher/scripts/logs.js
 module.exports = {
   openLogFolder(ctx) {
     ctx.log('ログを開きます')   // コンソールに書く

@@ -45,7 +45,7 @@ export function Start(): React.JSX.Element {
     console.yaml         コンソールの色分け
     style.css            見た目の変更`}</Code>
       <p>いちばん小さい設定はこれです。ボタンが1つだけのページができます。</p>
-      <Code>{`version: 1
+      <Code lang="yaml">{`version: 1
 title: 案件名
 pages:
   - id: top
