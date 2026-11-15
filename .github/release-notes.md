@@ -20,7 +20,7 @@
 ### 補足 / Notes
 
 - Mac の種類は「Apple メニュー > この Mac について」で分かります。「チップ: Apple M…」なら Apple Silicon、「プロセッサ: … Intel …」なら Intel です
-- アプリには署名がないため、初回の起動で警告が出ます。越え方は [README](https://github.com/{{repo}}#install) を見てください
+- アプリには署名がないため、初回の起動で警告が出ます。越え方は [README](https://github.com/{{repo}}#インストール) を見てください
 - `SHA256SUMS.txt` はファイルのハッシュです。Windows は `certutil -hashfile <ファイル> SHA256`、Mac は `shasum -a 256 <ファイル>` で比べられます
 - このリポジトリのワークフローでビルドしたものかは、`gh attestation verify <ファイル> -R {{repo}}` で確かめられます
 - 「Source code」は GitHub が自動で付けるソースコードで、アプリではありません
