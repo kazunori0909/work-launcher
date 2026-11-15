@@ -20,3 +20,9 @@ http・https・mailto など以外の URL を消すため。
 - `onClick` は中クリックでは呼ばれない。`onAuxClick` で `button === 1` を受けて `preventDefault` すると、
   新しいウィンドウ（`setWindowOpenHandler`）に行かない
 - Playwright の `page.click(sel, { button: 'middle' })` で、本物の中クリックとして確かめられる（run-app の `mclick`）
+
+## Windows の実機（Ver. 0.1.0 の後・2026-11-15。ユーザー確認）
+
+- `openSchemes` に `file` があると、md のリンク・`url` 項目の `file:///C:/Windows/System32/notepad.exe` でメモ帳が開く
+- `file` を消すと開けなくなる（`url` 項目はコンソールにエラー）
+- `https` を消すと、`https` の `url` 項目（Google 検索）もコンソールにエラーを出して開かない

@@ -9,7 +9,7 @@
 - [x] run-app に中クリック（`mclick`）を足す
 - [x] `docs/config.md`・アプリ内ヘルプ・README の Security に書く
 - [x] 実機（Mac）で、クリック・中クリック・`url` 項目・`file:` の可否を確かめる
-- [ ] Windows の実機で、中クリックで exe が起動しないことを確かめる（ユーザー確認）
+- [x] Windows の実機で、file: の可否を確かめる（ユーザー確認）
 
 ## 共通
 
