@@ -78,7 +78,8 @@ npm run build
 Windows and macOS) must pass before merging. Only the admin can push `v*` tags.
 
 1. On a branch, bump `version` in `package.json` (e.g. `0.1.0`), open a pull request and merge it
-2. `git tag v0.1.0 && git push origin v0.1.0`
+2. `git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0` (an annotated tag, so the tag page
+   shows the version instead of the last commit message)
 3. GitHub Actions builds on Windows and macOS and creates a **draft** release with the files
    (the tag must match `package.json`)
 4. Check the draft on the Releases page, edit the notes, and click **Publish release**.

@@ -28,8 +28,8 @@
 
 ## 確かめる
 
-- [ ] PR を作ると CI が走り、通るまでマージできない
-- [ ] `v0.1.0` のタグで下書きの Release ができ、`gh attestation verify` が通る
+- [x] PR を作ると CI が走り、通るまでマージできない
+- [x] `v0.1.0` のタグで下書きの Release ができ、`gh attestation verify` が通る（公開後に Immutable になったことも確かめた）
 
 ## 共通
 
