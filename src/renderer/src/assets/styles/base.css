@@ -109,4 +109,6 @@ button {
 
 .page {
   padding: 16px;
+  /* ヘルプのサイドメニューが 100cqh で高さを合わせる */
+  container-type: size;
 }

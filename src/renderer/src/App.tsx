@@ -148,6 +148,7 @@ function App(): React.JSX.Element {
                 platform={platform}
                 selected={helpSection}
                 onSelect={setHelpSection}
+                projectTitle={title}
                 projectHelp={
                   current && (
                     <PageView
