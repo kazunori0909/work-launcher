@@ -70,7 +70,8 @@
   `win-unpacked`（約 390 MB）ができる。署名は無し（証明書を設定していないため飛ばされる）
 - nsis は既定で oneClick・ユーザーごと（`%LOCALAPPDATA%\Programs`）に入る。管理者権限は要らない。
   入れたアプリに `work.launcher` を引数で渡すと、その案件が開く（別アカウントで確認）
-- ポータブル exe は起動のたびに一時フォルダへ展開する。引数なしで起動してウィンドウが出るまで約9秒。
+- ポータブル exe は起動のたびに一時フォルダへ展開する。引数なしで起動してウィンドウが出るまで約9秒
+  （Phase 14 で `useZip` にして約3.7秒。測った内訳は phase14 の KNOWLEDGE.md）。
   元の exe のフォルダは環境変数 `PORTABLE_EXECUTABLE_DIR` に入る（`process.execPath` は展開先）
 - エクスプローラーから起動した配布版にも、ユーザーの PATH がそのまま渡る。Mac の Finder 起動のような
   PATH の違いは無く、Info のツールのバージョンも開発中と同じく取れた
