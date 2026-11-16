@@ -10,7 +10,7 @@
 - [x] テストを足す
 - [x] `docs/config.md` 3.2 とヘルプ・サンプルの JS を直す
 - [x] 実機で確かめる（Mac）
-- [ ] 実機で確かめる（Windows。手順は下の「Windows での確認」）
+- [x] 実機で確かめる（Windows。手順は下の「Windows での確認」）
 
 ## Windows での確認
 
@@ -38,8 +38,8 @@ Mac では確かめ済み。Windows でしか動かない・挙動が変わる�
    exit /b 3
    `)
        ctx.log(`A ${JSON.stringify(a)}`)
-       // B: console: false ならコンソールに出ず、stdout だけ受け取れる
-       const b = await ctx.bat('echo hidden', { console: false, cwd: 'launcher' })
+       // B: console: false ならコンソールに出ず、stdout だけ受け取れる（@ がないとエコーも入る）
+       const b = await ctx.bat('@echo hidden', { console: false, cwd: 'launcher' })
        ctx.log(`B ${JSON.stringify(b)}`)
        // C: wait: false なら undefined がすぐ返り、出力はあとからコンソールに出る
        const c = await ctx.bat('ping -n 2 127.0.0.1 >nul & echo background', { wait: false })
@@ -58,7 +58,7 @@ Mac では確かめ済み。Windows でしか動かない・挙動が変わる�
          }
        }
        // E: ${workDir} の展開と、cwd 省略時は関数の作業フォルダ
-       const e = await ctx.bat('cd', { console: false })
+       const e = await ctx.bat('@cd', { console: false })
        ctx.log(`E cwd=${e.stdout.trim()} workDir=${ctx.workDir}`)
        ctx.log('end')
      },
@@ -75,19 +75,20 @@ Mac では確かめ済み。Windows でしか動かない・挙動が変わる�
 ### 確かめること
 
 `run-app` のスキルで起動し、`winTest` と `officeTest` を押してコンソールの文字を読む
-（`eval document.querySelector('.console')?.innerText`）。スキルは Windows で未確認なので、
-動かなければ手で起動してスクリーンショットを撮る。
+（`eval document.querySelector('.console')?.innerText`）。
 
-- [ ] A: `code` が 3、`stdout` に「日本語」とコピーのフォルダ、`stderr` に `err`。コンソールにも同じ出力が化けずに出る
-- [ ] B: コンソールに `echo hidden` の実行が出ず、`stdout` が `hidden`
-- [ ] C: `C undefined` が先に出て、そのあと `background` と終了の行が出る
-- [ ] D: 入っているものは `code` 0 と出力が返り、日本語が化けない。入っていないものは「caught」で理由が出る
-- [ ] E: `cwd` と `workDir` が同じフォルダ
-- [ ] F: Excel が読み取り専用で開く
-- [ ] G: `■ officeTest: 見つかりません: …` が出て、「ここは出ない」は出ない
-- [ ] ヘルプの「要素を追加する」に「関数から呼び出す」があり、表示が崩れていない
+- [x] A: `code` が 3、`stdout` に「日本語」とコピーのフォルダ、`stderr` に `err`。コンソールにも同じ出力が化けずに出る
+- [x] B: コンソールに `echo hidden` の実行が出ず、`stdout` が `hidden`
+- [x] C: `C undefined` が先に出て、そのあと `background` と終了の行が出る
+- [x] D: 入っているものは `code` 0 と出力が返り、日本語が化けない。入っていないものは「caught」で理由が出る
+- [x] E: `cwd` と `workDir` が同じフォルダ
+- [x] F: Excel が読み取り専用で開く
+- [x] G: `■ officeTest: 見つかりません: …` が出て、「ここは出ない」は出ない
+- [x] ヘルプの「要素を追加する」に「関数から呼び出す」があり、表示が崩れていない
 
 結果はこの節のチェックに付け、食い違いがあれば KNOWLEDGE.md を作って書く（直せるものは直してよい）
+
+2026-11-16 に Windows 11 で確かめた。B・E は最初 `@` なしで書いており、stdout にエコーが入った（仕様どおり。→ KNOWLEDGE.md）
 
 ## 共通
 
