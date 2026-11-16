@@ -1,12 +1,11 @@
-# PR と main への push で、lint・typecheck・test を Mac と Windows で流す。
+# PR で、lint・typecheck・test を Mac と Windows で流す。
 # ビルドに関係しないファイルだけの変更なら check を飛ばす（→ docs/phase17-ci-path-filter/PLAN.md）。
+# main への push では流さない。PR で確かめた中身がそのまま main になるため（→ docs/phase19-ci-dedupe/PLAN.md）。
 # main の Ruleset は ci-ok ジョブが通ることを必須にしている
 name: CI
 
 on:
   pull_request:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -30,7 +29,7 @@ jobs:
       - id: diff
         env:
           # PR はマージ後のコミットを取り出すので、1つ目の親（マージ先）と比べる
-          BASE: ${{ github.event_name == 'pull_request' && 'HEAD^1' || github.event.before }}
+          BASE: HEAD^1
         run: |
           code=true
           if files=$(git diff --name-only "$BASE" HEAD); then
