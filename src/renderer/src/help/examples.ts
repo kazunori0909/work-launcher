@@ -270,6 +270,8 @@ export const EXAMPLES = {
 export interface Cheat extends Example {
   name: string
   note: string
+  /** 同じ種類の見本をさらに並べるとき（種類の欄を共有して、コードと表示を1組ずつ下に足す） */
+  more?: Example[]
 }
 
 const exec = (kind: string, script: string, label: string): Item => ({
@@ -284,7 +286,16 @@ export const ITEM_CHEATS: Cheat[] = [
     name: 'bat',
     note: 'cmd で実行（Windows）',
     yaml: '- { bat: build.bat, label: ビルド }',
-    items: [exec('bat', 'build.bat', 'ビルド')]
+    items: [exec('bat', 'build.bat', 'ビルド')],
+    more: [
+      {
+        yaml: `- bat: |
+    cd docs
+    dir
+  label: 資料の一覧`,
+        items: [exec('bat', 'cd docs\ndir\n', '資料の一覧')]
+      }
+    ]
   },
   {
     name: 'sh',
@@ -327,36 +338,6 @@ export const ITEM_CHEATS: Cheat[] = [
     note: 'JS の関数を呼ぶ',
     yaml: '- function: openLogFolder',
     items: [{ kind: 'function', fn: 'openLogFolder' }]
-  },
-  {
-    name: 'md',
-    note: 'Markdown の文章',
-    yaml: '- md: "**太字** の説明"',
-    items: [{ kind: 'markdown', content: '**太字** の説明' }]
-  },
-  {
-    name: 'html',
-    note: 'HTML の文章',
-    yaml: '- html: <b>注意</b>',
-    items: [{ kind: 'html', content: '<b>注意</b>' }]
-  },
-  {
-    name: 'heading',
-    note: '見出し',
-    yaml: '- heading: ビルド',
-    items: [{ kind: 'heading', text: 'ビルド' }]
-  },
-  {
-    name: 'break',
-    note: 'ここで改行',
-    yaml: `- { bat: a.bat }
-- break
-- { bat: b.bat }`,
-    items: [
-      { kind: 'exec', scripts: { bat: 'a.bat' } },
-      { kind: 'break' },
-      { kind: 'exec', scripts: { bat: 'b.bat' } }
-    ]
   }
 ]
 
@@ -416,5 +397,60 @@ export const ELEMENT_CHEATS: Cheat[] = [
         remember: false
       }
     ]
+  }
+]
+
+/** 「レイアウトと装飾」の先頭に出す早見表 */
+export const LAYOUT_CHEATS: Cheat[] = [
+  {
+    name: 'heading',
+    note: '見出し',
+    yaml: '- heading: ビルド',
+    items: [{ kind: 'heading', text: 'ビルド' }]
+  },
+  {
+    name: 'break',
+    note: 'ここで改行',
+    yaml: `- { bat: a.bat }
+- break
+- { bat: b.bat }`,
+    items: [
+      { kind: 'exec', scripts: { bat: 'a.bat' } },
+      { kind: 'break' },
+      { kind: 'exec', scripts: { bat: 'b.bat' } }
+    ]
+  },
+  {
+    name: 'group',
+    note: '枠で囲む',
+    yaml: `- group: 資料
+  items:
+    - open: docs`,
+    items: [{ kind: 'group', title: '資料', items: [{ kind: 'open', path: 'docs' }] }]
+  },
+  {
+    name: 'buttons',
+    note: 'ボタンをくっつける',
+    yaml: `- buttons:
+    - { bat: build.bat, label: ビルド }
+    - { bat: test.bat, label: テスト }`,
+    items: [
+      {
+        kind: 'buttons',
+        items: [exec('bat', 'build.bat', 'ビルド'), exec('bat', 'test.bat', 'テスト')]
+      }
+    ]
+  },
+  {
+    name: 'md',
+    note: 'Markdown の文章',
+    yaml: '- md: "**太字** の説明"',
+    items: [{ kind: 'markdown', content: '**太字** の説明' }]
+  },
+  {
+    name: 'html',
+    note: 'HTML の文章',
+    yaml: '- html: <b>注意</b>',
+    items: [{ kind: 'html', content: '<b>注意</b>' }]
   }
 ]

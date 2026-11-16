@@ -19,7 +19,7 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
         head={['属性', '内容']}
         rows={[
           ['label', 'ボタンの文字。省略すると種類キーの値（コマンドの1行目やファイル名）'],
-          ['icon', 'アイコン名（→ グループとアイコン）。省略すると種類ごとの既定'],
+          ['icon', 'アイコン名（→ レイアウトと装飾）。省略すると種類ごとの既定'],
           ['tooltip', 'マウスを乗せたときの説明'],
           ['confirm', '押したときに確認を出す文'],
           ['id', 'ローカル設定から置き換えるときの目印']
@@ -93,30 +93,6 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
       </p>
       <SampleView example={EXAMPLES.url} platform={platform} />
 
-      <h3>説明を書く（md / html）</h3>
-      <p>
-        ボタンではなく、その位置に文章を出します。作業の前の注意書きなどに使います。
-        <code>md</code> には Markdown を直接書くか、md ファイルのパスを書きます。<code>html</code>{' '}
-        に書いた <code>&lt;script&gt;</code> は動きません。
-      </p>
-      <SampleView example={EXAMPLES.embed} platform={platform} />
-      <Code lang="yaml">{`- md: launcher/notes/release.md   # 1行で .md で終わればファイルを読む`}</Code>
-      <p>
-        値が1行で <code>.md</code>{' '}
-        で終わるときだけ、ファイルのパスとして読みます。それ以外は本文として扱います。
-      </p>
-      <p>
-        リンクや画像の相対パスは、ランチャーのフォルダから数えます。md
-        ファイルに書いたものだけは、その md ファイルの場所から数えます。リンクを押すと、URL
-        はブラウザで、ファイルは既定のアプリで開きます。画像は、ランチャーのフォルダの中にあるものしか出せません。
-      </p>
-      <p>
-        つまずきやすいのは、本文に <code>: </code>（コロンと空白）が入るときです。
-        <code>color: red</code> のような文を1行に続けて書くと、YAML
-        のキーと読まれてしまいます。上の例のように <code>|</code>{' '}
-        を書いて、次の行から本文を書いてください。
-      </p>
-
       <h3>JavaScript の関数を呼ぶ（function）</h3>
       <p>
         <code>launcher/scripts/</code> に置いた JS で <code>module.exports</code>{' '}
@@ -146,13 +122,6 @@ module.exports = {
       <p>
         読み込む JS は、最上位の <code>scripts</code> にファイルかフォルダを並べて変えられます。
       </p>
-
-      <h3>改行と見出し（break / heading）</h3>
-      <p>
-        ボタンは横に並び、幅が足りなくなると折り返します。好きな位置で改行したいときは{' '}
-        <code>break</code>、区切りに見出しを付けたいときは <code>heading</code> を書きます。
-      </p>
-      <SampleView example={EXAMPLES.layout} platform={platform} />
     </Section>
   )
 }

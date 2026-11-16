@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { execKindFor, expandSelect, itemAt, resolveSelections } from '../../../core/items'
 import type { Project } from '../../../core/types'
+import { highlight } from '../components/highlight'
+import type { CodeLang } from '../components/highlight'
 import { ItemList } from '../components/PageView'
 import { SelectContext } from '../components/selectContext'
 import type { SelectContextValue } from '../components/selectContext'
 import type { Cheat, Example } from './examples'
-import { highlight } from './highlight'
-import type { CodeLang } from './highlight'
 
 // ヘルプの章で使う部品（章の枠・コード・表・見本・早見表）
 
@@ -122,27 +122,50 @@ export function CheatSheet({
 }
 
 function CheatRow({ cheat, platform }: { cheat: Cheat; platform: string }): React.JSX.Element {
-  const selections = useSampleSelections(cheat.items)
+  const [first, ...rest] = [cheat, ...(cheat.more ?? [])]
   return (
-    <tr>
+    <>
+      <tr>
+        <td className="cheat-name" rowSpan={1 + rest.length}>
+          <code>{cheat.name}</code>
+          <div className="cheat-note">{cheat.note}</div>
+        </td>
+        <CheatCells example={first} platform={platform} />
+      </tr>
+      {rest.map((example) => (
+        <tr key={example.yaml}>
+          <CheatCells example={example} platform={platform} />
+        </tr>
+      ))}
+    </>
+  )
+}
+
+/** 早見表の1つの見本（コードと表示の2列） */
+function CheatCells({
+  example,
+  platform
+}: {
+  example: Example
+  platform: string
+}): React.JSX.Element {
+  const selections = useSampleSelections(example.items)
+  return (
+    <>
       <td>
-        <code>{cheat.name}</code>
-        <div className="cheat-note">{cheat.note}</div>
-      </td>
-      <td>
-        <Code lang="yaml">{cheat.yaml}</Code>
+        <Code lang="yaml">{example.yaml}</Code>
       </td>
       <td>
         <SelectContext.Provider value={selections}>
           <ItemList
-            items={cheat.items}
+            items={example.items}
             platform={platform}
             running={NOT_RUNNING}
             onActivate={NO_ACTION}
           />
         </SelectContext.Provider>
       </td>
-    </tr>
+    </>
   )
 }
 

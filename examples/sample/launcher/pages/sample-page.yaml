@@ -133,3 +133,30 @@ items:
           TARGET_ENV: ${select:target}
       - function: showSelect
         confirm: ${select:target} の値で関数を呼びますか？
+  - break
+  # md のコードブロック: 言語を書くと色が付く（yaml・json・sh・powershell・bat など）
+  - group: md のコード
+    icon: code
+    items:
+      - md: |
+          インラインの `--border` はそのまま、ブロックは言語ごとに色が付きます。
+
+          ```yaml
+          title: 案件名 # コメント
+          items:
+            - sh: echo "hello"
+          ```
+
+          ```powershell
+          Write-Output "日時: $(Get-Date -Format 'yyyy/MM/dd')"
+          ```
+
+          ```bat
+          @echo off
+          rem コメント
+          echo %DATE%
+          ```
+
+          ```
+          言語を書かないブロックは単色
+          ```

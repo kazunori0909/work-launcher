@@ -571,6 +571,47 @@ echo 接続先=\${select:target} モード=\${select:mode} \${select:dry}
             "kind": "group",
             "title": "選んだ値を使う",
           },
+          {
+            "kind": "break",
+          },
+          {
+            "icon": "code",
+            "id": undefined,
+            "items": [
+              {
+                "confirm": undefined,
+                "content": "インラインの \`--border\` はそのまま、ブロックは言語ごとに色が付きます。
+
+\`\`\`yaml
+title: 案件名 # コメント
+items:
+  - sh: echo "hello"
+\`\`\`
+
+\`\`\`powershell
+Write-Output "日時: $(Get-Date -Format 'yyyy/MM/dd')"
+\`\`\`
+
+\`\`\`bat
+@echo off
+rem コメント
+echo %DATE%
+\`\`\`
+
+\`\`\`
+言語を書かないブロックは単色
+\`\`\`
+",
+                "icon": undefined,
+                "id": undefined,
+                "kind": "markdown",
+                "label": undefined,
+                "tooltip": undefined,
+              },
+            ],
+            "kind": "group",
+            "title": "md のコード",
+          },
         ],
         "title": "サンプル",
       },

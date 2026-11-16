@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { highlight } from './highlight'
+import { highlight, highlightMd } from './highlight'
 import type { CodeLang } from './highlight'
 
 describe('highlight', () => {
@@ -21,4 +21,15 @@ describe('highlight', () => {
       expect(() => highlight('x', lang)).not.toThrow()
     }
   )
+})
+
+describe('highlightMd', () => {
+  it('別名でも色付けする', () => {
+    expect(highlightMd('a: 1', 'yml')).toContain('hljs-attr')
+    expect(highlightMd('@echo off', 'bat')).toContain('hljs-')
+  })
+
+  it('登録していない言語は undefined', () => {
+    expect(highlightMd('print(1)', 'python')).toBeUndefined()
+  })
 })

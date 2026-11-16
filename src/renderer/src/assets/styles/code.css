@@ -1,0 +1,42 @@
+/* コードの色（highlight.js のクラス）。ヘルプの見本は lang-*、md のコードブロックは language-* が付く */
+.hljs-comment {
+  color: var(--code-comment);
+}
+
+.hljs-keyword,
+.hljs-bullet,
+.hljs-selector-pseudo {
+  color: var(--code-keyword);
+}
+
+.hljs-string,
+.hljs-regexp {
+  color: var(--code-string);
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-property,
+.hljs-built_in {
+  color: var(--code-attr);
+}
+
+.hljs-title,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: var(--code-func);
+}
+
+.hljs-name,
+.hljs-selector-tag,
+.lang-yaml .hljs-attr,
+.language-yaml .hljs-attr {
+  color: var(--code-tag);
+}
+
+.hljs-subst {
+  color: var(--text);
+}
