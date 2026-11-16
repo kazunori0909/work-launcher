@@ -1,5 +1,6 @@
 # PR と main への push で、lint・typecheck・test を Mac と Windows で流す。
-# main の Ruleset は、このジョブ（check (macos-latest)・check (windows-latest)）が通ることを必須にしている
+# ビルドに関係しないファイルだけの変更なら check を飛ばす（→ docs/phase17-ci-path-filter/PLAN.md）。
+# main の Ruleset は ci-ok ジョブが通ることを必須にしている
 name: CI
 
 on:
@@ -15,7 +16,42 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # 除外リストに当たらないファイルが1つでもあれば流す。diff が取れないときも流す
+      - id: diff
+        env:
+          # PR はマージ後のコミットを取り出すので、1つ目の親（マージ先）と比べる
+          BASE: ${{ github.event_name == 'pull_request' && 'HEAD^1' || github.event.before }}
+        run: |
+          code=true
+          if files=$(git diff --name-only "$BASE" HEAD); then
+            code=false
+            while IFS= read -r f; do
+              case "$f" in
+                docs/* | README.md | AGENTS.md | CLAUDE.md | SECURITY.md | .claude/* | .vscode/* | \
+                  .github/release-notes.md | .github/dependabot.yml) ;;
+                *)
+                  echo "流す理由: $f"
+                  code=true
+                  break
+                  ;;
+              esac
+            done <<< "$files"
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
   check:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -36,3 +72,20 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+
+  # 必須チェックはこの1つ。check が飛ばされたときも通す
+  ci-ok:
+    if: always()
+    needs: [changes, check]
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "$RESULTS"
+          for r in $RESULTS; do
+            case "$r" in
+              success | skipped) ;;
+              *) exit 1 ;;
+            esac
+          done
