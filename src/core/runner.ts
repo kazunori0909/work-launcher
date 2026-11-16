@@ -48,15 +48,54 @@ export function prepareRun(
   if (item.kind !== 'exec') return '実行できる項目ではありません'
   const kind = execKindFor(item.scripts, platform)
   if (!kind) return 'この OS では実行できません'
+  return prepareScript(
+    {
+      kind,
+      script: item.scripts[kind]!,
+      cwd: effectiveCwd(project, page, item),
+      env: item.env,
+      encoding: item.encoding
+    },
+    { launcherDir, env, platform, select }
+  )
+}
+
+/** 動かすスクリプト（変数は置き換える前） */
+export interface ScriptSpec {
+  kind: ExecKind
+  script: string
+  cwd?: string
+  env?: Record<string, string>
+  encoding?: string
+}
+
+/** スクリプトから、実行に要る値を組み立てる。実行できなければ理由を返す */
+export function prepareScript(
+  spec: ScriptSpec,
+  base: {
+    launcherDir: string
+    env: NodeJS.ProcessEnv
+    platform?: NodeJS.Platform
+    select?: Record<string, string>
+    /** spec.cwd が無いときの作業フォルダ（絶対パス）。無ければ launcherDir */
+    defaultDir?: string
+  }
+): RunRequest | string {
+  const { launcherDir, env, platform = process.platform, select = {} } = base
+  const { kind } = spec
+  if (execKindFor({ [kind]: spec.script }, platform) !== kind) return 'この OS では実行できません'
 
   const warnings: string[] = []
   const warnMissing = (names: string[]): void => {
     for (const name of names) warnings.push(`環境変数 ${name} が定義されていません`)
   }
 
-  const work = resolveWorkDir(effectiveCwd(project, page, item), launcherDir, env, platform)
-  warnMissing(work.missingEnv)
-  const cwd = work.dir
+  let cwd = base.defaultDir ?? launcherDir
+  if (spec.cwd !== undefined || base.defaultDir === undefined) {
+    const work = resolveWorkDir(spec.cwd, launcherDir, env, platform)
+    warnMissing(work.missingEnv)
+    cwd = work.dir
+  }
   if (!isDirectory(cwd)) return `作業フォルダがありません: ${cwd}`
 
   const ctx = { launcherDir, workDir: cwd, env, select }
@@ -67,15 +106,15 @@ export function prepareRun(
     return r.value
   }
 
-  const extra = Object.fromEntries(Object.entries(item.env ?? {}).map(([k, v]) => [k, expand(v)]))
+  const extra = Object.fromEntries(Object.entries(spec.env ?? {}).map(([k, v]) => [k, expand(v)]))
   return {
     kind,
-    script: expand(item.scripts[kind]!),
+    script: expand(spec.script),
     cwd,
     // Python はパイプへの出力を OS の文字コード（日本語の Windows なら cp932）で出すため、
     // コンソールと同じ UTF-8 にする。利用者や項目の env で決めていればそちらを使う
     env: { ...(kind === 'python' ? { PYTHONIOENCODING: 'utf-8' } : {}), ...env, ...extra },
-    encoding: item.encoding ?? (kind === 'bat' ? 'cp932' : 'utf-8'),
+    encoding: spec.encoding ?? (kind === 'bat' ? 'cp932' : 'utf-8'),
     platform,
     warnings: [...new Set(warnings)]
   }

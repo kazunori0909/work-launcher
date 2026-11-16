@@ -1,5 +1,7 @@
 // utilityProcess で動かす。scripts に並べた JS を読み、指定の関数を ctx を渡して呼ぶ
 import path from 'node:path'
+import { CTX_ACTIONS, ctxCall } from '../core/ctxCalls'
+import type { CtxCall, CtxResult, ExecResult } from '../core/ctxCalls'
 // （仕組みは docs/phase2-minimal-app/PLAN.md「function（scripts.js）の動かし方」）
 
 export interface CallRequest {
@@ -25,16 +27,72 @@ export interface SelectChange {
 }
 
 export type HostMessage =
-  | { type: 'log'; text: string }
-  | { type: 'open'; path: string }
-  | { type: 'openUrl'; url: string; params?: Record<string, string> }
+  | { type: 'log'; text: string; level?: 'error' }
+  /** 項目と同じ動作を頼む。結果は同じ id の HostReply で受け取る */
+  | { type: 'call'; id: number; call: CtxCall }
   | { type: 'done' }
   | { type: 'error'; message: string }
 
+/** 頼んだ動作の結果（メイン → このプロセス） */
+export interface HostReply {
+  id: number
+  result: CtxResult
+}
+
 const post = (message: HostMessage): void => process.parentPort.postMessage(message)
+const text = (err: unknown): string => (err instanceof Error ? err.message : String(err))
+
+/** 結果を待っている動作（id → 結果の受け取り） */
+const waiting = new Map<number, (result: CtxResult) => void>()
+/** 動作が失敗して投げた例外。await していなければ、関数は止めずにコンソールへ出す */
+const failures = new WeakSet<Error>()
+let nextId = 1
+
+/** 動作を頼む。失敗したら reject する。終わりを待った実行系は終了コードと出力を返す */
+function request(call: CtxCall): Promise<ExecResult | void> {
+  return new Promise((resolve, reject) => {
+    const id = nextId++
+    waiting.set(id, (r) => {
+      waiting.delete(id)
+      if (r.error !== undefined) {
+        const err = new Error(r.error)
+        failures.add(err)
+        reject(err)
+      } else if (call.action === 'exec' && call.wait) {
+        resolve({
+          code: r.code ?? null,
+          signal: r.signal ?? null,
+          stdout: r.stdout ?? '',
+          stderr: r.stderr ?? ''
+        })
+      } else {
+        resolve()
+      }
+    })
+    post({ type: 'call', id, call })
+  })
+}
+
+/** 頼んだ動作がすべて終わり、await していない失敗をコンソールへ出し終えるまで待つ */
+async function settle(): Promise<void> {
+  while (waiting.size > 0) await new Promise((r) => setTimeout(r, 20))
+  await new Promise((r) => setImmediate(r))
+}
+
+process.on('unhandledRejection', (reason) => {
+  if (reason instanceof Error && failures.has(reason)) {
+    post({ type: 'log', text: reason.message, level: 'error' })
+  } else {
+    post({ type: 'error', message: text(reason) })
+  }
+})
 
 process.parentPort.once('message', async (e) => {
   const { files, fn, launcherDir, workDir, select, optional, changed } = e.data as CallRequest
+  process.parentPort.on('message', (reply) => {
+    const { id, result } = reply.data as HostReply
+    waiting.get(id)?.(result)
+  })
   try {
     const found = files.flatMap((file) => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -55,12 +113,16 @@ process.parentPort.once('message', async (e) => {
       select,
       ...(changed ? { changed } : {}),
       log: (text: unknown) => post({ type: 'log', text: String(text) }),
-      open: (path: string) => post({ type: 'open', path }),
-      openUrl: (url: string, params?: Record<string, string>) =>
-        post({ type: 'openUrl', url, params })
+      ...Object.fromEntries(
+        CTX_ACTIONS.map((name) => [
+          name,
+          (value: unknown, options?: unknown) => request(ctxCall(name, value, options))
+        ])
+      )
     })
+    await settle()
     post({ type: 'done' })
   } catch (err) {
-    post({ type: 'error', message: err instanceof Error ? err.message : String(err) })
+    post({ type: 'error', message: text(err) })
   }
 })

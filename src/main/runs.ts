@@ -1,12 +1,85 @@
 import { itemLabel, resolveSelections } from '../core/items'
 import { asItemRef, asNumber } from '../core/ipcArgs'
-import { prepareRun, startRun } from '../core/runner'
+import type { CtxCall, CtxResult } from '../core/ctxCalls'
+import { prepareRun, prepareScript, startRun } from '../core/runner'
+import type { RunEvent } from '../core/ipc'
+import type { RunHandle, RunRequest, Stream } from '../core/runner'
 import { handle } from './ipc'
 import { findItem, ITEM_NOT_FOUND } from './project'
-import type { SessionOf } from './session'
+import type { SessionOf, WindowSession } from './session'
 import { shellPathReady } from './shellPath'
 
 let nextId = 1
+
+interface StartOptions {
+  /** 押した項目の位置（function から始めたときは無い） */
+  at?: { pageId: string; path: number[] }
+  /** コンソールに出さない（開始・出力・終了を画面に知らせない） */
+  quiet?: boolean
+  /** 出力を受け取る */
+  onLines?(stream: Stream, lines: string[]): void
+}
+
+/** 実行を始め、開始・出力・終了を画面に知らせる。始められなければ例外にする */
+export async function startSessionRun(
+  session: WindowSession,
+  req: RunRequest,
+  label: string,
+  { at, quiet = false, onLines }: StartOptions = {}
+): Promise<{ runId: number; handle: RunHandle }> {
+  const runId = nextId++
+  const send = (event: RunEvent): void => {
+    if (!quiet) session.sendRun(event)
+  }
+  send({ type: 'start', runId, label, ...at, kind: req.kind, cwd: req.cwd, script: req.script })
+  for (const text of req.warnings) send({ type: 'output', runId, stream: 'stderr', lines: [text] })
+  const handle = await startRun(req, (stream, lines) => {
+    onLines?.(stream, lines)
+    send({ type: 'output', runId, stream, lines })
+  })
+  session.runs.set(runId, handle)
+  handle.done
+    .then((r) => send({ type: 'exit', runId, label, ...r }))
+    .catch((err: Error) =>
+      send({ type: 'exit', runId, label, code: null, signal: null, error: err.message })
+    )
+    .finally(() => session.runs.delete(runId))
+  return { runId, handle }
+}
+
+/** function から頼まれたスクリプトを動かす。call.wait なら終わるまで待ち、出力も返す */
+export async function runFromFunction(
+  session: WindowSession,
+  call: Extract<CtxCall, { action: 'exec' }>,
+  ctx: { launcherDir: string; workDir: string; select: Record<string, string> }
+): Promise<CtxResult> {
+  const req = prepareScript(call, {
+    launcherDir: ctx.launcherDir,
+    defaultDir: ctx.workDir,
+    env: process.env,
+    select: ctx.select
+  })
+  if (typeof req === 'string') return { error: req }
+  const out: Record<Stream, string[]> = { stdout: [], stderr: [] }
+  try {
+    const label = call.script.trim().split('\n')[0]
+    const { handle } = await startSessionRun(session, req, label, {
+      quiet: !call.console,
+      onLines: call.wait ? (stream, lines) => out[stream].push(...lines) : undefined
+    })
+    if (!call.wait) return {}
+    const r = await handle.done
+    if (r.error) return { error: r.error }
+    return {
+      code: r.code,
+      signal: r.signal,
+      stdout: out.stdout.join('\n'),
+      stderr: out.stderr.join('\n')
+    }
+  } catch (err) {
+    return { error: (err as Error).message }
+  }
+}
 
 /**
  * 実行の IPC を登録する。画面からはページ ID と項目の位置だけを受け取り、
@@ -26,32 +99,9 @@ export function registerRunHandlers(sessionOf: SessionOf): void {
     const req = prepareRun(project, page, item, launcherDir, process.env, process.platform, values)
     if (typeof req === 'string') return { error: req }
 
-    const runId = nextId++
-    const label = itemLabel(item, process.platform)
-    const send = session.sendRun.bind(session)
-    send({
-      type: 'start',
-      runId,
-      label,
-      pageId,
-      path,
-      kind: req.kind,
-      cwd: req.cwd,
-      script: req.script
-    })
-    for (const text of req.warnings)
-      send({ type: 'output', runId, stream: 'stderr', lines: [text] })
     try {
-      const handle = await startRun(req, (stream, lines) =>
-        send({ type: 'output', runId, stream, lines })
-      )
-      session.runs.set(runId, handle)
-      handle.done
-        .then((r) => send({ type: 'exit', runId, label, ...r }))
-        .catch((err: Error) =>
-          send({ type: 'exit', runId, label, code: null, signal: null, error: err.message })
-        )
-        .finally(() => session.runs.delete(runId))
+      const label = itemLabel(item, process.platform)
+      const { runId } = await startSessionRun(session, req, label, { at: { pageId, path } })
       return { runId }
     } catch (err) {
       return { error: (err as Error).message }

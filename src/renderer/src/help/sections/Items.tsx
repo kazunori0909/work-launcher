@@ -87,7 +87,7 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
       </p>
       <p>
         開ける URL は、<code>http</code>、<code>https</code>、<code>mailto</code>{' '}
-        で始まるものだけに絞っています。md や html の中のリンク、<code>ctx.openUrl</code>{' '}
+        で始まるものだけに絞っています。md や html の中のリンク、<code>ctx.url</code>{' '}
         も同じです。社内の共有フォルダを <code>file://</code> で開きたいときは、最上位に{' '}
         <code>openSchemes: [http, https, mailto, file]</code> のように、開いてよい種類を並べます。
       </p>
@@ -114,8 +114,7 @@ module.exports = {
           ['workDir', '作業フォルダ（関数もここで動く）'],
           ['env', '環境変数'],
           ['log(text)', 'コンソールに1行書く'],
-          ['open(path)', 'ファイル・フォルダを開く'],
-          ['openUrl(url, params)', 'ブラウザで開く'],
+          ['open(path) など', 'ボタンと同じ動作を呼ぶ（→ 関数から呼び出す）'],
           ['select', 'select・radio・checkbox の値（ctx.select.target など）']
         ]}
       />

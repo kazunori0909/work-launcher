@@ -7,6 +7,7 @@ import { Edit } from './sections/Edit'
 import { Elements } from './sections/Elements'
 import { Errors } from './sections/Errors'
 import { Events } from './sections/Events'
+import { Functions } from './sections/Functions'
 import { Info } from './sections/Info'
 import { Items } from './sections/Items'
 import { LicensesSection } from './sections/LicensesSection'
@@ -42,7 +43,8 @@ const SECTION_GROUPS: readonly { label?: string; sections: readonly HelpSection[
     sections: [
       { id: 'items', title: 'ボタンを追加', Body: Items },
       { id: 'elements', title: 'ボタン以外の要素', Body: Elements },
-      { id: 'display', title: 'レイアウトと装飾', Body: Display }
+      { id: 'display', title: 'レイアウトと装飾', Body: Display },
+      { id: 'functions', title: '関数から呼び出す', Body: Functions }
     ]
   },
   {
