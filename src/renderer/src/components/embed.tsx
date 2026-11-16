@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm'
 import { resolveAsset } from '../../../core/markdown'
 import { FORBIDDEN_SCHEMES, hrefAllowed } from '../../../core/schemes'
 import { EmbedContext } from './embedContext'
+import { highlightMd } from './highlight'
 
 // 埋め込み（markdown・mdfile・html）とマニュアルの描画。
 // リンク・画像の相対パスは baseDir（launcherDir からの相対フォルダ）起点で解決する
@@ -67,6 +68,13 @@ export function Markdown({ text, baseDir }: Props): React.JSX.Element {
           }}
         />
       ),
+      code: (props: ComponentProps<'code'> & ExtraProps) => {
+        const html = codeHtml(props)
+        const attrs = domProps(props)
+        if (html === undefined) return <code {...attrs} />
+        delete attrs.children
+        return <code {...attrs} dangerouslySetInnerHTML={{ __html: html }} />
+      },
       img: (props: ComponentProps<'img'> & ExtraProps) => (
         <img
           {...domProps(props)}
@@ -88,6 +96,16 @@ export function Markdown({ text, baseDir }: Props): React.JSX.Element {
       </ReactMarkdown>
     </div>
   )
+}
+
+/**
+ * 言語を書いたコードブロック（```yaml など。class が language-*）を色付けした HTML。
+ * 言語なし・登録していない言語・中身が文字だけでないものは undefined（そのまま出す）
+ */
+function codeHtml({ className, children }: ComponentProps<'code'>): string | undefined {
+  const lang = /(?:^|\s)language-(\S+)/.exec(className ?? '')?.[1]
+  if (lang === undefined || typeof children !== 'string') return undefined
+  return highlightMd(children, lang)
 }
 
 /** DOMPurify が既定で残す URL のスキーム（ALLOWED_URI_REGEXP の既定と同じ） */

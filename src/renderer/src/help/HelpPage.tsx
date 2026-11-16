@@ -42,7 +42,7 @@ const SECTION_GROUPS: readonly { label?: string; sections: readonly HelpSection[
     sections: [
       { id: 'items', title: 'ボタンを追加', Body: Items },
       { id: 'elements', title: 'ボタン以外の要素', Body: Elements },
-      { id: 'display', title: 'グループとアイコン', Body: Display }
+      { id: 'display', title: 'レイアウトと装飾', Body: Display }
     ]
   },
   {

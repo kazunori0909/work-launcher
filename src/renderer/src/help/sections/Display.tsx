@@ -1,15 +1,25 @@
 import { useContext } from 'react'
 import { EmbedContext } from '../../components/embedContext'
-import { SampleView, Section, Table } from '../parts'
-import { EXAMPLES } from '../examples'
+import { CheatSheet, Code, SampleView, Section, Table } from '../parts'
+import { EXAMPLES, LAYOUT_CHEATS } from '../examples'
 import { IconBrowser } from '../IconBrowser'
 import type { SectionProps } from '../parts'
 
-/** ヘルプの章「グループとアイコン」 */
+/** ヘルプの章「レイアウトと装飾」（並べ方・枠・文章・アイコン） */
 export function Display({ platform }: SectionProps): React.JSX.Element {
   const { onLink } = useContext(EmbedContext)
   return (
-    <Section id="display" title="グループとアイコン">
+    <Section id="display" title="レイアウトと装飾">
+      <h3>早見表</h3>
+      <CheatSheet cheats={LAYOUT_CHEATS} platform={platform} />
+
+      <h3>改行と見出し（break / heading）</h3>
+      <p>
+        ボタンは横に並び、幅が足りなくなると折り返します。好きな位置で改行したいときは{' '}
+        <code>break</code>、区切りに見出しを付けたいときは <code>heading</code> を書きます。
+      </p>
+      <SampleView example={EXAMPLES.layout} platform={platform} />
+
       <h3>グループ（group）</h3>
       <p>
         <code>items</code> に並べた項目を枠で囲みます。<code>group</code> の値が枠の見出しになり、
@@ -25,6 +35,30 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
         と書くとアイコンだけのボタンになります。中に置けるのはボタンだけです。
       </p>
       <SampleView example={EXAMPLES.buttons} platform={platform} />
+
+      <h3>説明を書く（md / html）</h3>
+      <p>
+        ボタンではなく、その位置に文章を出します。作業の前の注意書きなどに使います。
+        <code>md</code> には Markdown を直接書くか、md ファイルのパスを書きます。<code>html</code>{' '}
+        に書いた <code>&lt;script&gt;</code> は動きません。
+      </p>
+      <SampleView example={EXAMPLES.embed} platform={platform} />
+      <Code lang="yaml">{`- md: launcher/notes/release.md   # 1行で .md で終わればファイルを読む`}</Code>
+      <p>
+        値が1行で <code>.md</code>{' '}
+        で終わるときだけ、ファイルのパスとして読みます。それ以外は本文として扱います。
+      </p>
+      <p>
+        リンクや画像の相対パスは、ランチャーのフォルダから数えます。md
+        ファイルに書いたものだけは、その md ファイルの場所から数えます。リンクを押すと、URL
+        はブラウザで、ファイルは既定のアプリで開きます。画像は、ランチャーのフォルダの中にあるものしか出せません。
+      </p>
+      <p>
+        つまずきやすいのは、本文に <code>: </code>（コロンと空白）が入るときです。
+        <code>color: red</code> のような文を1行に続けて書くと、YAML
+        のキーと読まれてしまいます。上の例のように <code>|</code>{' '}
+        を書いて、次の行から本文を書いてください。
+      </p>
 
       <h3>アイコン（icon）</h3>
       <p>
