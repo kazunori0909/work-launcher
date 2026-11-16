@@ -45,6 +45,16 @@ module.exports = {
         <code>{"'${workDir}/out'"}</code> のように引用符（<code>&apos;</code> か <code>&quot;</code>
         ）の中に書きます。バッククォートの中では JS の値の埋め込みになります。
       </p>
+      <p>
+        何行もあるコマンドは、バッククォートで囲んで改行をそのまま書けます（<code>bat</code>{' '}
+        の改行は自動で CRLF にします）。その中で設定の変数を使うときは、<code>$</code> の前に{' '}
+        <code>\</code> を付けます。
+      </p>
+      <Code lang="javascript">{`await ctx.bat(\`
+cd tools
+call setup.bat
+build.bat \\\${select:target}
+\`)`}</Code>
 
       <h3>終わるのを待つ</h3>
       <p>

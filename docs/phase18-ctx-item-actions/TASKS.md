@@ -31,7 +31,12 @@ Mac では確かめ済み。Windows でしか動かない・挙動が変わる�
    module.exports = {
      async winTest(ctx) {
        // A: bat が動き、終了コード・stdout・stderr が返る。日本語が化けない（cp932）
-       const a = await ctx.bat('echo 日本語 %CD%\r\necho err 1>&2\r\nexit /b 3')
+       // 複数行はバッククォートで書く（改行は本体が CRLF にする）
+       const a = await ctx.bat(`
+   echo 日本語 %CD%
+   echo err 1>&2
+   exit /b 3
+   `)
        ctx.log(`A ${JSON.stringify(a)}`)
        // B: console: false ならコンソールに出ず、stdout だけ受け取れる
        const b = await ctx.bat('echo hidden', { console: false, cwd: 'launcher' })

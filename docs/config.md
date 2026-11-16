@@ -185,6 +185,7 @@ info: # → 7章
     | `ctx.excel(path, { readonly })` など         | `readonly`                                      |
     | `ctx.bat(script, { cwd })` など（実行系4種） | `cwd` / `env` / `encoding` / `wait` / `console` |
     - パスの起点・変数（4章）・`openSchemes`・OS ごとの動きは、YAML に書いたときと同じ
+    - 複数行はバッククォートで書ける（`bat` の改行は CRLF にする）。その中の設定の変数は `\${workDir}` と書く
     - 実行系の `cwd` を省くと、関数の作業フォルダ（`ctx.workDir`）で動かす。相対の `cwd` は YAML と同じく
       launcherDir 起点。出力はコンソールに出す
     - どれも Promise を返す。実行系は終わるまで待ち、`{ code, signal, stdout, stderr }` を返す
