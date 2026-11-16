@@ -11,6 +11,7 @@
 - [x] `docs/config.md` 3.2 とヘルプ・サンプルの JS を直す
 - [x] 実機で確かめる（Mac）
 - [x] 実機で確かめる（Windows。手順は下の「Windows での確認」）
+- [x] Windows の結果を受けて、本文の前後の空行・共通のインデントを取り除き、ヘルプに `@echo off` を足す
 
 ## Windows での確認
 

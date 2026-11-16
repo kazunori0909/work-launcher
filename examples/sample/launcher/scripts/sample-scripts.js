@@ -23,7 +23,9 @@ module.exports = {
     const shown = await run('echo Hello from ${workDir}')
     ctx.log(`終了コード: ${shown.code}`)
     // console: false ならコンソールに出さない。出力は stdout・stderr で受け取る
-    const hidden = await run('echo hidden', { console: false })
+    // bat は実行したコマンドも出力に出るので、読むときは @ を付ける
+    const quiet = process.platform === 'win32' ? '@echo hidden' : 'echo hidden'
+    const hidden = await run(quiet, { console: false })
     ctx.log(`受け取った出力: ${hidden.stdout}`)
     await ctx.open('launcher')
   },

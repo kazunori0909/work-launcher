@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ctxCall } from './ctxCalls'
+import { ctxCall, dedent } from './ctxCalls'
 
 describe('ctxCall', () => {
   it('種類ごとに頼む内容を作る', () => {
@@ -43,5 +43,19 @@ describe('ctxCall', () => {
     expect(() => ctxCall('sh', 'x', { cwd: 1 })).toThrow('cwd は文字列')
     expect(() => ctxCall('sh', 'x', { env: [] })).toThrow('env は { 名前: 値 }')
     expect(() => ctxCall('sh', 'x', 'tools')).toThrow('2つ目の引数')
+  })
+})
+
+describe('dedent', () => {
+  it('前後の空行と共通のインデントを取り除く', () => {
+    expect(dedent('\n    if True:\n        print(1)\n\n    print(2)\n  ')).toBe(
+      'if True:\n    print(1)\n\nprint(2)'
+    )
+    expect(dedent('\r\n  a\r\n  b\r\n')).toBe('a\nb')
+    expect(dedent('echo a')).toBe('echo a')
+  })
+
+  it('実行系の本文にかける', () => {
+    expect(ctxCall('python', '\n  print(1)\n')).toMatchObject({ script: 'print(1)' })
   })
 })

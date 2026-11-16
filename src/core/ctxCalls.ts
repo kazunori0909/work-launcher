@@ -109,7 +109,7 @@ export function ctxCall(name: CtxAction, value: unknown, options: unknown = {}):
       return {
         action: 'exec',
         kind: name,
-        script: first,
+        script: dedent(first),
         cwd: str('cwd'),
         env: dict('env'),
         encoding: str('encoding'),
@@ -117,4 +117,17 @@ export function ctxCall(name: CtxAction, value: unknown, options: unknown = {}):
         console: bool('console', true)
       }
   }
+}
+
+/**
+ * 関数の中にバッククォートで書いた本文を、YAML の `|` と同じ形にする。
+ * 前後の空行と、空でない行に共通する先頭の空白を取り除く
+ */
+export function dedent(script: string): string {
+  const lines = script.split(/\r?\n/)
+  while (lines.length > 0 && lines[0].trim() === '') lines.shift()
+  while (lines.length > 0 && lines[lines.length - 1].trim() === '') lines.pop()
+  const indents = lines.filter((l) => l.trim() !== '').map((l) => /^[ \t]*/.exec(l)![0].length)
+  const cut = indents.length > 0 ? Math.min(...indents) : 0
+  return lines.map((l) => l.slice(cut)).join('\n')
 }

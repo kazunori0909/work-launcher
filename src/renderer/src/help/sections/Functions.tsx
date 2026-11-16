@@ -46,14 +46,15 @@ module.exports = {
         ）の中に書きます。バッククォートの中では JS の値の埋め込みになります。
       </p>
       <p>
-        何行もあるコマンドは、バッククォートで囲んで改行をそのまま書けます（<code>bat</code>{' '}
-        の改行は自動で CRLF にします）。その中で設定の変数を使うときは、<code>$</code> の前に{' '}
-        <code>\</code> を付けます。
+        何行もあるコマンドは、バッククォートで囲んで改行をそのまま書けます。前後の空行と、
+        どの行にも共通する先頭の空白は取り除くので、関数に合わせてインデントしてかまいません（YAML
+        の <code>|</code> と同じです）。<code>bat</code> の改行は自動で CRLF
+        にします。その中で設定の変数を使うときは、<code>$</code> の前に <code>\</code> を付けます。
       </p>
       <Code lang="javascript">{`await ctx.bat(\`
-cd tools
-call setup.bat
-build.bat \\\${select:target}
+  cd tools
+  call setup.bat
+  build.bat \\\${select:target}
 \`)`}</Code>
 
       <h3>終わるのを待つ</h3>
@@ -67,6 +68,19 @@ ctx.log(\`終了コード: \${result.code}\`)   // 止めたときは code が n
 // 待たずに始めるだけにする（サーバーの起動など）
 await ctx.sh('npm run dev', { wait: false })`}</Code>
 
+      <p>
+        <code>cwd</code> を書かなければ、関数と同じ作業フォルダ（<code>ctx.workDir</code>
+        ）で動きます。相対パスで書いた <code>cwd</code> は、YAML
+        と同じくランチャーのフォルダが起点です。作業フォルダの下を指すときは{' '}
+        <code>{"cwd: '${workDir}/tools'"}</code> と書きます。
+      </p>
+      <p>
+        <code>bat</code> は Windows だけ、といった OS ごとの違いも YAML と同じです。OS
+        で分けたいときは <code>process.platform</code> を見ます。
+      </p>
+      <Code lang="javascript">{`if (process.platform === 'win32') await ctx.bat('build.bat')
+else await ctx.sh('./build.sh')`}</Code>
+
       <h3>出力を受け取る</h3>
       <p>
         待った実行の結果には、標準出力が <code>stdout</code>、標準エラー出力が <code>stderr</code>{' '}
@@ -78,21 +92,18 @@ if (r.code !== 0) ctx.log(\`失敗しました: \${r.stderr}\`)
 else if (r.stdout === '') ctx.log('変更はありません')
 else ctx.log(\`変更があります:\\n\${r.stdout}\`)`}</Code>
       <p>
+        <code>bat</code> は、YAML と同じく実行したコマンドも出力に出ます。出力を読むときは、先頭に{' '}
+        <code>@echo off</code> を書きます（1行だけなら <code>@cd</code> のように <code>@</code>{' '}
+        を付けます）。
+      </p>
+      <Code lang="javascript">{`const r = await ctx.bat(\`
+  @echo off
+  git rev-parse --abbrev-ref HEAD
+\`, { console: false })
+ctx.log(\`ブランチ: \${r.stdout}\`)`}</Code>
+      <p>
         <code>console: false</code> の実行は、実行中の一覧に出ないので画面からは止められません。
       </p>
-      <p>
-        <code>cwd</code> を書かなければ、関数と同じ作業フォルダ（<code>ctx.workDir</code>
-        ）で動きます。相対パスで書いた <code>cwd</code> は、YAML
-        と同じくランチャーのフォルダが起点です。 作業フォルダの下を指すときは{' '}
-        <code>{"cwd: '${workDir}/tools'"}</code> と書きます。
-      </p>
-      <p>
-        <code>bat</code> は Windows だけ、といった OS ごとの違いも YAML と同じです。OS
-        で分けたいときは <code>process.platform</code> を見ます。
-      </p>
-      <Code lang="javascript">{`if (process.platform === 'win32') await ctx.bat('build.bat')
-else await ctx.sh('./build.sh')`}</Code>
-
       <h3>失敗したとき</h3>
       <p>
         ファイルが無い、コマンドを始められない、といったときは例外になります。<code>await</code>{' '}
