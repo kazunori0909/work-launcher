@@ -1,7 +1,7 @@
 # Phase 17 タスク
 
 - [x] `ci.yml` に `changes` ジョブ（除外リストで判定）と `ci-ok` ジョブを足す
-- [ ] PR で、docs だけの変更なら `check` が飛び `ci-ok` が通ることを確かめる
+- [x] PR で、docs だけの変更なら `check` が飛び `ci-ok` が通ることを確かめる
 - [x] PR で、コードの変更なら `check` が流れることを確かめる
 - [x] Ruleset の必須チェックを `ci-ok` に差し替える（ユーザーの確認後）
 - [x] AGENTS.md・ci.yml の先頭コメントの必須チェックの記述を直す
