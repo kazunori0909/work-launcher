@@ -52,3 +52,4 @@
 - 設定ファイルの JSON Schema を作り、エディタで補完と誤りの指摘を出す（Phase 11 の C のあとが作りやすい）（→ phase11）
 - eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
+- 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
