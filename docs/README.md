@@ -43,6 +43,7 @@
 | 14  | ポータブル起動 ✅   | zip で埋め込み、約8秒を約3.7秒にした   |
 | 15  | コードの色付け ✅   | ヘルプのコード見本に highlight.js で色 |
 | 16  | md のコード ✅      | md のコードの色・インラインの折り返し  |
+| 17  | CI の絞り込み 🚧    | docs だけの変更では check を飛ばす     |
 
 ## 次に扱う候補
 
@@ -52,3 +53,4 @@
 - 設定ファイルの JSON Schema を作り、エディタで補完と誤りの指摘を出す（Phase 11 の C のあとが作りやすい）（→ phase11）
 - eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
+- 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
