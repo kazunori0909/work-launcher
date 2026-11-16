@@ -8,8 +8,9 @@ import type { ConsoleEntry, RunningRun } from '../components/Console'
 const MAX_ENTRIES = 5000
 
 export interface Run extends RunningRun {
-  pageId: string
-  path: number[]
+  /** 押した項目の場所。function から始めた実行には無い */
+  pageId?: string
+  path?: number[]
 }
 
 export interface ConsoleState {

@@ -99,7 +99,9 @@ function App(): React.JSX.Element {
     }
   }
 
-  const running = new Set(runs.filter((r) => r.pageId === current?.id).map((r) => pathKey(r.path)))
+  const running = new Set(
+    runs.flatMap((r) => (r.path && r.pageId === current?.id ? [pathKey(r.path)] : []))
+  )
 
   return (
     <div className="app">

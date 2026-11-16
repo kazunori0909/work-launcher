@@ -2,7 +2,7 @@ import { mkdtempSync, mkdirSync, realpathSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { gitBashCandidates, powershellCommand, prepareRun, startRun } from './runner'
+import { gitBashCandidates, powershellCommand, prepareRun, prepareScript, startRun } from './runner'
 import type { RunHandle, RunRequest, Stream } from './runner'
 import type { Item, Page, Project } from './types'
 
@@ -84,6 +84,19 @@ describe('prepareRun', () => {
   it('未定義の環境変数は警告に入れる', () => {
     const req = prepareRun(project(), page, sh('${env:NOPE}${env:NOPE}'), dir, {}, process.platform)
     expect(req).toMatchObject({ warnings: ['環境変数 NOPE が定義されていません'] })
+  })
+
+  it('prepareScript: cwd が無ければ defaultDir、あれば launcherDir 起点で動かす', () => {
+    const base = { launcherDir: dir, env: {}, defaultDir: path.join(dir, 'tools') }
+    const spec = { kind: 'sh', script: 'echo ${workDir}' } as const
+    expect(prepareScript(spec, base)).toMatchObject({
+      cwd: path.join(dir, 'tools'),
+      script: `echo ${path.join(dir, 'tools')}`
+    })
+    expect(prepareScript({ ...spec, cwd: '.' }, base)).toMatchObject({ cwd: dir })
+    expect(prepareScript({ kind: 'bat', script: 'x' }, { ...base, platform: 'darwin' })).toBe(
+      'この OS では実行できません'
+    )
   })
 
   it('実行できないときは理由を返す', () => {

@@ -1,5 +1,5 @@
 // 外部に開く URL のスキームの許可リスト（config.yaml の openSchemes。docs/config.md 2章）。
-// リンク・url 項目・ctx.openUrl のどれもここで確かめる
+// リンク・url 項目・ctx.url のどれもここで確かめる
 
 /** openSchemes を省略したときに開いてよいスキーム */
 export const DEFAULT_OPEN_SCHEMES: readonly string[] = ['http', 'https', 'mailto']

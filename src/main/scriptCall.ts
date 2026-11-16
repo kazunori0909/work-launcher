@@ -5,8 +5,10 @@ import type { ActionResult } from '../core/ipc'
 import { DEFAULT_SCRIPTS } from '../core/load'
 import { listScriptFiles } from '../core/scripts'
 import type { VariableContext } from '../core/variables'
-import { openPath, openUrl, resolvePath } from './open'
-import type { CallRequest, HostMessage, SelectChange } from './scriptHost'
+import type { CtxCall, CtxResult } from '../core/ctxCalls'
+import { openOffice, openPath, openUrl, resolvePath } from './open'
+import { runFromFunction } from './runs'
+import type { CallRequest, HostMessage, HostReply, SelectChange } from './scriptHost'
 import type { WindowSession } from './session'
 import { shellPathReady } from './shellPath'
 import { ensureTrusted } from './trust'
@@ -23,7 +25,7 @@ export interface CallOptions {
   changed?: SelectChange
 }
 
-/** scripts に並べた JS の関数を別プロセスで呼ぶ。log・open などの依頼を中継する */
+/** scripts に並べた JS の関数を別プロセスで呼ぶ。log と、項目と同じ動作の依頼を受ける */
 export async function callFunction(
   fn: string,
   scripts: string[],
@@ -50,8 +52,19 @@ export async function callFunction(
     }
     return { error: 'JS（scripts）の実行を許可しませんでした' }
   }
-  const report = (r: Result): void => {
-    if (r.error) session.sendRun({ type: 'message', level: 'error', text: r.error })
+  /** 関数から頼まれた、項目と同じ動作 */
+  const perform = async (call: CtxCall): Promise<CtxResult> => {
+    const vars = { ...ctx, workDir, select }
+    switch (call.action) {
+      case 'open':
+        return openPath(call.path, vars)
+      case 'url':
+        return openUrl(call.url, call.params, vars, session.view?.project?.openSchemes)
+      case 'exec':
+        return runFromFunction(session, call, vars)
+      default:
+        return openOffice(call.action, call.path, call.readonly, vars)
+    }
   }
 
   const child = utilityProcess.fork(path.join(__dirname, 'scriptHost.js'), [], {
@@ -70,11 +83,15 @@ export async function callFunction(
       resolve(r)
     }
     child.on('message', (m: HostMessage) => {
-      if (m.type === 'log') session.sendRun({ type: 'message', level: 'info', text: m.text })
-      else if (m.type === 'open') openPath(m.path, ctx).then(report)
-      else if (m.type === 'openUrl')
-        openUrl(m.url, m.params, ctx, session.view?.project?.openSchemes).then(report)
-      else if (m.type === 'done') finish({})
+      if (m.type === 'log') {
+        session.sendRun({ type: 'message', level: m.level ?? 'info', text: m.text })
+      } else if (m.type === 'call') {
+        perform(m.call)
+          .catch((err: unknown): CtxResult => ({ error: String(err) }))
+          .then((result) => {
+            if (!finished) child.postMessage({ id: m.id, result } satisfies HostReply)
+          })
+      } else if (m.type === 'done') finish({})
       else finish({ error: m.message })
     })
     child.on('exit', (code) =>

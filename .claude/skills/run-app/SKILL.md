@@ -5,7 +5,7 @@ description: WorkLauncher の実機（Electron）を Playwright で起動し、�
 
 # 実機で動かす
 
-`driver.mjs` がアプリを起動し、標準入力のコマンドを1行ずつ実行する。Mac で確かめた手順（Windows は未確認）。
+`driver.mjs` がアプリを起動し、標準入力のコマンドを1行ずつ実行する。Mac・Windows で確かめた手順。
 
 ## 手順
 

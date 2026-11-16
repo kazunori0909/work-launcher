@@ -12,7 +12,7 @@ import { expandVariables, resolveConfigPath } from '../core/variables'
 import type { VariableContext } from '../core/variables'
 import { openFolderOnMac } from './openFolder'
 
-// ファイル・フォルダ・URL・Office を開く（ボタン・リンク・scripts.js の ctx.open から使う）
+// ファイル・フォルダ・URL・Office を開く（ボタン・リンク・scripts.js の ctx から使う）
 
 type Result = ActionResult
 
@@ -65,7 +65,7 @@ export async function openOffice(
 }
 
 /**
- * URL を外部に開く。リンク・url 項目・ctx.openUrl のどれもここを通す。
+ * URL を外部に開く。リンク・url 項目・ctx.url のどれもここを通す。
  * schemes（config.yaml の openSchemes。省略時は既定）に無いスキームは開かない。file: はパスにして開く
  */
 export async function openExternal(url: string, schemes?: readonly string[]): Promise<Result> {

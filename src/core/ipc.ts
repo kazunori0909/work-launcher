@@ -10,9 +10,10 @@ export type RunEvent =
       type: 'start'
       runId: number
       label: string
-      pageId: string
+      /** 押した項目のページ。function から始めた実行には無い */
+      pageId?: string
       /** 項目の位置の並び（入れ子なら外側から） */
-      path: number[]
+      path?: number[]
       kind: ExecKind
       /** 実行を始める作業フォルダ（絶対パス） */
       cwd: string

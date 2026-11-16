@@ -188,6 +188,15 @@ exports[`サンプル案件の読み込み結果 1`] = `
           },
           {
             "confirm": undefined,
+            "fn": "runAndOpen",
+            "icon": undefined,
+            "id": undefined,
+            "kind": "function",
+            "label": undefined,
+            "tooltip": "関数の中からコマンドを実行し、フォルダを開く",
+          },
+          {
+            "confirm": undefined,
             "fn": "slowCount",
             "icon": undefined,
             "id": undefined,
