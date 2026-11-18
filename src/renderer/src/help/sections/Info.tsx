@@ -13,7 +13,7 @@ export function Info(): React.JSX.Element {
   env: [JAVA_HOME, PATH]       # 表示する環境変数
   tools:
     - git                      # 組み込み: git node npm python java docker dotnet
-                               #   Windows だけ: steam epic
+                               #   Windows と Mac だけ: steam epic
     - node
     - name: Maven              # 組み込みに無いものはコマンドを書く
       command: mvn -v

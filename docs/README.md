@@ -46,6 +46,7 @@
 | 17  | CI の絞り込み ✅    | docs だけの変更では check を飛ばす     |
 | 18  | 関数から項目 ✅     | ctx から url・Office・実行系を呼ぶ     |
 | 19  | CI の重複 ✅        | main への push では CI を流さない      |
+| 20  | Mac のゲーム 🚧     | Mac でも Steam・Epic のバージョン      |
 
 ## 次に扱う候補
 

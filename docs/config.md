@@ -516,8 +516,10 @@ info:
 - `env`: 表示する環境変数の名前。`PATH` は1行に1つずつ出す
 - `tools`: 名前だけなら組み込みの取り方を使う。組み込みに無い名前は `command` が必須
   - 組み込み（初期）: `git`・`node`・`npm`・`python`（Mac は `python3`、Windows は `py` を先に試す）・`java`・`docker`・`dotnet`
-  - Windows だけの組み込み: `steam`（「Steam について」に出るクライアントのバージョン）・`epic`（Epic Games Launcher のバージョン）。
-    インストール先はレジストリから探す。ほかの OS では「この OS では取れません」と出す。
+  - Windows と Mac だけの組み込み: `steam`（「Steam について」に出るクライアントのバージョン）・`epic`（Epic Games Launcher のバージョン）。
+    Windows はインストール先をレジストリから探す。Mac は `/Applications` の Epic Games Launcher と、
+    Steam が初回起動で入れるクライアントを見る（一度も起動していなければ「未インストール」）。
+    ほかの OS では「この OS では取れません」と出す。
     表示名は製品名（Steam・Epic Games Launcher）
   - ランチャーのフォルダで実行する（mise などで案件ごとにバージョンを切り替えていれば、そのバージョンが出る）
   - 見つからない・失敗したときは「未インストール」と表示する

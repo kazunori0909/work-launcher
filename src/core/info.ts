@@ -363,8 +363,13 @@ export interface ToolCommand {
   pattern?: string
 }
 
-/** Windows でだけ取れる組み込みのツール */
-export const WINDOWS_ONLY_TOOLS = ['steam', 'epic']
+/** Windows と Mac でだけ取れる組み込みのツール（ゲームのランチャー） */
+export const GAME_LAUNCHER_TOOLS = ['steam', 'epic']
+
+/** 組み込みのツールのうち、この OS では取れないもの */
+export function isUnsupportedTool(name: string, platform: string): boolean {
+  return GAME_LAUNCHER_TOOLS.includes(name) && platform !== 'win32' && platform !== 'darwin'
+}
 
 /** 設定に書く名前と表示名が違う組み込みのツール（製品名で出す） */
 const BUILTIN_TOOL_LABELS: Record<string, string> = {
@@ -381,7 +386,7 @@ export function toolDisplayName(tool: { name: string; command?: string }): strin
 const powershell = (script: string): string =>
   `powershell -NoProfile -NonInteractive -Command "${script}"`
 
-// インストール先はレジストリから探す。64bit 用（Win64・win64）を先に見る
+// Windows はインストール先をレジストリから探す。64bit 用（Win64・win64）を先に見る
 // Steam は「Steam について」に出るクライアントのバージョン（manifest の version）
 const STEAM_SCRIPT =
   "Get-ChildItem (Join-Path (Get-ItemProperty 'HKCU:\\Software\\Valve\\Steam').SteamPath 'package\\steam_client_win*.manifest') | Sort-Object Name -Descending | Select-Object -First 1 | Get-Content -TotalCount 5"
@@ -389,14 +394,30 @@ const STEAM_SCRIPT =
 const EPIC_SCRIPT =
   "$l = Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' | Where-Object { $_.DisplayName -eq 'Epic Games Launcher' } | Select-Object -First 1; if ($l) { Get-Item (Join-Path $l.InstallLocation 'Launcher\\Portal\\Binaries\\Win*\\EpicGamesLauncher.exe') | Sort-Object FullName -Descending | Select-Object -First 1 | ForEach-Object { $_.VersionInfo.ProductVersion } }"
 
+// Mac の Steam は初回起動でクライアントを Application Support に入れる。manifest の形は Windows と同じ
+const MAC_STEAM_MANIFEST =
+  '"$HOME/Library/Application Support/Steam/Steam.AppBundle/Steam/Contents/MacOS/package/steam_client_osx.manifest"'
+// Mac の Epic はアプリの Info.plist のバージョン（アプリ内の表示と同じ）
+const MAC_EPIC_PLIST = '"/Applications/Epic Games Launcher.app/Contents/Info"'
+
+const STEAM_PATTERN = '"version"\\s+"(\\d+)"'
+
 /** 組み込みのツールのバージョンの取り方。python は Mac では python3 を使う */
 export function builtinToolCommand(name: string, platform: string): ToolCommand | undefined {
-  if (WINDOWS_ONLY_TOOLS.includes(name) && platform !== 'win32') return undefined
+  if (isUnsupportedTool(name, platform)) return undefined
+  const win = platform === 'win32'
   switch (name) {
     case 'steam':
-      return { command: powershell(STEAM_SCRIPT), pattern: '"version"\\s+"(\\d+)"' }
+      return {
+        command: win ? powershell(STEAM_SCRIPT) : `head -n 5 ${MAC_STEAM_MANIFEST}`,
+        pattern: STEAM_PATTERN
+      }
     case 'epic':
-      return { command: powershell(EPIC_SCRIPT) }
+      return {
+        command: win
+          ? powershell(EPIC_SCRIPT)
+          : `defaults read ${MAC_EPIC_PLIST} CFBundleShortVersionString`
+      }
     case 'git':
       return { command: 'git --version', pattern: 'git version (\\S+)' }
     case 'node':

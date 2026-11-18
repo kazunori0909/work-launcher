@@ -6,6 +6,7 @@ import {
   gpuLabel,
   infoSections,
   infoText,
+  isUnsupportedTool,
   isUsefulIpv4,
   languageLabel,
   memoryModulesLabel,
@@ -136,7 +137,7 @@ describe('ツールのバージョン', () => {
     expect(builtinToolCommand('maven', 'darwin')).toBeUndefined()
   })
 
-  it('steam・epic は Windows だけ。Steam は manifest の version を抜き出す', () => {
+  it('steam・epic は Windows と Mac。Steam は manifest の version を抜き出す', () => {
     const manifest = '"win64"\r\n{\r\n\t"version"\t\t"1788291500"\r\n\t"ostype"\t\t"win10"\r\n'
     expect(extractVersion(manifest, builtinToolCommand('steam', 'win32')!.pattern)).toBe(
       '1788291500'
@@ -148,8 +149,20 @@ describe('ツールのバージョン', () => {
     for (const name of ['steam', 'epic']) {
       const command = builtinToolCommand(name, 'win32')!.command
       expect(command.slice(command.indexOf('"') + 1, -1)).not.toContain('"')
-      expect(builtinToolCommand(name, 'darwin')).toBeUndefined()
+      expect(builtinToolCommand(name, 'linux')).toBeUndefined()
+      expect(isUnsupportedTool(name, 'linux')).toBe(true)
+      expect(isUnsupportedTool(name, 'darwin')).toBe(false)
     }
+  })
+
+  it('Mac の steam は osx の manifest、epic は Info.plist のバージョン', () => {
+    const steam = builtinToolCommand('steam', 'darwin')!
+    expect(steam.command).toContain('steam_client_osx.manifest')
+    const manifest = '"osx"\n{\n\t"version"\t\t"1794536281"\n\t"ostype"\t\t"macos1015"\n'
+    expect(extractVersion(manifest, steam.pattern)).toBe('1794536281')
+    const epic = builtinToolCommand('epic', 'darwin')!
+    expect(epic.command).toContain('CFBundleShortVersionString')
+    expect(extractVersion('0.117.0\n', epic.pattern)).toBe('0.117.0')
   })
 
   it('toolDisplayName: 組み込みの steam・epic は製品名で出す', () => {
