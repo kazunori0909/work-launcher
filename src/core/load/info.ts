@@ -1,4 +1,4 @@
-import { parseRegistryPath, registryDefaultName, WINDOWS_ONLY_TOOLS } from '../info'
+import { parseRegistryPath, registryDefaultName, GAME_LAUNCHER_TOOLS } from '../info'
 import type { InfoConfig, InfoRegistry, InfoTool } from '../types'
 import { isObj } from './reader'
 import type { Reader } from './reader'
@@ -13,7 +13,7 @@ export const BUILTIN_TOOLS = [
   'java',
   'docker',
   'dotnet',
-  ...WINDOWS_ONLY_TOOLS
+  ...GAME_LAUNCHER_TOOLS
 ]
 
 export function readInfo(r: Reader, raw: unknown, file: string): InfoConfig {

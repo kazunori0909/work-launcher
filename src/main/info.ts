@@ -6,6 +6,7 @@ import { handle } from './ipc'
 import {
   builtinToolCommand,
   extractVersion,
+  isUnsupportedTool,
   isUsefulIpv4,
   parseDisplays,
   parseKeyValues,
@@ -15,7 +16,6 @@ import {
   parseWindowsInfo,
   REGISTRY_ENV,
   toolDisplayName,
-  WINDOWS_ONLY_TOOLS,
   selectDrives,
   usedMemoryFromVmStat,
   windowsInfoScript
@@ -131,7 +131,7 @@ async function tool(
   launcherDir: string | undefined
 ): Promise<ToolInfo> {
   const name = toolDisplayName(t)
-  if (!t.command && WINDOWS_ONLY_TOOLS.includes(t.name) && process.platform !== 'win32') {
+  if (!t.command && isUnsupportedTool(t.name, process.platform)) {
     return { name, unsupported: true }
   }
   const cmd = t.command
