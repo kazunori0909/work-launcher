@@ -140,7 +140,7 @@ PC の情報を1画面にまとめて表示します。「テキストでコピ�
 | ドライブの空き容量             |   ✅    | ✅  |
 | 環境変数                       |   ✅    | ✅  |
 | ツールのバージョン             |   ✅    | ✅  |
-| Steam・Epic Games Launcher     |   ✅    |  —  |
+| Steam・Epic Games Launcher     |   ✅    | ✅  |
 | レジストリの値                 |   ✅    |  —  |
 
 - 言語: Windows ではシステムロケールとコードページ（例: `cp932`）も出します
@@ -384,7 +384,7 @@ The Info page gathers your PC's details on one screen. "テキストでコピー
 | Free space on drives         |   ✅    | ✅  |
 | Environment variables        |   ✅    | ✅  |
 | Tool versions                |   ✅    | ✅  |
-| Steam, Epic Games Launcher   |   ✅    |  —  |
+| Steam, Epic Games Launcher   |   ✅    | ✅  |
 | Registry values              |   ✅    |  —  |
 
 - Language: on Windows, it also shows the system locale and code page (e.g. `cp932`)
