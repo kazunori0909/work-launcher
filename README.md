@@ -153,7 +153,7 @@ PC・OS・ハードウェアの枠は常に出ます。ドライブも既定で�
 info:
   env: [PATH, JAVA_HOME]
   tools:
-    - git # 組み込み: git・node・npm・python・java・docker・dotnet
+    - git # 組み込み: git・node・npm・python・java・docker・dotnet・steam・epic
     - node
     - name: Maven # 組み込みに無いものは、コマンドと取り出し方を書く
       command: mvn -v
@@ -397,7 +397,7 @@ The PC, OS and hardware boxes always appear, and drives appear by default (hide 
 info:
   env: [PATH, JAVA_HOME]
   tools:
-    - git # built in: git, node, npm, python, java, docker, dotnet
+    - git # built in: git, node, npm, python, java, docker, dotnet, steam, epic
     - node
     - name: Maven # for anything else, give a command and what to pick out
       command: mvn -v

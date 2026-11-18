@@ -1,4 +1,5 @@
-import { Code, Section } from '../parts'
+import { BUILTIN_TOOL_ROWS } from '../examples'
+import { Code, Section, Table } from '../parts'
 
 /** ヘルプの章「Info ページ」 */
 export function Info(): React.JSX.Element {
@@ -12,8 +13,7 @@ export function Info(): React.JSX.Element {
       <Code lang="yaml">{`info:
   env: [JAVA_HOME, PATH]       # 表示する環境変数
   tools:
-    - git                      # 組み込み: git node npm python java docker dotnet
-                               #   Windows と Mac だけ: steam epic
+    - git                      # 組み込みのツールは名前だけ書く（下の表）
     - node
     - name: Maven              # 組み込みに無いものはコマンドを書く
       command: mvn -v
@@ -23,8 +23,17 @@ export function Info(): React.JSX.Element {
     - name: JDK                # 表示名（省略時は値の名前）
       path: HKLM\\SOFTWARE\\JavaSoft\\JDK\\CurrentVersion
   drives: false                # ドライブを出さないとき`}</Code>
+      <h3>組み込みのツール</h3>
       <p>
-        ツールのコマンドは、ランチャーのフォルダで実行します。見つからないときは「未インストール」と出ます。
+        <code>tools</code>{' '}
+        に名前だけ書けば、バージョンの取り方を書かなくても出せるツールです。どれも Windows と Mac
+        で使えます。ここに無いものは、上の Maven のように <code>command</code> と{' '}
+        <code>pattern</code> を書きます。
+      </p>
+      <Table head={['名前', '出すもの']} rows={BUILTIN_TOOL_ROWS} />
+      <p>
+        ツールのコマンドは、ランチャーのフォルダで実行します。見つからないときは「未インストール」と出ます。Steam
+        は、一度も起動していなければ「未インストール」と出ます。
       </p>
       <p>
         レジストリのパスには引用符を付けないでください。<code>{'"…"'}</code> で囲むと、
