@@ -99,7 +99,7 @@ exports[`サンプル案件の読み込み結果 1`] = `
             "id": undefined,
             "kind": "open",
             "label": undefined,
-            "path": "launcher",
+            "path": "\${launcherDir}/launcher",
             "tooltip": undefined,
           },
           {

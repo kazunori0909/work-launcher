@@ -50,6 +50,7 @@
 | 20  | Mac のゲーム ✅     | Mac でも Steam・Epic のバージョン      |
 | 21  | ツールの定義 ✅     | 組み込みのツールを1ファイルの表にする  |
 | 22  | リリースノート ✅   | 冒頭の案内を表と README へのリンクに   |
+| 23  | 作業フォルダ起点 🚧 | open・Office の相対パスを workDir 起点 |
 
 ## 次に扱う候補
 
@@ -60,4 +61,5 @@
 - eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
 - 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
+- 次のリリースノートで、open・Office の相対パスが workDir 起点に変わったこと（`cwd` を書いた設定は互換が崩れる）を知らせる（→ phase23）
 - Steam の入っていない Windows で、Info の steam が「pattern が一致しません」ではなく「未インストール」と出るか確かめる（→ phase21）

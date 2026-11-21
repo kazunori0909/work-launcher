@@ -53,14 +53,14 @@ export function expandVariables(text: string, ctx: VariableContext): Expanded {
   return { value: text.replace(VARIABLE, replace), missingEnv, missingSelect }
 }
 
-/** 設定に書いたパス（変数置き換え済み）を絶対パスにする。相対パスは launcherDir 起点 */
+/** 設定に書いたパス（変数置き換え済み）を絶対パスにする。相対パスは base（launcherDir か workDir）起点 */
 export function resolveConfigPath(
   p: string,
-  launcherDir: string,
+  base: string,
   platform: NodeJS.Platform = process.platform
 ): string {
-  if (platform === 'win32') return path.win32.resolve(launcherDir, p)
-  return path.posix.resolve(launcherDir, p.replaceAll('\\', '/'))
+  if (platform === 'win32') return path.win32.resolve(base, p)
+  return path.posix.resolve(base, p.replaceAll('\\', '/'))
 }
 
 /** 作業フォルダ（未展開）。項目（実行系のみ）→ ページ → 最上位の順に引き継ぐ */

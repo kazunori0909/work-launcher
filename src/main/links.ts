@@ -6,8 +6,7 @@ import { asString } from '../core/ipcArgs'
 import { FILE_SCHEME, pathFromFileUrl, resolveLink } from '../core/markdown'
 import { assertNever } from '../core/types'
 import type { ProjectView } from '../core/types'
-import { variableContext } from '../core/variables'
-import { openExternal, openPath } from './open'
+import { openAbsolute, openExternal } from './open'
 import { handle } from './ipc'
 import type { ViewOf } from './project'
 
@@ -45,13 +44,10 @@ export function registerLinkHandlers(viewOf: ViewOf): void {
     switch (target.type) {
       case 'external':
         return openExternal(target.url, view?.project?.openSchemes)
-      case 'file': {
+      // md のリンクは launcherDir 起点（resolveLink が launcherDir からの相対にしてある）
+      case 'file':
         if (!view?.launcherDir) return { error: '案件が開かれていません' }
-        const ctx = view.project
-          ? variableContext(view.project, view.launcherDir, process.env)
-          : { launcherDir: view.launcherDir, env: process.env }
-        return openPath(target.path, ctx)
-      }
+        return openAbsolute(path.join(view.launcherDir, target.path))
       // ページ内のリンクは画面で動かす
       case 'anchor':
         return {}

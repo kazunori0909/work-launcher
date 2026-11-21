@@ -38,7 +38,7 @@ pages:
         params:
           q: ほげほげ
         icon: search
-      - open: launcher
+      - open: ${launcherDir}/launcher
       - break:
 
       # file: のリンクと URL（最上位の openSchemes で file を許可している）
