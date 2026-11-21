@@ -2,7 +2,7 @@
 
 - from: mac
 - to: win
-- 状態: 依頼中
+- 状態: 回答済み
 - ブランチ: phase21-builtin-tool-defs
 - 関連: docs/phase21-builtin-tool-defs/PLAN.md（2026-11-21: 組み込みの取り方を config.yaml で上書き）
 
@@ -48,4 +48,40 @@ pattern を書かない git は Windows でも取れていた。また、Windows
 
 ## 回答
 
-（受けた側が書く）
+### 1. pattern の文字
+
+```
+"      pattern: 'git version(\\d+)'"
+の U+306e 情 U+60c5 報 U+5831
+```
+
+- `\` は U+005C で正しかった（ASCII 以外はコメント行の「の情報」だけ）
+- ただし **`version` と `(` の間の空白が抜けていた**。Windows の config.local.yaml は依頼の YAML と違い、
+  手で書いたもの（epic も `echo 9.9.0`）。`.gitignore` の対象なので Mac とは共有されていない
+
+### 2. cmd.exe で `git --version`（作業フォルダ examples/sample/launcher）
+
+```
+git version 2.50.0.windows.2
+```
+
+node で当てると、`/git version(\d+)/` は `null`、`/git version (\d+)/` は `2`
+
+### 3. 直して確かめた結果
+
+pattern を `'git version (\d+)'` に直し、run-app（`npx electron-vite build` のあと driver.mjs）で Info を開くと、
+git は `2` と出た。epic は `9.9.0`。ほかの組み込み（node・python・Steam）も値が出て、java は未インストール（この PC に無い）
+
+### 4. ヘルプの「Info ページ」の章
+
+- 組み込みのツールの表は9行（git・node・npm・python・java・docker・dotnet・steam・epic）。崩れなし
+- 表の下の「未インストール」の段落、上書きの説明の段落（`command`・`pattern` の書き分け）、
+  YAML の例（steam の pattern）、レジストリのパスの注意の段落も崩れなし
+
+### 原因の見立て
+
+`¥` ではなく、Windows で書いた config.local.yaml の pattern の打ち間違い（空白の抜け）。
+pattern が出力に当たらず、「未インストール」になっていた。コードの修正は要らない
+
+気づいたこと: pattern が当たらないときもコマンドは見つかっているのに「未インストール」と出るので、
+書き間違いと区別しにくい。「取得できません（pattern が一致しない）」のように出し分けるかは、Mac 側で判断してほしい
