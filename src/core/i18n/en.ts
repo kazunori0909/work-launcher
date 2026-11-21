@@ -31,6 +31,7 @@ export const en: Messages = {
     notList: (where) => `Write ${where} as a list starting with "- "`,
     notPaths: (where) => `List paths in ${where}`,
     notString: (key) => `${key} must be a string`,
+    notText: (key) => `${key} must be a string or { ja: …, en: … }`,
     notBoolean: (key) => `${key} must be true or false`,
     unknownKey: (where, key) => `${where}: unknown key ${key}`,
     badControlId: (control, name) => `Invalid ${control} ID: ${name} (letters, digits, - and _)`,

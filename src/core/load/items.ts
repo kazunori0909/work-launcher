@@ -4,6 +4,7 @@ import type { ExecKind, Item, ItemCommon, SelectControl, SelectOption } from '..
 import { isObj, scalar } from './reader'
 import type { Obj, Reader } from './reader'
 import { t } from '../i18n'
+import { pickText } from './text'
 
 // 項目の読み方。種類キーごとに「書けるキー」と「読み方」を表（KINDS）に並べる（仕様は docs/config.md）
 
@@ -23,6 +24,9 @@ interface ItemFields {
   str(key: string): string | undefined
   /** 無ければ problem に積み、'' を返す */
   req(key: string): string
+  /** 画面に出す文字（文字列か言語の表）。reqText は無ければ problem に積み、'' を返す */
+  text(key: string): string | undefined
+  reqText(key: string): string
   dict(key: string): Record<string, string> | undefined
   problem(message: string): void
   /** 子の項目の並びを読む */
@@ -105,13 +109,13 @@ const KINDS = {
   },
   html: {
     keys: COMMON_KEYS,
-    read: (f) => ({ ...f.common, kind: 'html', content: f.req('html') })
+    read: (f) => ({ ...f.common, kind: 'html', content: f.reqText('html') })
   },
   md: {
     keys: COMMON_KEYS,
     // 1行で .md で終わればファイルのパス、それ以外は本文（→ docs/config.md 3.4）
     read: (f) => {
-      const value = f.req('md')
+      const value = f.reqText('md')
       return isMdFilePath(value)
         ? { ...f.common, kind: 'mdfile', path: value.trim() }
         : { ...f.common, kind: 'markdown', content: value }
@@ -124,23 +128,21 @@ const KINDS = {
   break: { keys: COMMON_KEYS, read: (f) => ({ kind: 'break', id: f.common.id }) },
   heading: {
     keys: COMMON_KEYS,
-    read: (f) => ({ kind: 'heading', id: f.common.id, text: f.req('heading') })
+    read: (f) => ({ kind: 'heading', id: f.common.id, text: f.reqText('heading') })
   },
   group: {
     keys: ['id', 'icon', 'items'],
     read: (f) => {
       if (f.parent === 'group') return t().load.nestedGroup
-      const title = f.raw.group ?? undefined
-      if (title !== undefined && typeof title !== 'string') {
-        f.problem(t().load.groupTitle)
-      }
+      const title = f.raw.group === null ? undefined : pickText(f.raw.group)
+      if (f.raw.group != null && title === undefined) f.problem(t().load.groupTitle)
       if (f.raw.items === undefined) f.problem(t().load.groupNoItems)
-      const items = f.children(f.raw.items, t().load.groupItems(String(title ?? '')), 'group')
+      const items = f.children(f.raw.items, t().load.groupItems(title ?? ''), 'group')
       return {
         kind: 'group',
         id: f.common.id,
         icon: f.common.icon,
-        title: typeof title === 'string' ? title : undefined,
+        title,
         items
       }
     }
@@ -192,7 +194,8 @@ export function readItem(
   const id = typeof raw.id === 'string' ? raw.id : undefined
   const types = TYPE_KEYS.filter((k) => k in raw)
   const execs = types.filter(isExecKind)
-  const where = typeof raw.label === 'string' ? `${raw.label}: ` : ''
+  const shown = pickText(raw.label)
+  const where = shown !== undefined ? `${shown}: ` : ''
   const fail = (message: string): Item => ({ kind: 'error', id, message: where + message })
 
   if (types.length === 0) return fail(t().load.noTypeKey([...TYPE_KEYS]))
@@ -213,18 +216,31 @@ export function readItem(
     problem(t().load.notString(key))
     return undefined
   }
+  const text = (key: string): string | undefined => {
+    const v = raw[key]
+    if (v === undefined) return undefined
+    const picked = pickText(v)
+    if (picked === undefined) problem(t().load.notText(key))
+    return picked
+  }
   const fields: ItemFields = {
     raw,
     execs,
     parent,
     common: {
       id: str('id'),
-      label: str('label'),
+      label: text('label'),
       icon: str('icon'),
-      tooltip: str('tooltip'),
-      confirm: str('confirm')
+      tooltip: text('tooltip'),
+      confirm: text('confirm')
     },
     str,
+    text,
+    reqText: (key) => {
+      const v = text(key)
+      if (v === undefined && raw[key] === undefined) problem(t().load.noValue(key))
+      return v ?? ''
+    },
     req: (key) => {
       const v = str(key)
       if (v === undefined && raw[key] === undefined) problem(t().load.noValue(key))
@@ -312,8 +328,8 @@ function selectOptions(
   const options: SelectOption[] = []
   for (const o of raw) {
     const value = isObj(o) ? scalar(o.value) : scalar(o)
-    const label = isObj(o) ? (o.label ?? value) : value
-    if (value === undefined || typeof label !== 'string') {
+    const label = isObj(o) ? (o.label === undefined ? value : pickText(o.label)) : value
+    if (value === undefined || label === undefined) {
       problem(t().load.badOption)
       return []
     }

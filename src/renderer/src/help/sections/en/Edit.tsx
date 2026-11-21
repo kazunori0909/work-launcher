@@ -85,6 +85,29 @@ items: [...]`}</Code>
         to the project.
       </p>
 
+      <h3>Writing per language</h3>
+      <p>
+        Text you want to show differently in Japanese and English is written as a{' '}
+        <code>{'{ ja: …, en: … }'}</code> table. The value for the language chosen with the button
+        at the top right is shown; if the table does not have that language, its first value is
+        shown. Plain strings are shown as is in every language, so table only what you want to
+        translate.
+      </p>
+      <Code lang="yaml">{`- id: top
+  title: { ja: メイン, en: Main }
+  items:
+    - bat: deploy.bat
+      label: { ja: デプロイ, en: Deploy }
+    - md:
+        ja: launcher/notes/setup.md     # split long text into files
+        en: launcher/notes/setup.en.md`}</Code>
+      <p>
+        Tables can be used for the page and project <code>title</code>, <code>label</code>,{' '}
+        <code>tooltip</code>, <code>confirm</code>, <code>heading</code>, the <code>group</code>{' '}
+        heading, choice <code>label</code>s, <code>md</code> and <code>html</code>. In functions,{' '}
+        <code>ctx.lang</code> tells you the display language (<code>ja</code> or <code>en</code>).
+      </p>
+
       <h3>Changing the working folder (cwd)</h3>
       <p>
         Writing <code>cwd</code> at the top level of <code>config.yaml</code> changes the working

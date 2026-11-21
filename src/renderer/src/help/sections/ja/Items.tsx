@@ -25,6 +25,18 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
           ['id', 'ローカル設定から置き換えるときの目印']
         ]}
       />
+      <p>
+        <code>label</code>、<code>tooltip</code>、<code>confirm</code> は、
+        <code>{'{ ja: …, en: … }'}</code>{' '}
+        と書くと、右上で選んだ言語に合わせて出し分けます。文字列のまま書いたものは、どの言語でもそのまま出ます。
+      </p>
+      <Code lang="yaml">{`- bat: deploy.bat
+  label: { ja: デプロイ, en: Deploy }
+  confirm: { ja: 本番に出しますか？, en: Deploy to production? }`}</Code>
+      <p>
+        ボタンに限らず、グループの見出し、ページのタブ名、見出し、md
+        の本文など、画面に出る多くの文字を同じように書けます。くわしくは「設定ファイルの編集」の「言語ごとに書く」を見てください。
+      </p>
 
       <h3>コマンドを実行する（bat / sh / powershell / python）</h3>
       <p>
@@ -115,7 +127,8 @@ module.exports = {
           ['env', '環境変数'],
           ['log(text)', 'コンソールに1行書く'],
           ['open(path) など', 'ボタンと同じ動作を呼ぶ（→ 関数から呼び出す）'],
-          ['select', 'select・radio・checkbox の値（ctx.select.target など）']
+          ['select', 'select・radio・checkbox の値（ctx.select.target など）'],
+          ['lang', '表示の言語（ja か en）']
         ]}
       />
       <p>

@@ -72,7 +72,7 @@ async function readProject(
     if (page) pages.push(page)
   }
   return {
-    title: r.str(raw, 'title', file),
+    title: r.text(raw, 'title', file),
     cwd: r.str(raw, 'cwd', file),
     styles: [r.str(raw, 'style', file)].filter((s) => s !== undefined),
     scripts:
@@ -127,7 +127,7 @@ function readPage(r: Reader, raw: unknown, file: string): Page | undefined {
   r.warnUnknown(raw, PAGE_KEYS, file, t().load.page(String(raw.id)))
   const page: Page = {
     id: raw.id,
-    title: r.str(raw, 'title', file),
+    title: r.text(raw, 'title', file),
     icon: r.str(raw, 'icon', file),
     cwd: r.str(raw, 'cwd', file),
     items: readItems(r, raw.items, file, t().load.pageItems(String(raw.id)))

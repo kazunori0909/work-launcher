@@ -1,6 +1,8 @@
 # サンプルページ: グループ・ボタングループ・select などの書き方の見本
+# 画面に出す文字は { ja: …, en: … } でも書ける（右上で選んだ言語で出る。表に無い言語なら表の最初）。
+# このページでは、タブ名と選択（select・radio・checkbox）の部分だけを英語にしている
 id: sample
-title: サンプル
+title: { ja: サンプル, en: Sample }
 icon: flask-conical
 items:
   # 枠で囲むグループ。中にボタングループや select も置ける
@@ -94,45 +96,47 @@ items:
   - break
   # select・radio・checkbox: 選んだ値を ${select:ID} や ctx.select.ID で使う
   # 値はページの中のどこからでも参照できるので、種類ごとにグループを分けて置ける
-  - group: 選択（select）
+  - group: { ja: 選択（select）, en: Select }
     icon: list
     items:
       - select: target
-        label: 接続先
+        label: { ja: 接続先, en: Target }
         options:
           - dev
           - stg
-          - { label: 本番, value: prod }
-        tooltip: 選択肢は記憶します
+          - { label: { ja: 本番, en: Production }, value: prod }
+        tooltip: { ja: 選択肢は記憶します, en: The choice is remembered }
         remember: true # 開き直しても前の選択を使う
         change: onTargetChange # 値を変えたときに呼ぶ関数（sample-scripts.js）
-  - group: ラジオボタン（radio）
+  - group: { ja: ラジオボタン（radio）, en: Radio buttons }
     icon: circle-dot
     items:
       - radio: mode
-        label: モード
+        label: { ja: モード, en: Mode }
         options: [debug, release]
         # remember を書かないので、開くたびに debug に戻る
-  - group: チェックボックス（checkbox）
+  - group: { ja: チェックボックス（checkbox）, en: Checkbox }
     icon: square-check
     items:
       - checkbox: dry
-        label: 試しに実行
+        label: { ja: 試しに実行, en: Dry run }
         on: --dry-run # オンのときの値
         off: '' # オフのときの値（空）
         remember: true
-  - group: 選んだ値を使う
+  - group: { ja: 選んだ値を使う, en: Use the chosen values }
     icon: server
     items:
       - sh: echo "接続先=${select:target} モード=${select:mode} ${select:dry}"
         bat: |
           @echo off
           echo 接続先=${select:target} モード=${select:mode} ${select:dry}
-        label: 値を表示
+        label: { ja: 値を表示, en: Show values }
         env:
           TARGET_ENV: ${select:target}
       - function: showSelect
-        confirm: ${select:target} の値で関数を呼びますか？
+        confirm:
+          ja: ${select:target} の値で関数を呼びますか？
+          en: Call the function with ${select:target}?
   - break
   # md のコードブロック: 言語を書くと色が付く（yaml・json・sh・powershell・bat など）
   - group: md のコード

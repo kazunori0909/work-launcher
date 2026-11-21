@@ -1,6 +1,7 @@
 import { parseDocument } from 'yaml'
 import type { Diagnostic } from '../types'
 import { t } from '../i18n'
+import { pickText } from './text'
 
 // 設定ファイルの読み方の共通部分（YAML の読み込み・値の確かめ方・エラーの集め方）
 
@@ -67,6 +68,15 @@ export class Reader {
     if (v === undefined || typeof v === 'string') return v
     this.error(file, t().load.notString(key))
     return undefined
+  }
+
+  /** 画面に出す文字（文字列か言語の表） */
+  text(raw: Obj, key: string, file: string): string | undefined {
+    const v = raw[key]
+    if (v === undefined) return undefined
+    const text = pickText(v)
+    if (text === undefined) this.error(file, t().load.notText(key))
+    return text
   }
 
   warnUnknown(raw: Obj, known: readonly string[], file: string, where: string): void {

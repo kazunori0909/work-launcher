@@ -27,6 +27,7 @@ export const ja = {
     notList: (where: string) => `${where} は「- 」で始まる並びで書いてください`,
     notPaths: (where: string) => `${where} にはパスを並べてください`,
     notString: (key: string) => `${key} は文字列で書いてください`,
+    notText: (key: string) => `${key} は文字列か { ja: …, en: … } で書いてください`,
     notBoolean: (key: string) => `${key} は true / false で書いてください`,
     unknownKey: (where: string, key: string) => `${where}: 未知のキー ${key}`,
     badControlId: (control: string, name: string) =>

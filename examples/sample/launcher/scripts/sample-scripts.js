@@ -1,7 +1,8 @@
 // サンプルの関数。function から呼ぶ（書き方は docs/config.md 3.2）
 module.exports = {
+  // ctx.lang は表示の言語（ja / en）
   hello(ctx) {
-    ctx.log('Hello from sample-scripts.js')
+    ctx.log(ctx.lang === 'ja' ? 'sample-scripts.js からこんにちは' : 'Hello from sample-scripts.js')
     ctx.log(`launcherDir: ${ctx.launcherDir}`)
     ctx.log(`workDir: ${ctx.workDir}`)
   },
