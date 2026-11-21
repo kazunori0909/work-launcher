@@ -92,6 +92,16 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     pattern: 'Docker version ([^,\\s]+)'
   },
   { name: 'dotnet', help: '.NET SDK', command: 'dotnet --version' },
+  { name: 'ruby', help: 'Ruby', command: 'ruby --version', pattern: 'ruby (\\S+)' },
+  // go version は「go version go1.23.1 darwin/arm64」と出す
+  { name: 'go', help: 'Go', command: 'go version', pattern: 'go(\\d\\S*)' },
+  {
+    name: 'rust',
+    help: { ja: 'Rust（rustc のバージョン）', en: 'Rust (rustc version)' },
+    command: 'rustc --version',
+    pattern: 'rustc (\\S+)'
+  },
+  { name: 'php', help: 'PHP', command: 'php --version', pattern: 'PHP (\\S+)' },
   {
     name: 'steam',
     label: 'Steam',

@@ -1,9 +1,7 @@
-import { exec, execFile } from 'node:child_process'
 import { statfs } from 'node:fs/promises'
 import os from 'node:os'
 import { app } from 'electron'
 import { handle } from './ipc'
-import { builtinTool, isUnsupportedTool, toolCommand, toolDisplayName } from '../core/builtinTools'
 import {
   isUsefulIpv4,
   parseDisplays,
@@ -14,43 +12,16 @@ import {
   parseWindowsInfo,
   REGISTRY_ENV,
   selectDrives,
-  toolResult,
   usedMemoryFromVmStat,
   windowsInfoScript
 } from '../core/info'
-import type { DriveInfo, SystemInfo, ToolInfo, WindowsInfo } from '../core/info'
+import type { DriveInfo, SystemInfo, WindowsInfo } from '../core/info'
 import type { InfoConfig, ProjectView } from '../core/types'
 import type { ViewOf } from './project'
 import { shellPathReady } from './shellPath'
+import { run } from './run'
+import { toolInfo } from './toolVersion'
 import { t } from '../core/i18n'
-
-interface Output {
-  ok: boolean
-  /** 標準出力と標準エラーをつないだもの（java -version は標準エラーに出す） */
-  text: string
-}
-
-const run = (
-  file: string,
-  args: string[],
-  timeout = 10000,
-  env?: NodeJS.ProcessEnv
-): Promise<Output> =>
-  new Promise((resolve) => {
-    execFile(
-      file,
-      args,
-      { timeout, encoding: 'utf8', windowsHide: true, env: env && { ...process.env, ...env } },
-      (err, stdout, stderr) => resolve({ ok: !err, text: `${stdout ?? ''}${stderr ?? ''}` })
-    )
-  })
-
-const runShell = (command: string, cwd: string | undefined, timeout = 10000): Promise<Output> =>
-  new Promise((resolve) => {
-    exec(command, { cwd, timeout, encoding: 'utf8', windowsHide: true }, (err, stdout, stderr) =>
-      resolve({ ok: !err, text: `${stdout ?? ''}${stderr ?? ''}` })
-    )
-  })
 
 /** 応答の無いネットワークドライブで待ち続けないよう、時間を区切る */
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | undefined> {
@@ -111,34 +82,6 @@ async function windowsInfo(
   return r.ok ? parseWindowsInfo(r.text) : undefined
 }
 
-/** Mac の導入を促すスタブで、本体が無いもの（→ BuiltinTool.macStub）。呼ばずに未インストールとする */
-async function macStubMissing(name: string): Promise<boolean> {
-  const stub = builtinTool(name)?.macStub
-  if (!stub) return false
-  const which = await runShell(`command -v ${stub.path.split('/').pop()}`, undefined)
-  if (which.text.trim() !== stub.path) return false
-  const [command, ...args] = stub.check
-  return !(await run(command, args)).ok
-}
-
-async function tool(
-  t: InfoConfig['tools'][number],
-  launcherDir: string | undefined
-): Promise<ToolInfo> {
-  const name = toolDisplayName(t)
-  if (!t.command && isUnsupportedTool(t.name, process.platform)) {
-    return { name, unsupported: true }
-  }
-  const cmd = toolCommand(t, process.platform)
-  if (!cmd) return { name }
-  if (process.platform === 'darwin' && !t.command && (await macStubMissing(t.name))) {
-    return { name }
-  }
-  // 案件ごとにバージョンを切り替えるツール（mise など）に合わせ、案件フォルダで動かす
-  const r = await runShell(cmd.command, launcherDir)
-  return { name, ...toolResult(r.ok, r.text, cmd.pattern) }
-}
-
 /** OS ごとに取り方が違う項目 */
 type PlatformInfo = Pick<SystemInfo, 'os' | 'computerName' | 'gpus' | 'drives' | 'problems'> & {
   usedBytes?: number
@@ -194,7 +137,7 @@ export async function collectInfo(view: ProjectView | undefined): Promise<System
       : process.platform === 'win32'
         ? windowsPlatformInfo(config)
         : Promise.resolve(otherPlatformInfo()),
-    Promise.all(config.tools.map((t) => tool(t, view?.launcherDir)))
+    Promise.all(config.tools.map((t) => toolInfo(t, view?.launcherDir)))
   ])
 
   return {
