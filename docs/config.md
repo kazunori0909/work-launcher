@@ -1,7 +1,7 @@
 # 設定ファイル仕様
 
 案件リポジトリに置く設定ファイルの書き方。**実装の正はこのファイル**（理由・経緯は
-[phase1 の PLAN.md](phase1-overall-design/PLAN.md)）。JSON Schema はこの内容から作る。
+[phase1 の PLAN.md](archive/phase1-overall-design/PLAN.md)）。JSON Schema はこの内容から作る。
 
 ## 1. ファイル構成
 

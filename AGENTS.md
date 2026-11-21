@@ -15,13 +15,16 @@
 ## 技術スタック
 
 Electron（雛形 electron-vite、配布 electron-builder）+ TypeScript。設定は YAML（宣言）と JS（処理）。
-開発はホストで行う（devcontainer なし）。詳細は Phase 1 で詰める（→ docs/phase1-overall-design/PLAN.md）。
+開発はホストで行う（devcontainer なし）。詳細は Phase 1 で詰める（→ docs/archive/phase1-overall-design/PLAN.md）。
 
 ## フォルダ構成
 
 ```
 docs/        # 開発フェーズの記録（README.md が索引）
   config.md  # 設定ファイル仕様（実装の正）
+  design.md  # いま有効な設計の決定と理由（トピックごと）
+  knowledge.md  # 実機・OS・外部ツールで確かめた挙動（トピックごと）
+  archive/   # 閉じたフェーズの当時の記録（編集しない）
 src/core/      # Electron 非依存のロジック（vitest でテスト）
   i18n/        #   表示の言語と辞書（ja.ts が正、en.ts は型で揃える）
   load/        #   設定の読み込み（項目の種類の表は items.ts）
@@ -35,6 +38,6 @@ build/ resources/  # アイコン等（electron-builder 用）。アイコンの
 scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs・個人情報チェック check-personal-info.mjs）
 examples/sample/  # 動作確認用の案件（開発中は既定でこれを開く）
 mise.toml    # Node.js のバージョン固定
-.claude/skills/  # phase-new / phase-compress / run-app（実機を Playwright で動かす）/ handoff（Mac ⇄ Windows）
+.claude/skills/  # phase-new / phase-close / run-app（実機を Playwright で動かす）/ handoff（Mac ⇄ Windows）
 .claude/settings.json  # hook（commit・push の前の個人情報チェック）
 ```

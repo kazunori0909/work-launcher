@@ -8,7 +8,7 @@ import { callFunction } from './scriptCall'
 import type { SessionOf } from './session'
 
 // remember: true の select の値。案件フォルダ → (select の ID → 値)。
-// ウィンドウの session はメモリだけで localStorage が残らないため、ファイルに置く（→ docs/phase9-groups-select/PLAN.md）
+// ウィンドウの session はメモリだけで localStorage が残らないため、ファイルに置く（→ docs/archive/phase9-groups-select/PLAN.md）
 type Store = Record<string, Record<string, string>>
 
 const storeFile = (): string => userDataFile('selections.json')

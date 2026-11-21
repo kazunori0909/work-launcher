@@ -8,7 +8,7 @@
 
 ### 範囲
 
-- 入れる: 埋め込みの `markdown`・`mdfile`・`html`（[docs/config.md](../config.md) 3.4）、
+- 入れる: 埋め込みの `markdown`・`mdfile`・`html`（[docs/config.md](../../config.md) 3.4）、
   組み込みのヘルプを章立て（左に一覧、右に本文）にする
 
 ### 構成

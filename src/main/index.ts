@@ -21,7 +21,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { initLang } from './lang'
 
 // Windows のインストール版は1つのプロセスにまとめ、2つめの起動は案件を渡して終える。
-// ポータブル版・開発中はまとめない（→ docs/phase8-release-build/PLAN.md）
+// ポータブル版・開発中はまとめない（→ docs/archive/phase8-release-build/PLAN.md）
 interface SecondLaunch {
   args: string[]
   cwd: string

@@ -4,7 +4,7 @@ import { CTX_ACTIONS, ctxCall } from '../core/ctxCalls'
 import type { CtxCall, CtxResult, ExecResult } from '../core/ctxCalls'
 import { setLang, t } from '../core/i18n'
 import type { Lang } from '../core/i18n'
-// （仕組みは docs/phase2-minimal-app/PLAN.md「function（scripts.js）の動かし方」）
+// （仕組みは docs/archive/phase2-minimal-app/PLAN.md「function（scripts.js）の動かし方」）
 
 export interface CallRequest {
   /** 読み込む JS（絶対パス）。関数はこの中から名前で探す */

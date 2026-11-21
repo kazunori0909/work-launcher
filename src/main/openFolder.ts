@@ -47,7 +47,7 @@ function run(argv) {
 
 /**
  * Mac でフォルダを開き、そのウィンドウだけを前面に出す。普通に開くと Finder が丸ごと前面に来て、
- * ほかの Finder ウィンドウも前に出るため（経緯と実測は docs/phase2-minimal-app/KNOWLEDGE.md）
+ * ほかの Finder ウィンドウも前に出るため（経緯と実測は docs/archive/phase2-minimal-app/KNOWLEDGE.md）
  */
 export async function openFolderOnMac(folder: string): Promise<string | undefined> {
   try {

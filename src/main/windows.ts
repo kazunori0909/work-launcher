@@ -121,7 +121,7 @@ function createWindow(launcherDir: string | undefined): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
-      // プリロードは contextBridge と ipcRenderer だけを使う（→ docs/phase11-refactor-architecture/PLAN.md の F）
+      // プリロードは contextBridge と ipcRenderer だけを使う（→ docs/archive/phase11-refactor-architecture/PLAN.md の F）
       sandbox: true,
       session: ses
     }
