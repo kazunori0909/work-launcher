@@ -18,16 +18,20 @@ type Result = ActionResult
 
 const expand = (text: string, ctx: VariableContext): string => expandVariables(text, ctx).value
 
-/** 設定に書いたパスを絶対パスにする（変数を置き換え、相対は launcherDir 起点） */
+/** ランチャーの設定まわりのパス（scripts など）を絶対パスにする。相対は launcherDir 起点 */
 export const resolvePath = (p: string, ctx: VariableContext): string =>
   resolveConfigPath(expand(p, ctx), ctx.launcherDir)
 
+/** 案件のファイルのパス（open・Office）を絶対パスにする。相対は workDir 起点 */
+export const resolveFilePath = (p: string, ctx: VariableContext): string =>
+  resolveConfigPath(expand(p, ctx), ctx.workDir ?? ctx.launcherDir)
+
 export async function openPath(p: string, ctx: VariableContext): Promise<Result> {
-  return openAbsolute(resolvePath(p, ctx))
+  return openAbsolute(resolveFilePath(p, ctx))
 }
 
 /** 絶対パスのファイル・フォルダを OS の既定アプリで開く（Mac のフォルダは Finder） */
-async function openAbsolute(target: string): Promise<Result> {
+export async function openAbsolute(target: string): Promise<Result> {
   if (!existsSync(target)) return { error: `見つかりません: ${target}` }
   const error =
     process.platform === 'darwin' && statSync(target).isDirectory()
@@ -44,7 +48,7 @@ export async function openOffice(
   readonly: boolean,
   ctx: VariableContext
 ): Promise<Result> {
-  const target = resolvePath(p, ctx)
+  const target = resolveFilePath(p, ctx)
   if (!existsSync(target)) return { error: `見つかりません: ${target}` }
   const launch = officeLaunch(kind, target, readonly, process.platform)
   try {

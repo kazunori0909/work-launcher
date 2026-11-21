@@ -1,4 +1,4 @@
-import { NOT_OPEN, Section, Table } from '../parts'
+import { Code, NOT_OPEN, Section, Table } from '../parts'
 import type { SectionProps } from '../parts'
 
 /** ヘルプの章「設定ファイルの編集」 */
@@ -42,6 +42,43 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
           ['style・scripts', '共通の分の後ろに足す']
         ]}
       />
+
+      <h3>作業フォルダを変える（cwd）</h3>
+      <p>
+        <code>config.yaml</code> の最上位に <code>cwd</code> を書くと、作業フォルダ（
+        <code>{'${workDir}'}</code>）が変わります。ランチャーを案件の外に置くときに使います。
+      </p>
+      <Code>{`root/
+  work-launcher/          ← \${launcherDir}（ランチャーのフォルダ）
+    work.launcher
+    launcher/
+      config.yaml         ← cwd: ../project-hoge
+      notes/setup.md
+  project-hoge/           ← \${workDir}（作業フォルダ）
+    bat/hoge.bat
+    docs/spec.xlsx`}</Code>
+      <Table
+        plain
+        head={['書く場所', '数え始める所', '上の例では']}
+        rows={[
+          ['コマンド（bat・sh など）', '作業フォルダ', 'project-hoge/'],
+          ['open・excel・word・powerpoint', '作業フォルダ', 'project-hoge/'],
+          ['md・style・scripts・include', 'ランチャーのフォルダ', 'work-launcher/（変わらない）'],
+          ['cwd そのもの', 'ランチャーのフォルダ', 'work-launcher/（変わらない）']
+        ]}
+      />
+      <Code lang="yaml">{`cwd: ../project-hoge
+pages:
+  - id: main
+    items:
+      - bat: bat\\hoge.bat              # project-hoge/bat/hoge.bat
+      - excel: docs/spec.xlsx          # project-hoge/docs/spec.xlsx
+      - md: launcher/notes/setup.md    # work-launcher/launcher/notes/setup.md
+      - open: \${launcherDir}/launcher  # ランチャーの中を開くときは明示する`}</Code>
+      <p>
+        <code>cwd</code> を書かなければ、2つは同じフォルダなので違いはありません。ページや項目に{' '}
+        <code>cwd</code> を書くと、そこではそちらが作業フォルダになります。
+      </p>
     </Section>
   )
 }

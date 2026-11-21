@@ -33,16 +33,13 @@ export function Variables({ launcherDir, workDir }: SectionProps): React.JSX.Ele
         ]}
       />
       <p>
-        <code>{'${workDir}'}</code> のいまの値は、最上位の <code>cwd</code>{' '}
-        から決めたものです。ページや項目に <code>cwd</code> を書けば、そこではそちらを使います。
-      </p>
-      <p>
         この表に無い <code>{'${...}'}</code> は置き換えずに残すので、sh の <code>{'${HOME}'}</code>{' '}
         などはそのまま書いてかまいません。
       </p>
+
       <p>
-        相対パスはランチャーのフォルダから数えます。作業フォルダの下を開きたいときは{' '}
-        <code>{'${workDir}/out'}</code> のように書きます。
+        <code>{'${workDir}'}</code>{' '}
+        を変える方法と、そのとき何が変わるかは「設定ファイルの編集」の章にあります。
       </p>
     </Section>
   )

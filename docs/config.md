@@ -19,7 +19,8 @@
 ```
 
 - `${launcherDir}` は `work.launcher` があるフォルダ。`${workDir}` は作業フォルダ（`cwd`。→ 4章）
-- 設定に書く**相対パスはすべて `${launcherDir}` 起点**（どのファイルに書いたかによらない）
+- 設定に書く**相対パスは `${launcherDir}` 起点**（どのファイルに書いたかによらない）。
+  ただし案件のファイルを開く `open`・`excel`・`powerpoint`・`word` だけは `${workDir}` 起点（→ 3.2）
 - `work.launcher` は空でよい。ランチャーのフォルダの目印と、起動時に指定するファイルとして使う
   （拡張子の関連付けによるダブルクリック起動は後のフェーズ）。
   設定を別の `.yaml` にしているのは、エディタが設定なしで YAML と認識するため（→ phase5 の PLAN.md）
@@ -145,8 +146,11 @@ info: # → 7章
   readonly: true
 - powerpoint: docs/説明.pptx
 - word: docs/手順書.docx
-- open: ${workDir}/out # OS の既定アプリで開く（フォルダならエクスプローラー/Finder）
+- open: out # OS の既定アプリで開く（フォルダならエクスプローラー/Finder）
 ```
+
+- `open`・`excel`・`powerpoint`・`word` の相対パスは `${workDir}` 起点（案件で管理するファイルを指すため）。
+  ランチャーの中のファイルは `${launcherDir}/launcher/…` のように書く。関数の `ctx.open`・`ctx.excel` なども同じ
 
 - `excel`・`powerpoint`・`word`: Windows は Excel・PowerPoint・Word で開く。Mac は Office で開き、
   入っていなければ既定のアプリ（Numbers・Keynote・Pages など）で開く
@@ -189,7 +193,7 @@ info: # → 7章
       `bat` の改行は CRLF にする。その中の設定の変数は `\${workDir}` と書く
     - `bat` の結果の `stdout` には、実行したコマンドのエコーも入る（3.3 と同じ）。読むときは `@echo off` を書く
     - 実行系の `cwd` を省くと、関数の作業フォルダ（`ctx.workDir`）で動かす。相対の `cwd` は YAML と同じく
-      launcherDir 起点。出力はコンソールに出す
+      launcherDir 起点（`ctx.open`・`ctx.excel` などのパスは workDir 起点。→ 3.2）。出力はコンソールに出す
     - どれも Promise を返す。実行系は終わるまで待ち、`{ code, signal, stdout, stderr }` を返す
       （止めたときは `code` が `null`。`stdout`・`stderr` は出力の行を改行でつないだ文字列）。
       `wait: false` を書くと、始めたところで返す（出力は受け取れない）
@@ -430,6 +434,7 @@ openSchemes: [http, https, mailto, file] # config.yaml の最上位
 - `cwd` は項目 → ページ → 最上位の順に引き継ぐ。項目の `cwd` は実行系だけなので、ほかの項目（open・url・function など）は
   ページ → 最上位、`style` は最上位の `cwd` になる
 - `cwd` の中では `${workDir}` は置き換えない（自分自身を指すため）
+- 相対パスの起点: `open`・`excel`・`powerpoint`・`word` は `${workDir}`、それ以外（`md`・`style`・`scripts`・`include`・`cwd`）は `${launcherDir}`
 
 - 置き換える場所: パス（`excel`・`powerpoint`・`word`・`open`・`md` のファイル）・実行系の本文・`cwd`・
   `env` の値・`url`・`params` の値

@@ -72,7 +72,8 @@ await ctx.sh('npm run dev', { wait: false })`}</Code>
         <code>cwd</code> を書かなければ、関数と同じ作業フォルダ（<code>ctx.workDir</code>
         ）で動きます。相対パスで書いた <code>cwd</code> は、YAML
         と同じくランチャーのフォルダが起点です。作業フォルダの下を指すときは{' '}
-        <code>{"cwd: '${workDir}/tools'"}</code> と書きます。
+        <code>{"cwd: '${workDir}/tools'"}</code> と書きます。<code>ctx.open</code>・
+        <code>ctx.excel</code> などのパスは、YAML と同じく作業フォルダが起点です。
       </p>
       <p>
         <code>bat</code> は Windows だけ、といった OS ごとの違いも YAML と同じです。OS
