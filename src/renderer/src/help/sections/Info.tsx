@@ -1,4 +1,4 @@
-import { BUILTIN_TOOL_ROWS } from '../examples'
+import { BUILTIN_TOOLS } from '../../../../core/builtinTools'
 import { Code, Section, Table } from '../parts'
 
 /** ヘルプの章「Info ページ」 */
@@ -30,11 +30,22 @@ export function Info(): React.JSX.Element {
         で使えます。ここに無いものは、上の Maven のように <code>command</code> と{' '}
         <code>pattern</code> を書きます。
       </p>
-      <Table head={['名前', '出すもの']} rows={BUILTIN_TOOL_ROWS} />
+      <Table head={['名前', '出すもの']} rows={BUILTIN_TOOLS.map((t) => [t.name, t.help])} />
       <p>
-        ツールのコマンドは、ランチャーのフォルダで実行します。見つからないときは「未インストール」と出ます。Steam
+        ツールのコマンドは、ランチャーのフォルダで実行します。見つからないときは「未インストール」、出力が{' '}
+        <code>pattern</code> に当たらないときは「pattern が一致しません」と出ます。Steam
         は、一度も起動していなければ「未インストール」と出ます。
       </p>
+      <p>
+        ツール側の取り方が変わって組み込みで取れなくなったときは、同じ名前で <code>command</code> や{' '}
+        <code>pattern</code> を書くと上書きできます。<code>command</code> を書くと{' '}
+        <code>pattern</code> とまとめて置き換わり、どの OS でもそのコマンドを使います。
+        <code>pattern</code> だけなら、組み込みのコマンドの出力から抜き出し方だけを変えます。
+      </p>
+      <Code lang="yaml">{`info:
+  tools:
+    - name: steam              # 表示名は Steam のまま
+      pattern: '"version"\\s+"(\\d+)"'`}</Code>
       <p>
         レジストリのパスには引用符を付けないでください。<code>{'"…"'}</code> で囲むと、
         <code>\</code> がエスケープの文字として読まれてしまいます。末尾を <code>\</code>{' '}

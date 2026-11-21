@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
-  builtinToolCommand,
   extractVersion,
   formatBytes,
   gpuLabel,
   infoSections,
   infoText,
-  isUnsupportedTool,
   isUsefulIpv4,
   languageLabel,
   memoryModulesLabel,
@@ -20,11 +18,12 @@ import {
   registryDefaultName,
   sectionText,
   selectDrives,
-  toolDisplayName,
+  toolResult,
   toolVersionLabel,
   usedMemoryFromVmStat
 } from './info'
 import type { SystemInfo } from './info'
+import { builtinToolCommand, isUnsupportedTool, toolDisplayName } from './builtinTools'
 
 it('parseKeyValues: sw_vers の出力', () => {
   const text = 'ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n'
@@ -165,18 +164,27 @@ describe('ツールのバージョン', () => {
     expect(extractVersion('0.117.0\n', epic.pattern)).toBe('0.117.0')
   })
 
-  it('toolDisplayName: 組み込みの steam・epic は製品名で出す', () => {
+  it('toolDisplayName: 組み込みの steam・epic は製品名で出す（上書きしても同じ）', () => {
     expect(toolDisplayName({ name: 'epic' })).toBe('Epic Games Launcher')
     expect(toolDisplayName({ name: 'steam' })).toBe('Steam')
     expect(toolDisplayName({ name: 'git' })).toBe('git')
-    // command を書いたら、設定の name のまま
-    expect(toolDisplayName({ name: 'epic', command: 'echo 1' })).toBe('epic')
+    expect(toolDisplayName({ name: 'Maven' })).toBe('Maven')
   })
 
   it('toolVersionLabel: 取れない理由を出し分ける', () => {
     expect(toolVersionLabel({ name: 'git', version: '2.50.1' })).toBe('2.50.1')
     expect(toolVersionLabel({ name: 'git' })).toBe('未インストール')
     expect(toolVersionLabel({ name: 'steam', unsupported: true })).toBe('この OS では取れません')
+    expect(toolVersionLabel({ name: 'git', mismatch: true })).toBe('pattern が一致しません')
+  })
+
+  it('toolResult: 出力はあるのに pattern に当たらなければ mismatch、出力が空や失敗なら未インストール', () => {
+    const out = 'git version 2.50.0.windows.2\r\n'
+    expect(toolResult(true, out, 'git version (\\d+)')).toEqual({ version: '2' })
+    expect(toolResult(true, out, 'git version(\\d+)')).toEqual({ mismatch: true })
+    expect(toolResult(true, '  \r\n', 'v(\\d+)')).toEqual({})
+    expect(toolResult(false, out, 'git version(\\d+)')).toEqual({})
+    expect(toolResult(true, '11.6.2\n')).toEqual({ version: '11.6.2' })
   })
 
   it('pattern が無ければ最初の空でない行、当たらなければ undefined', () => {

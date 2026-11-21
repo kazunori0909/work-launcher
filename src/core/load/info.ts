@@ -1,20 +1,10 @@
-import { parseRegistryPath, registryDefaultName, GAME_LAUNCHER_TOOLS } from '../info'
+import { builtinTool } from '../builtinTools'
+import { parseRegistryPath, registryDefaultName } from '../info'
 import type { InfoConfig, InfoRegistry, InfoTool } from '../types'
 import { isObj } from './reader'
 import type { Reader } from './reader'
 
 // 設定の info（Info ページに出すもの）の読み方
-
-export const BUILTIN_TOOLS = [
-  'git',
-  'node',
-  'npm',
-  'python',
-  'java',
-  'docker',
-  'dotnet',
-  ...GAME_LAUNCHER_TOOLS
-]
 
 export function readInfo(r: Reader, raw: unknown, file: string): InfoConfig {
   const info: InfoConfig = { env: [], tools: [], registry: [] }
@@ -69,7 +59,7 @@ function readTool(r: Reader, raw: unknown, file: string): InfoTool | undefined {
     r.error(file, 'info.tools にはツール名か { name, command, pattern } を書いてください')
     return undefined
   }
-  if (!tool.command && !BUILTIN_TOOLS.includes(tool.name)) {
+  if (!tool.command && !builtinTool(tool.name)) {
     r.error(file, `組み込みに無いツールには command が要ります: ${tool.name}`)
     return undefined
   }

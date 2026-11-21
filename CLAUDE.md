@@ -11,6 +11,8 @@
 - 開発は `docs/phase<N>-<slug>/` 単位のプチ仕様駆動で進める
   （`/phase-new` で起票 → PLAN/TASKS を更新しながら実装）
 - コミット・PR の作成・マージは、言われたときだけ行う
+- commit・push の前に個人情報チェック（`scripts/check-personal-info.mjs`）が hook で走る。
+  止められたら直してからやり直す。hook を外したりチェックを避けたりしない
 - `main` には直接 push しない（Ruleset で禁止している）。ブランチを切って PR を作る
 - フェーズを完了にする（`docs/README.md` の 🚧 を ✅ にする）のは、ユーザーが完了を確認してから。
   TASKS.md の個々の `[x]` は、進めるたびに付けてよい
@@ -36,6 +38,7 @@
 
 - `PLAN.md` … 設計上の選択とその理由（採らなかった案も短く）
 - `TASKS.md` … 作業チェックリスト
+- `HANDOFF.md`（任意）… Mac と Windows の Claude どうしの依頼と回答（`/handoff`）。push は都度ユーザーに確かめる
 - `KNOWLEDGE.md`（任意）… 実機・OS・外部ツールで確かめた挙動と制約。気づいた時点で作る
 - コメントには「いまのコードを読むのに要ること」だけを書く。経緯・実測値・不採用案は `docs/` へ
 
