@@ -1,6 +1,7 @@
 import type { OfficeKind } from './office'
 import { EXEC_KINDS } from './types'
 import type { ExecKind } from './types'
+import { t } from './i18n'
 
 // function の ctx から頼む、項目と同じ動作（仕様は docs/config.md 3.2）
 
@@ -62,34 +63,31 @@ export function ctxCall(name: CtxAction, value: unknown, options: unknown = {}):
   const fail = (message: string): never => {
     throw new Error(`ctx.${name}: ${message}`)
   }
-  if (typeof value !== 'string' || value === '') fail('1つ目の引数は文字列で書いてください')
-  if (!isObj(options)) fail('2つ目の引数は { キー: 値 } で書いてください')
+  if (typeof value !== 'string' || value === '') fail(t().ctx.firstArg)
+  if (!isObj(options)) fail(t().ctx.secondArg)
   const first = value as string
   const opts = options as Record<string, unknown>
   const keys = OPTION_KEYS[name]
   const unknown = Object.keys(opts).filter((k) => !keys.includes(k))
   if (unknown.length > 0) {
-    fail(
-      `書けないキーです: ${unknown.join(', ')}` +
-        (keys.length > 0 ? `（書けるのは ${keys.join(' / ')}）` : '')
-    )
+    fail(t().ctx.unknownKeys(unknown, keys))
   }
 
   const str = (key: string): string | undefined => {
     const v = opts[key]
-    if (v !== undefined && typeof v !== 'string') fail(`${key} は文字列で書いてください`)
+    if (v !== undefined && typeof v !== 'string') fail(t().ctx.notString(key))
     return v as string | undefined
   }
   const bool = (key: string, fallback: boolean): boolean => {
     const v = opts[key] ?? fallback
-    if (typeof v !== 'boolean') fail(`${key} は true / false で書いてください`)
+    if (typeof v !== 'boolean') fail(t().ctx.notBoolean(key))
     return v as boolean
   }
   const dict = (key: string): Record<string, string> | undefined => {
     const v = opts[key]
     if (v === undefined) return undefined
     if (!isObj(v) || Object.values(v).some((x) => typeof x === 'object' && x !== null)) {
-      fail(`${key} は { 名前: 値 } で書いてください`)
+      fail(t().ctx.notMap(key))
     }
     return Object.fromEntries(
       Object.entries(v as Record<string, unknown>).map(([k, x]) => [k, String(x ?? '')])

@@ -66,3 +66,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.start-screen .lang-switch {
+  position: fixed;
+  top: 8px;
+  right: 16px;
+  color: var(--muted);
+  font-size: 12px;
+}

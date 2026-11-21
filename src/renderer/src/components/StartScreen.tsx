@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Icon } from './Icon'
+import { t } from '../../../core/i18n'
+import { LangSwitch } from './LangSwitch'
 
 interface Props {
   appVersion?: string
@@ -23,22 +25,22 @@ export function StartScreen({ appVersion }: Props): React.JSX.Element {
 
   return (
     <div className="start-screen">
+      <LangSwitch />
       <h1>
         WorkLauncher
         {appVersion && <span className="start-version">{appVersion}</span>}
       </h1>
       <p className="path">
-        案件の <code>work.launcher</code>{' '}
-        を開いてください。ダブルクリックやアプリのアイコンへのドロップでも開けます。
+        {t().ui.startLead1} <code>work.launcher</code> {t().ui.startLead2}
       </p>
       <button className="item" onClick={() => window.launcher.openProjectDialog()}>
         <Icon name="folder-open" />
-        案件を開く…
+        {t().ui.openProject}
       </button>
       {error && <p className="start-error">{error}</p>}
       {recent.length > 0 && (
         <>
-          <h2>最近開いた案件</h2>
+          <h2>{t().ui.recent}</h2>
           <ul className="start-recent">
             {recent.map((dir) => (
               <li key={dir}>

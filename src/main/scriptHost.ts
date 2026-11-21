@@ -2,6 +2,8 @@
 import path from 'node:path'
 import { CTX_ACTIONS, ctxCall } from '../core/ctxCalls'
 import type { CtxCall, CtxResult, ExecResult } from '../core/ctxCalls'
+import { setLang, t } from '../core/i18n'
+import type { Lang } from '../core/i18n'
 // （仕組みは docs/phase2-minimal-app/PLAN.md「function（scripts.js）の動かし方」）
 
 export interface CallRequest {
@@ -18,6 +20,8 @@ export interface CallRequest {
   optional?: boolean
   /** change で呼ぶとき、変えた項目 */
   changed?: SelectChange
+  /** エラーの文言の言語（メインの表示の言語） */
+  lang: Lang
 }
 
 export interface SelectChange {
@@ -88,7 +92,8 @@ process.on('unhandledRejection', (reason) => {
 })
 
 process.parentPort.once('message', async (e) => {
-  const { files, fn, launcherDir, workDir, select, optional, changed } = e.data as CallRequest
+  const { files, fn, launcherDir, workDir, select, optional, changed, lang } = e.data as CallRequest
+  setLang(lang)
   process.parentPort.on('message', (reply) => {
     const { id, result } = reply.data as HostReply
     waiting.get(id)?.(result)
@@ -102,9 +107,9 @@ process.parentPort.once('message', async (e) => {
     })
     const names = (list: string[]): string => list.map((f) => path.basename(f)).join(', ')
     if (found.length === 0 && optional) return post({ type: 'done' })
-    if (found.length === 0) throw new Error(`関数 ${fn} がありません（${names(files)}）`)
+    if (found.length === 0) throw new Error(t().script.noFunction(fn, names(files)))
     if (found.length > 1) {
-      throw new Error(`関数 ${fn} が複数のファイルにあります（${names(found.map((f) => f.file))}）`)
+      throw new Error(t().script.manyFunctions(fn, names(found.map((f) => f.file))))
     }
     await found[0].target({
       launcherDir,

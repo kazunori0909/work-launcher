@@ -22,6 +22,7 @@ import type { DriveInfo, SystemInfo, ToolInfo, WindowsInfo } from '../core/info'
 import type { InfoConfig, ProjectView } from '../core/types'
 import type { ViewOf } from './project'
 import { shellPathReady } from './shellPath'
+import { t } from '../core/i18n'
 
 interface Output {
   ok: boolean
@@ -168,11 +169,7 @@ async function windowsPlatformInfo(config: InfoConfig): Promise<PlatformInfo> {
     systemLocale: w?.systemLocale,
     gpus: w?.gpus ?? [],
     drives: w ? await withSizes(w.drives) : [],
-    problems: w
-      ? []
-      : [
-          'OS のバージョン・GPU・ドライブ・レジストリを取得できませんでした（PowerShell が失敗しました）'
-        ]
+    problems: w ? [] : [t().info.psFailed]
   }
 }
 
@@ -182,7 +179,7 @@ function otherPlatformInfo(): PlatformInfo {
     computerName: os.hostname(),
     gpus: [],
     drives: [],
-    problems: ['この OS では GPU・ドライブ・使用中のメモリをまだ表示できません']
+    problems: [t().info.linuxPartial]
   }
 }
 
@@ -210,7 +207,7 @@ export async function collectInfo(view: ProjectView | undefined): Promise<System
     },
     computerName: platform.computerName,
     userName: os.userInfo().username,
-    cpu: { model: cpus[0]?.model.trim() ?? '不明', cores: cpus.length },
+    cpu: { model: cpus[0]?.model.trim() ?? t().unknown, cores: cpus.length },
     memory: {
       totalBytes: os.totalmem(),
       usedBytes: platform.usedBytes,

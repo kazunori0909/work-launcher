@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Level } from '../../../core/console'
 import type { NewEntry } from '../../../core/consoleEntries'
+import { t } from '../../../core/i18n'
 
 export type ConsoleEntry = NewEntry & { key: number }
 
@@ -45,22 +46,22 @@ export function Console({ entries, running, onStop, onClear, onClose }: Props): 
   return (
     <section className="console">
       <div className="console-bar">
-        <span className="console-title">コンソール</span>
-        <span className="count error">エラー {count('error')}</span>
-        <span className="count warn">警告 {count('warn')}</span>
+        <span className="console-title">{t().console.title}</span>
+        <span className="count error">{t().console.errors(count('error'))}</span>
+        <span className="count warn">{t().console.warnings(count('warn'))}</span>
         <select value={filter} onChange={(e) => setFilter(e.target.value as Filter)}>
-          <option value="all">すべて</option>
-          <option value="warn">警告以上</option>
-          <option value="error">エラーのみ</option>
+          <option value="all">{t().console.all}</option>
+          <option value="warn">{t().console.warnUp}</option>
+          <option value="error">{t().console.errorOnly}</option>
         </select>
-        <button onClick={onClear}>クリア</button>
+        <button onClick={onClear}>{t().console.clear}</button>
         <span className="spacer" />
         {running.map((r) => (
           <button key={r.runId} className="stop" onClick={() => onStop(r.runId)}>
-            ■ {r.label} を停止
+            {t().console.stop(r.label)}
           </button>
         ))}
-        <button className="close" title="閉じる（内容は残る）" onClick={onClose}>
+        <button className="close" title={t().console.close} onClick={onClose}>
           ×
         </button>
       </div>

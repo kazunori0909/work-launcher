@@ -12,6 +12,7 @@ import type { CallRequest, HostMessage, HostReply, SelectChange } from './script
 import type { WindowSession } from './session'
 import { shellPathReady } from './shellPath'
 import { ensureTrusted } from './trust'
+import { getLang, t } from '../core/i18n'
 
 type Result = ActionResult
 
@@ -38,19 +39,19 @@ export async function callFunction(
   if ('missing' in listed) {
     // 省略時の launcher/scripts が無いだけなら、イベントは黙って呼ばない
     if (event && listed.missing === resolvePath(DEFAULT_SCRIPTS[0], ctx)) return {}
-    return { error: `scripts のファイルがありません: ${listed.missing}` }
+    return { error: t().script.fileMissing(listed.missing) }
   }
   const { files } = listed
-  if (files.length === 0) return event ? {} : { error: 'scripts に JS ファイルがありません' }
+  if (files.length === 0) return event ? {} : { error: t().script.noFiles }
   if (event && session.scriptsDeclined) return {}
   await shellPathReady()
-  if (!existsSync(workDir)) return { error: `作業フォルダがありません: ${workDir}` }
+  if (!existsSync(workDir)) return { error: t().run.noWorkDir(workDir) }
   if (!(await ensureTrusted(launcherDir, session.window))) {
     if (event) {
       session.scriptsDeclined = true
       return {}
     }
-    return { error: 'JS（scripts）の実行を許可しませんでした' }
+    return { error: t().script.denied }
   }
   /** 関数から頼まれた、項目と同じ動作 */
   const perform = async (call: CtxCall): Promise<CtxResult> => {
@@ -94,9 +95,7 @@ export async function callFunction(
       } else if (m.type === 'done') finish({})
       else finish({ error: m.message })
     })
-    child.on('exit', (code) =>
-      finish(code === 0 ? {} : { error: `scripts.js が終了しました（コード ${code}）` })
-    )
+    child.on('exit', (code) => finish(code === 0 ? {} : { error: t().script.exited(String(code)) }))
     child.postMessage({
       files,
       fn,
@@ -104,7 +103,8 @@ export async function callFunction(
       workDir,
       select,
       optional: event,
-      changed
+      changed,
+      lang: getLang()
     } satisfies CallRequest)
   })
 }

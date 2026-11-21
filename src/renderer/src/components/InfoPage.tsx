@@ -9,6 +9,7 @@ import {
 } from '../../../core/info'
 import type { InfoSection, InfoSectionKey, SystemInfo } from '../../../core/info'
 import { Icon } from './Icon'
+import { t } from '../../../core/i18n'
 
 /** PC の情報。タブを開いたときと「更新」で取り直す */
 export function InfoPage(): React.JSX.Element {
@@ -47,15 +48,30 @@ export function InfoPage(): React.JSX.Element {
       <div className="info-actions">
         <button className="item" onClick={load} disabled={loading}>
           <Icon name="refresh-cw" />
-          {loading ? '取得中…' : '更新'}
+          {loading ? t().info.loading : t().info.refresh}
         </button>
         <button className="item" onClick={copy} disabled={!info}>
           <Icon name={copied ? 'check' : 'copy'} />
-          {copied ? 'コピーしました' : 'テキストでコピー'}
+          {copied ? t().info.copied : t().info.copyText}
         </button>
       </div>
       {info && <InfoView info={info} />}
     </div>
+  )
+}
+
+/** 空の枠のヒント。コードの前後の文言は言語ごとに辞書で持つ */
+function Hint({
+  text: [before, after],
+  code
+}: {
+  text: string[]
+  code: string
+}): React.JSX.Element {
+  return (
+    <>
+      {before} <code>{code}</code> {after}
+    </>
   )
 }
 
@@ -84,12 +100,11 @@ function InfoView({ info }: { info: SystemInfo }): React.JSX.Element {
           {head('tools')}
           {info.tools.length === 0 ? (
             <p className="info-hint">
-              設定の <code>info.tools</code> に名前（git・node
-              など）を並べると、バージョンを表示します
+              <Hint text={t().info.toolsHint} code="info.tools" />
             </p>
           ) : (
             <Rows
-              rows={info.tools.map((t): Row => [t.name, t.version])}
+              rows={info.tools.map((tool): Row => [tool.name, tool.version])}
               missing={(i) => toolVersionLabel(info.tools[i])}
             />
           )}
@@ -117,7 +132,7 @@ function InfoView({ info }: { info: SystemInfo }): React.JSX.Element {
           {head('env')}
           {info.env.length === 0 ? (
             <p className="info-hint">
-              設定の <code>info.env</code> に名前を並べると表示します
+              <Hint text={t().info.envHint} code="info.env" />
             </p>
           ) : (
             <Rows
@@ -125,7 +140,7 @@ function InfoView({ info }: { info: SystemInfo }): React.JSX.Element {
                 e.name,
                 e.value === undefined ? undefined : splitPathList(e.name, e.value)
               ])}
-              missing="（未設定）"
+              missing={t().notSet}
               mono
             />
           )}
@@ -136,12 +151,12 @@ function InfoView({ info }: { info: SystemInfo }): React.JSX.Element {
             {head('registry')}
             {info.registry.length === 0 ? (
               <p className="info-hint">
-                設定の <code>info.registry</code> に値のパスを並べると表示します
+                <Hint text={t().info.registryHint} code="info.registry" />
               </p>
             ) : (
               <Rows
                 rows={info.registry.map((r): Row => [r.name, r.value, r.path])}
-                missing="（未設定）"
+                missing={t().notSet}
                 mono
               />
             )}
@@ -167,8 +182,8 @@ function CardHead({ section }: { section: InfoSection }): React.JSX.Element {
         <button
           className="info-copy"
           onClick={copy}
-          title={copied ? 'コピーしました' : `${section.title}をコピー`}
-          aria-label={`${section.title}をコピー`}
+          title={copied ? t().info.copied : t().info.copySection(section.title)}
+          aria-label={t().info.copySection(section.title)}
         >
           <Icon name={copied ? 'check' : 'copy'} size={14} />
         </button>

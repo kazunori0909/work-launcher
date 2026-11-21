@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
 import type { ProjectView } from '../../../core/types'
+import { setLang } from '../../../core/i18n'
 
 /** 開いている案件。設定ファイルが変わって読み直したら差し替わる。読み込み中は undefined */
 export function useProjectView(): ProjectView | undefined {
   const [view, setView] = useState<ProjectView>()
   useEffect(() => {
-    window.launcher.loadProject().then(setView)
-    return window.launcher.onProjectChanged(setView)
+    // 描く前に言語を合わせる（文言は描くときに t() で引く）
+    const apply = (v: ProjectView | undefined): void => {
+      if (v?.lang) setLang(v.lang)
+      setView(v)
+    }
+    window.launcher.loadProject().then(apply)
+    return window.launcher.onProjectChanged(apply)
   }, [])
   return view
 }

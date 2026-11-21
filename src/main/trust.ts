@@ -1,6 +1,7 @@
 import { dialog } from 'electron'
 import type { BrowserWindow } from 'electron'
 import { readJson, stringList, userDataFile, writeJson } from './jsonStore'
+import { t } from '../core/i18n'
 
 const file = (): string => userDataFile('trusted-projects.json')
 
@@ -13,11 +14,11 @@ export async function ensureTrusted(
   if (trusted.includes(launcherDir)) return true
   const options = {
     type: 'warning' as const,
-    buttons: ['信頼して実行', 'キャンセル'],
+    buttons: t().script.trustButtons,
     defaultId: 1,
     cancelId: 1,
-    message: 'この案件の JS（scripts）を実行しますか？',
-    detail: `${launcherDir}\n\nscripts に並べた JS は PC 上で何でも実行できます。内容を信頼できる案件だけ許可してください。この案件では次から確認しません。`
+    message: t().script.trustMessage,
+    detail: `${launcherDir}\n\n${t().script.trustDetail}`
   }
   const { response } = window
     ? await dialog.showMessageBox(window, options)

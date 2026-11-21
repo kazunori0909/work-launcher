@@ -4,6 +4,7 @@ import type { ConsoleRule, Level } from '../console'
 import type { Diagnostic } from '../types'
 import { FatalError, isObj, parseYaml } from './reader'
 import type { ReadFile } from './reader'
+import { t } from '../i18n'
 
 export const CONSOLE_FILES = ['launcher/console.local.yaml', 'launcher/console.yaml']
 
@@ -29,7 +30,7 @@ export async function loadConsoleRules(
     }
     const list = isObj(raw) ? raw.rules : undefined
     if (!Array.isArray(list)) {
-      diagnostics.push({ level: 'error', file, message: 'rules: の下にルールを並べてください' })
+      diagnostics.push({ level: 'error', file, message: t().load.rulesNotList })
       continue
     }
     for (const r of list) {
@@ -43,17 +44,17 @@ export async function loadConsoleRules(
 
 /** 正しければルール、誤りがあればその説明を返す */
 function consoleRule(raw: unknown): ConsoleRule | string {
-  if (!isObj(raw) || typeof raw.pattern !== 'string') return 'ルールには pattern が要ります'
+  if (!isObj(raw) || typeof raw.pattern !== 'string') return t().load.ruleNoPattern
   const { pattern, flags, level = 'info', color } = raw
-  if (flags !== undefined && typeof flags !== 'string') return `flags は文字列です: ${pattern}`
+  if (flags !== undefined && typeof flags !== 'string') return t().load.ruleFlags(pattern)
   if (!(LEVELS as readonly unknown[]).includes(level)) {
-    return `level は ${LEVELS.join(' / ')} のどれかです: ${pattern}`
+    return t().load.ruleLevel([...LEVELS], pattern)
   }
-  if (color !== undefined && typeof color !== 'string') return `color は文字列です: ${pattern}`
+  if (color !== undefined && typeof color !== 'string') return t().load.ruleColor(pattern)
   try {
     new RegExp(pattern, flags)
   } catch {
-    return `正規表現が正しくありません: ${pattern}`
+    return t().load.ruleRegex(pattern)
   }
   return { pattern, flags, level: level as Level, color }
 }

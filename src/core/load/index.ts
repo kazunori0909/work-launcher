@@ -6,6 +6,7 @@ import { readInfo } from './info'
 import { PAGE_ID, readItems } from './items'
 import { FatalError, isObj, parseYaml, Reader } from './reader'
 import type { ReadFile } from './reader'
+import { t } from '../i18n'
 
 // 設定ファイルを読み、正規化する（仕様は docs/config.md）。
 // 共通の読み方は reader.ts、項目は items.ts、info は info.ts、コンソールのルールは console.ts
@@ -36,7 +37,7 @@ export async function loadProject(launcherDir: string, readFile: ReadFile): Prom
     const baseText = await readFile(path.join(launcherDir, CONFIG_FILE))
     if (baseText === undefined) {
       return {
-        diagnostics: [{ level: 'error', file: CONFIG_FILE, message: 'ファイルがありません' }]
+        diagnostics: [{ level: 'error', file: CONFIG_FILE, message: t().load.noFile }]
       }
     }
     const r = new Reader(launcherDir, readFile, diagnostics)
@@ -58,12 +59,12 @@ async function readProject(
   isBase: boolean
 ): Promise<Project> {
   const raw = parseYaml(text, file) ?? {}
-  if (!isObj(raw)) throw r.fatal(file, '最上位はキーと値の組で書いてください')
+  if (!isObj(raw)) throw r.fatal(file, t().load.topNotMap)
   if (raw.version !== undefined && raw.version !== 1) {
-    throw r.fatal(file, `version ${String(raw.version)} には対応していません（対応: 1）`)
+    throw r.fatal(file, t().load.badVersion(String(raw.version)))
   }
-  if (isBase && raw.version === undefined) r.error(file, 'version がありません（1 と書く）')
-  r.warnUnknown(raw, TOP_KEYS, file, '最上位')
+  if (isBase && raw.version === undefined) r.error(file, t().load.noVersion)
+  r.warnUnknown(raw, TOP_KEYS, file, t().load.top)
 
   const pages: Page[] = []
   for (const entry of r.list(raw.pages, file, 'pages')) {
@@ -90,9 +91,8 @@ function readOpenSchemes(r: Reader, v: unknown, file: string): string[] | undefi
   const schemes: string[] = []
   for (const x of r.list(v, file, 'openSchemes')) {
     const name = typeof x === 'string' ? normalizeScheme(x) : undefined
-    if (name === undefined)
-      r.error(file, `openSchemes にはスキーム名（http・file など）を並べてください: ${String(x)}`)
-    else if (FORBIDDEN_SCHEMES.includes(name)) r.error(file, `openSchemes に ${name} は書けません`)
+    if (name === undefined) r.error(file, t().load.badScheme(String(x)))
+    else if (FORBIDDEN_SCHEMES.includes(name)) r.error(file, t().load.forbiddenScheme(name))
     else if (!schemes.includes(name)) schemes.push(name)
   }
   return schemes
@@ -101,13 +101,13 @@ function readOpenSchemes(r: Reader, v: unknown, file: string): string[] | undefi
 async function readPageEntry(r: Reader, entry: unknown, file: string): Promise<Page | undefined> {
   if (isObj(entry) && 'include' in entry) {
     if (typeof entry.include !== 'string') {
-      r.error(file, 'include にはファイルのパスを書いてください')
+      r.error(file, t().load.includeNotPath)
       return undefined
     }
     const included = entry.include
     const text = await r.readFile(path.resolve(r.launcherDir, included))
     if (text === undefined) {
-      r.error(file, `include 先がありません: ${included}`)
+      r.error(file, t().load.includeMissing(included))
       return undefined
     }
     return readPage(r, parseYaml(text, included), included)
@@ -117,20 +117,20 @@ async function readPageEntry(r: Reader, entry: unknown, file: string): Promise<P
 
 function readPage(r: Reader, raw: unknown, file: string): Page | undefined {
   if (!isObj(raw)) {
-    r.error(file, 'ページはキーと値の組で書いてください')
+    r.error(file, t().load.pageNotMap)
     return undefined
   }
   if (typeof raw.id !== 'string' || !PAGE_ID.test(raw.id)) {
-    r.error(file, `ページ ID が正しくありません: ${String(raw.id)}（英数字と - _）`)
+    r.error(file, t().load.badPageId(String(raw.id)))
     return undefined
   }
-  r.warnUnknown(raw, PAGE_KEYS, file, `ページ ${raw.id}`)
+  r.warnUnknown(raw, PAGE_KEYS, file, t().load.page(String(raw.id)))
   const page: Page = {
     id: raw.id,
     title: r.str(raw, 'title', file),
     icon: r.str(raw, 'icon', file),
     cwd: r.str(raw, 'cwd', file),
-    items: readItems(r, raw.items, file, `ページ ${raw.id} の items`)
+    items: readItems(r, raw.items, file, t().load.pageItems(String(raw.id)))
   }
   if (raw.replace === true) page.replace = true
   return page

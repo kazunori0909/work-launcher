@@ -2,6 +2,7 @@
 // 画面とメインの両方から使うため、型と定数だけを置く（node: モジュール・Electron に依存させない）
 import type { SystemInfo } from './info'
 import type { ExecKind, ProjectView, ThirdPartyLicense } from './types'
+import type { Lang } from './i18n'
 
 export type RunEvent =
   /** function（scripts.js）からの知らせ。error のときだけコンソールを開く */
@@ -75,6 +76,8 @@ export interface InvokeApi {
   ): Promise<ActionResult>
   /** 閉じるのを待っている beforeClose を止めて、すぐ閉じる */
   closeNow(): Promise<void>
+  /** 表示の言語を変えて記憶する。開いているすべてのウィンドウを読み直して知らせる */
+  setLang(lang: Lang): Promise<void>
 }
 
 export const INVOKE_CHANNELS = {
@@ -91,7 +94,8 @@ export const INVOKE_CHANNELS = {
   getInfo: 'info:get',
   listLicenses: 'licenses:list',
   changeSelection: 'select:change',
-  closeNow: 'window:closeNow'
+  closeNow: 'window:closeNow',
+  setLang: 'lang:set'
 } as const satisfies Record<keyof InvokeApi, string>
 
 /** メインから画面への知らせ（チャンネル → 中身） */

@@ -1,4 +1,5 @@
 import type { Diagnostic } from '../../../core/types'
+import { t } from '../../../core/i18n'
 
 interface Props {
   diagnostics: Diagnostic[]
@@ -11,9 +12,7 @@ export function Diagnostics({ diagnostics, open }: Props): React.JSX.Element | n
   const warnings = diagnostics.length - errors
   return (
     <details className="diagnostics" open={open}>
-      <summary>
-        設定の問題: エラー {errors} 件・警告 {warnings} 件
-      </summary>
+      <summary>{t().ui.diagnostics(errors, warnings)}</summary>
       <ul>
         {diagnostics.map((d, i) => (
           <li key={i} className={d.level}>

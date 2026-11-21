@@ -5,9 +5,10 @@ import { prepareRun, prepareScript, startRun } from '../core/runner'
 import type { RunEvent } from '../core/ipc'
 import type { RunHandle, RunRequest, Stream } from '../core/runner'
 import { handle } from './ipc'
-import { findItem, ITEM_NOT_FOUND } from './project'
+import { findItem } from './project'
 import type { SessionOf, WindowSession } from './session'
 import { shellPathReady } from './shellPath'
+import { t } from '../core/i18n'
 
 let nextId = 1
 
@@ -92,7 +93,7 @@ export function registerRunHandlers(sessionOf: SessionOf): void {
     const ref = asItemRef(pageIdArg, pathArg, select)
     const session = sessionOf(e.sender)
     const found = ref && findItem(session?.view, ref.pageId, ref.path)
-    if (!session || !ref || !found) return { error: ITEM_NOT_FOUND }
+    if (!session || !ref || !found) return { error: t().run.itemNotFound }
     const { pageId, path } = ref
     const { project, launcherDir, page, item } = found
     const values = resolveSelections(project, ref.select)

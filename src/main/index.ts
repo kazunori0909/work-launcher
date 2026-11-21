@@ -18,6 +18,7 @@ import {
   viewOf
 } from './windows'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { initLang } from './lang'
 
 // Windows のインストール版は1つのプロセスにまとめ、2つめの起動は案件を渡して終える。
 // ポータブル版・開発中はまとめない（→ docs/phase8-release-build/PLAN.md）
@@ -57,6 +58,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  initLang()
   setAppMenu()
   refreshJumpList()
   registerWindowHandlers()

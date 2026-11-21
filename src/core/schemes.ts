@@ -1,3 +1,4 @@
+import { t } from './i18n'
 // 外部に開く URL のスキームの許可リスト（config.yaml の openSchemes。docs/config.md 2章）。
 // リンク・url 項目・ctx.url のどれもここで確かめる
 
@@ -31,13 +32,13 @@ export function checkExternalUrl(
   try {
     url = new URL(text)
   } catch {
-    return { type: 'invalid', reason: `URL が正しくありません: ${text}` }
+    return { type: 'invalid', reason: t().open.badUrl(text) }
   }
   const scheme = url.protocol.slice(0, -1)
   if (!schemes.includes(scheme) || FORBIDDEN_SCHEMES.includes(scheme)) {
     return {
       type: 'invalid',
-      reason: `${scheme}: は開けません（config.yaml の openSchemes で許可していません）: ${text}`
+      reason: t().open.schemeDenied(scheme, text)
     }
   }
   return scheme === 'file'

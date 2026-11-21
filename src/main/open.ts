@@ -11,6 +11,7 @@ import type { OfficeKind } from '../core/office'
 import { expandVariables, resolveConfigPath } from '../core/variables'
 import type { VariableContext } from '../core/variables'
 import { openFolderOnMac } from './openFolder'
+import { t } from '../core/i18n'
 
 // ファイル・フォルダ・URL・Office を開く（ボタン・リンク・scripts.js の ctx から使う）
 
@@ -32,7 +33,7 @@ export async function openPath(p: string, ctx: VariableContext): Promise<Result>
 
 /** 絶対パスのファイル・フォルダを OS の既定アプリで開く（Mac のフォルダは Finder） */
 export async function openAbsolute(target: string): Promise<Result> {
-  if (!existsSync(target)) return { error: `見つかりません: ${target}` }
+  if (!existsSync(target)) return { error: t().open.notFound(target) }
   const error =
     process.platform === 'darwin' && statSync(target).isDirectory()
       ? await openFolderOnMac(target)
@@ -49,7 +50,7 @@ export async function openOffice(
   ctx: VariableContext
 ): Promise<Result> {
   const target = resolveFilePath(p, ctx)
-  if (!existsSync(target)) return { error: `見つかりません: ${target}` }
+  if (!existsSync(target)) return { error: t().open.notFound(target) }
   const launch = officeLaunch(kind, target, readonly, process.platform)
   try {
     await run(launch.command, launch.args, {
@@ -64,7 +65,7 @@ export async function openOffice(
       return error ? { error } : {}
     }
     const stderr = (e as { stderr?: string }).stderr?.trim()
-    return { error: `開けませんでした: ${stderr || (e as Error).message}` }
+    return { error: t().open.failed(stderr || (e as Error).message) }
   }
 }
 
@@ -83,7 +84,7 @@ export async function openExternal(url: string, schemes?: readonly string[]): Pr
       try {
         file = fileURLToPath(target.url)
       } catch {
-        return { error: `パスに直せない file: の URL です: ${url}` }
+        return { error: t().open.badFileUrl(url) }
       }
       return openAbsolute(file)
     }
@@ -103,7 +104,7 @@ export async function openUrl(
     const expanded = Object.entries(params ?? {}).map(([k, v]) => [k, expand(v, ctx)])
     built = buildUrl(expand(url, ctx), Object.fromEntries(expanded))
   } catch {
-    return { error: `URL が正しくありません: ${url}` }
+    return { error: t().open.badUrl(url) }
   }
   return openExternal(built, schemes)
 }

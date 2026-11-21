@@ -125,3 +125,32 @@ button {
   /* ヘルプのサイドメニューが 100cqh で高さを合わせる */
   container-type: size;
 }
+
+/* 右上の言語の切り替え（ヘッダーの右端。開始画面では右上に置く）。
+   案件の style でヘッダーの色が変わっても読めるよう、背景は塗らずに文字色の枠で示す */
+.lang-switch {
+  display: inline-grid;
+  justify-items: center;
+  padding: 0 6px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  line-height: 16px;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.lang-switch:hover {
+  opacity: 1;
+}
+
+.lang-switch > span {
+  grid-area: 1 / 1;
+}
+
+.lang-switch > .lang-hidden {
+  visibility: hidden;
+}

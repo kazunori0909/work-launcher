@@ -10,6 +10,7 @@ import { EmbedContext } from './components/embedContext'
 import type { EmbedContextValue } from './components/embedContext'
 import { Icon } from './components/Icon'
 import { InfoPage } from './components/InfoPage'
+import { LangSwitch } from './components/LangSwitch'
 import { PageView } from './components/PageView'
 import { SelectContext } from './components/selectContext'
 import { StartScreen } from './components/StartScreen'
@@ -19,13 +20,14 @@ import { useConsole } from './hooks/useConsole'
 import { useClosing, useProjectView, useWindowTitle } from './hooks/useProjectView'
 import { useSelections } from './hooks/useSelections'
 import { findIcon } from './icons'
+import { t } from '../../core/i18n'
 
 /** Lucide に無いアイコン名を警告にする（アイコンセットは画面側にしか無いため、ここで調べる） */
 function unknownIcons(project: Project): Diagnostic[] {
   const warn = (where: string, name: string): Diagnostic => ({
     level: 'warning',
-    file: `ページ ${where}`,
-    message: `アイコン ${name} はありません（Lucide の名前を書く）`
+    file: t().load.page(where),
+    message: t().load.unknownIcon(name)
   })
   return project.pages.flatMap((page) => [
     ...(page.icon && !findIcon(page.icon) ? [warn(page.id, page.icon)] : []),
@@ -66,19 +68,19 @@ function App(): React.JSX.Element {
     [mdfiles, onLink, openSchemes]
   )
 
-  if (!view) return <div className="status">読み込み中…</div>
+  if (!view) return <div className="status">{t().ui.loading}</div>
 
   const { project, diagnostics, platform } = view
   if (!view.launcherDir) return <StartScreen appVersion={view.appVersion} />
   if (!project) {
     return (
       <div className="fatal">
-        <h1>設定を読み込めませんでした</h1>
+        <h1>{t().ui.cannotLoad}</h1>
         <p className="path">{view.launcherDir}</p>
         <Diagnostics diagnostics={diagnostics} open />
         <button className="item" onClick={() => window.launcher.openProjectDialog()}>
           <Icon name="folder-open" />
-          別の案件を開く…
+          {t().ui.openOther}
         </button>
       </div>
     )
@@ -113,6 +115,7 @@ function App(): React.JSX.Element {
           {title}
         </span>
         {view.appVersion && <span className="header-version">WorkLauncher {view.appVersion}</span>}
+        <LangSwitch />
       </header>
       <nav className="tabs">
         {pages.map((p) => (
@@ -131,11 +134,12 @@ function App(): React.JSX.Element {
         </button>
         <button className={helpOpen ? 'tab active' : 'tab'} onClick={() => setPageId(HELP_ID)}>
           <Icon name="circle-question-mark" />
-          {userHelp?.title ?? 'ヘルプ'}
+          {userHelp?.title ?? t().ui.help}
         </button>
         {!consoleState.open && entries.length > 0 && (
           <button className="console-toggle" onClick={() => consoleState.setOpen(true)}>
-            コンソール{runs.length > 0 && `（実行中 ${runs.length}）`}
+            {t().console.title}
+            {runs.length > 0 && t().console.running(runs.length)}
           </button>
         )}
       </nav>
@@ -165,7 +169,7 @@ function App(): React.JSX.Element {
               />
             ) : (
               <>
-                {infoOpen && <InfoPage />}
+                {infoOpen && <InfoPage key={view.lang} />}
                 {current ? (
                   <PageView
                     page={current}
@@ -174,7 +178,7 @@ function App(): React.JSX.Element {
                     onActivate={activate}
                   />
                 ) : (
-                  !infoOpen && <p className="status">ページがありません</p>
+                  !infoOpen && <p className="status">{t().ui.noPages}</p>
                 )}
               </>
             )}
@@ -184,9 +188,9 @@ function App(): React.JSX.Element {
       <Tooltip />
       {closing && (
         <div className="closing" role="status">
-          <span>後片付け（beforeClose）が終わるのを待っています…</span>
+          <span>{t().ui.closingWait}</span>
           <button className="item" onClick={() => window.launcher.closeNow()}>
-            待たずに閉じる
+            {t().ui.closeNow}
           </button>
         </div>
       )}

@@ -3,6 +3,7 @@ import { classifyLine } from './console'
 import type { CompiledRule, Level, LineStyle } from './console'
 import type { RunEvent } from './ipc'
 import type { ExecKind } from './types'
+import { t } from './i18n'
 
 export type NewEntry =
   | { type: 'line'; text: string; style: LineStyle }
@@ -29,7 +30,7 @@ export function promptLines(prompt: string, script: string): NewEntry[] {
     command
   }))
   if (lines.length > shown.length) {
-    entries.push({ type: 'prompt', text: '>', command: `…（全 ${lines.length} 行）` })
+    entries.push({ type: 'prompt', text: '>', command: t().console.folded(lines.length) })
   }
   return entries
 }
@@ -74,7 +75,7 @@ export function runEventEntries(event: RunEvent, rules: CompiledRule[]): NewEntr
 function exitEntry(event: Extract<RunEvent, { type: 'exit' }>): NewEntry {
   const { label } = event
   if (event.error) return systemEntry('end', `■ ${label}: ${event.error}`, 'error')
-  if (event.code === 0) return systemEntry('end', `■ ${label} 終了（コード 0）`, 'success')
-  if (event.code === null) return systemEntry('end', `■ ${label} 停止しました`, 'warn')
-  return systemEntry('end', `■ ${label} 失敗（コード ${event.code}）`, 'error')
+  if (event.code === 0) return systemEntry('end', t().console.ok(label), 'success')
+  if (event.code === null) return systemEntry('end', t().console.stopped(label), 'warn')
+  return systemEntry('end', t().console.failed(label, event.code), 'error')
 }

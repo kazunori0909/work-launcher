@@ -3,6 +3,7 @@ import { BUTTON_KINDS, EXEC_KINDS } from '../types'
 import type { ExecKind, Item, ItemCommon, SelectControl, SelectOption } from '../types'
 import { isObj, scalar } from './reader'
 import type { Obj, Reader } from './reader'
+import { t } from '../i18n'
 
 // 項目の読み方。種類キーごとに「書けるキー」と「読み方」を表（KINDS）に並べる（仕様は docs/config.md）
 
@@ -41,7 +42,7 @@ const office = (kind: 'excel' | 'powerpoint' | 'word'): KindSpec => ({
   keys: [...COMMON_KEYS, 'readonly'],
   read: (f) => {
     const readonly = f.raw.readonly ?? false
-    if (typeof readonly !== 'boolean') f.problem('readonly は true / false で書いてください')
+    if (typeof readonly !== 'boolean') f.problem(t().load.notBoolean('readonly'))
     return { ...f.common, kind, path: f.req(kind), readonly: readonly === true }
   }
 })
@@ -54,10 +55,10 @@ const select = (control: SelectControl): KindSpec => ({
   read: (f) => {
     const name = f.req(control)
     if (name && !PAGE_ID.test(name)) {
-      f.problem(`${control} の ID が正しくありません: ${name}（英数字と - _）`)
+      f.problem(t().load.badControlId(control, name))
     }
     const remember = f.raw.remember ?? false
-    if (typeof remember !== 'boolean') f.problem('remember は true / false で書いてください')
+    if (typeof remember !== 'boolean') f.problem(t().load.notBoolean('remember'))
     const change = f.str('change')
     const { options, def } =
       control === 'checkbox'
@@ -128,13 +129,13 @@ const KINDS = {
   group: {
     keys: ['id', 'icon', 'items'],
     read: (f) => {
-      if (f.parent === 'group') return 'グループの中にグループは置けません'
+      if (f.parent === 'group') return t().load.nestedGroup
       const title = f.raw.group ?? undefined
       if (title !== undefined && typeof title !== 'string') {
-        f.problem('group には見出しの文字を書いてください（省略可）')
+        f.problem(t().load.groupTitle)
       }
-      if (f.raw.items === undefined) f.problem('group には items で中の項目を並べてください')
-      const items = f.children(f.raw.items, `group ${String(title ?? '')} の items`, 'group')
+      if (f.raw.items === undefined) f.problem(t().load.groupNoItems)
+      const items = f.children(f.raw.items, t().load.groupItems(String(title ?? '')), 'group')
       return {
         kind: 'group',
         id: f.common.id,
@@ -148,7 +149,7 @@ const KINDS = {
     keys: ['id'],
     read: (f) => {
       if (!Array.isArray(f.raw.buttons)) {
-        f.problem('buttons にはボタンを「- 」で並べてください')
+        f.problem(t().load.buttonsNotList)
         return { kind: 'buttons', id: f.common.id, items: [] }
       }
       const items = f.raw.buttons.map((b): Item => {
@@ -159,7 +160,7 @@ const KINDS = {
         return {
           kind: 'error',
           id: child.id,
-          message: `buttons に置けるのはボタンになる項目だけです（${child.kind === 'select' ? child.control : child.kind} は置けません）`
+          message: t().load.buttonsOnly(child.kind === 'select' ? child.control : child.kind)
         }
       })
       return { kind: 'buttons', id: f.common.id, items }
@@ -187,19 +188,19 @@ export function readItem(
   parent?: 'group' | 'buttons'
 ): Item {
   if (raw === 'break') return { kind: 'break' }
-  if (!isObj(raw)) return { kind: 'error', message: '項目はキーと値の組で書いてください' }
+  if (!isObj(raw)) return { kind: 'error', message: t().load.itemNotMap }
   const id = typeof raw.id === 'string' ? raw.id : undefined
   const types = TYPE_KEYS.filter((k) => k in raw)
   const execs = types.filter(isExecKind)
   const where = typeof raw.label === 'string' ? `${raw.label}: ` : ''
   const fail = (message: string): Item => ({ kind: 'error', id, message: where + message })
 
-  if (types.length === 0) return fail(`種類キーがありません（${TYPE_KEYS.join(' / ')}）`)
+  if (types.length === 0) return fail(t().load.noTypeKey([...TYPE_KEYS]))
   if (types.length > 1 && execs.length !== types.length) {
-    return fail(`種類キーが複数あります: ${types.join(', ')}`)
+    return fail(t().load.manyTypeKeys(types))
   }
   if (execs.length > 1 && !(execs.length === 2 && execs.includes('bat') && execs.includes('sh'))) {
-    return fail(`併記できるのは bat と sh だけです: ${execs.join(', ')}`)
+    return fail(t().load.execPair(execs))
   }
 
   const kind: KindKey = execs.length > 0 ? 'exec' : (types[0] as KindKey)
@@ -209,7 +210,7 @@ export function readItem(
     const v = raw[key]
     if (v === undefined) return undefined
     if (typeof v === 'string') return v
-    problem(`${key} は文字列で書いてください`)
+    problem(t().load.notString(key))
     return undefined
   }
   const fields: ItemFields = {
@@ -226,14 +227,14 @@ export function readItem(
     str,
     req: (key) => {
       const v = str(key)
-      if (v === undefined && raw[key] === undefined) problem(`${key} に値がありません`)
+      if (v === undefined && raw[key] === undefined) problem(t().load.noValue(key))
       return v ?? ''
     },
     dict: (key) => {
       const v = raw[key]
       if (v === undefined) return undefined
       if (!isObj(v) || Object.values(v).some((x) => typeof x === 'object')) {
-        problem(`${key} は「名前: 値」の組で書いてください`)
+        problem(t().load.notNameValue(key))
         return undefined
       }
       return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, String(x ?? '')]))
@@ -247,7 +248,12 @@ export function readItem(
   const item = spec.read(fields)
   if (typeof item === 'string') return fail(item)
   if (problems.length > 0) return fail(problems.join(' / '))
-  r.warnUnknown(raw, [...spec.keys, ...types], file, `項目 ${fields.common.label ?? types[0]}`)
+  r.warnUnknown(
+    raw,
+    [...spec.keys, ...types],
+    file,
+    t().load.item(String(fields.common.label ?? types[0]))
+  )
   return item
 }
 
@@ -265,7 +271,7 @@ function selectOptionsWithDefault(
   const options = selectOptions(raw.options, kind, problem)
   const def = raw.default === undefined ? undefined : scalar(raw.default)
   if (raw.default !== undefined && !options.some((o) => o.value === def)) {
-    problem(`default が options にありません: ${String(raw.default)}`)
+    problem(t().load.defaultNotInOptions(String(raw.default)))
   }
   return { options, def }
 }
@@ -278,14 +284,14 @@ function checkboxOptions(
   const value = (key: 'on' | 'off', fallback: string): string => {
     if (raw[key] === undefined) return fallback
     const v = scalar(raw[key])
-    if (v === undefined) problem(`${key} は文字列で書いてください`)
+    if (v === undefined) problem(t().load.notString(key))
     return v ?? fallback
   }
   const on = value('on', 'true')
   const off = value('off', 'false')
-  if (on === off) problem(`on と off が同じ値です: ${on}`)
+  if (on === off) problem(t().load.sameOnOff(on))
   const checked = raw.default ?? false
-  if (typeof checked !== 'boolean') problem('default は true / false で書いてください')
+  if (typeof checked !== 'boolean') problem(t().load.notBoolean('default'))
   const options = [
     { label: 'on', value: on },
     { label: 'off', value: off }
@@ -300,7 +306,7 @@ function selectOptions(
   problem: (message: string) => void
 ): SelectOption[] {
   if (!Array.isArray(raw) || raw.length === 0) {
-    problem(`${kind} には options で選択肢を「- 」で並べてください`)
+    problem(t().load.noOptions(kind))
     return []
   }
   const options: SelectOption[] = []
@@ -308,7 +314,7 @@ function selectOptions(
     const value = isObj(o) ? scalar(o.value) : scalar(o)
     const label = isObj(o) ? (o.label ?? value) : value
     if (value === undefined || typeof label !== 'string') {
-      problem('options には値か { label, value } を並べてください')
+      problem(t().load.badOption)
       return []
     }
     options.push({ label, value })

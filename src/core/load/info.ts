@@ -3,6 +3,7 @@ import { parseRegistryPath, registryDefaultName } from '../info'
 import type { InfoConfig, InfoRegistry, InfoTool } from '../types'
 import { isObj } from './reader'
 import type { Reader } from './reader'
+import { t } from '../i18n'
 
 // 設定の info（Info ページに出すもの）の読み方
 
@@ -10,14 +11,14 @@ export function readInfo(r: Reader, raw: unknown, file: string): InfoConfig {
   const info: InfoConfig = { env: [], tools: [], registry: [] }
   if (raw === undefined) return info
   if (!isObj(raw)) {
-    r.error(file, 'info はキーと値の組で書いてください')
+    r.error(file, t().load.infoNotMap)
     return info
   }
   r.warnUnknown(raw, ['drives', 'env', 'tools', 'registry'], file, 'info')
   if (typeof raw.drives === 'boolean') info.drives = raw.drives
   for (const e of r.list(raw.env, file, 'info.env')) {
     if (typeof e === 'string') info.env.push(e)
-    else r.error(file, 'info.env には環境変数の名前を並べてください')
+    else r.error(file, t().load.infoEnv)
   }
   for (const t of r.list(raw.tools, file, 'info.tools')) {
     const tool = readTool(r, t, file)
@@ -33,11 +34,11 @@ export function readInfo(r: Reader, raw: unknown, file: string): InfoConfig {
 function readRegistry(r: Reader, raw: unknown, file: string): InfoRegistry | undefined {
   const p = typeof raw === 'string' ? raw : isObj(raw) ? raw.path : undefined
   if (typeof p !== 'string') {
-    r.error(file, 'info.registry には値のパスか { name, path } を書いてください')
+    r.error(file, t().load.infoRegistry)
     return undefined
   }
   if (!parseRegistryPath(p)) {
-    r.error(file, `レジストリのパスは HKLM\\ や HKCU\\ などで始めてください: ${p}`)
+    r.error(file, t().load.registryRoot(p))
     return undefined
   }
   const name = isObj(raw) ? r.str(raw, 'name', file) : undefined
@@ -57,11 +58,11 @@ function readTool(r: Reader, raw: unknown, file: string): InfoTool | undefined {
           }
         : undefined
   if (!tool) {
-    r.error(file, 'info.tools にはツール名か { name, command, pattern, hidden } を書いてください')
+    r.error(file, t().load.infoTools)
     return undefined
   }
   if (!tool.hidden && !tool.command && !builtinTool(tool.name)) {
-    r.error(file, `組み込みに無いツールには command が要ります: ${tool.name}`)
+    r.error(file, t().load.toolNeedsCommand(tool.name))
     return undefined
   }
   return tool
