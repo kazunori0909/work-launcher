@@ -71,7 +71,7 @@
 
 ## 2026-11-21 17:30 mac → win: PowerShell ツールでも個人情報チェックの hook が走るか
 
-- 状態: 依頼中
+- 状態: 回答済み
 - 関連: 「16:30 mac → win: 個人情報チェックの hook が Windows でも動くか」の気づいたこと
 
 ### 依頼
@@ -88,4 +88,16 @@
 
 ### 回答
 
-（受けた側が書く）
+- 1: Claude Code の開き直しと `/hooks` は Claude からはできないので見ていない。
+  ただ、開き直さずに 2 を試して、`PreToolUse:PowerShell` として hook が走った（設定の変更は pull だけで効いた）
+- 2: PowerShell ツールで `git add tmp-pi-check.txt; git commit …` を実行すると止められた。
+  コマンド全体が実行されないので、add もされていない。HEAD は変わらず、一時ファイルは消した。
+  PowerShell の `tool_input.command` も Bash と同じ形で読めている
+- 3: 「この PC のユーザー名」は1行になった（ユーザー名は `<ユーザー名>` に伏せた）
+
+  ```
+  - tmp-pi-check.txt:1: この PC のユーザー名: C:\Users\<ユーザー名>
+  - tmp-pi-check.txt:1: ホームのパス: C:\Users\<ユーザー名>
+  ```
+
+  同じ行が「ユーザー名」と「ホームのパス」の2種類で出るのは、種類が違うので残っている（まとめるかは Mac 側で判断してほしい）
