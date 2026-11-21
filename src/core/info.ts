@@ -28,6 +28,8 @@ export interface ToolInfo {
   version?: string
   /** この OS では取れない（Windows だけの組み込みツールなど） */
   unsupported?: boolean
+  /** コマンドは成功して出力もあったが、pattern に当たらなかった（pattern の書き間違いを見分ける） */
+  mismatch?: boolean
 }
 
 /** 刺さっているメモリの内訳（Windows） */
@@ -359,7 +361,21 @@ export function isUsefulIpv4(address: string): boolean {
 }
 
 export function toolVersionLabel(tool: ToolInfo): string {
-  return tool.version ?? (tool.unsupported ? 'この OS では取れません' : '未インストール')
+  if (tool.version) return tool.version
+  if (tool.unsupported) return 'この OS では取れません'
+  return tool.mismatch ? 'pattern が一致しません' : '未インストール'
+}
+
+/** コマンドの結果からバージョンを取る。出力が空なら未インストールとみなす */
+export function toolResult(
+  ok: boolean,
+  output: string,
+  pattern?: string
+): Pick<ToolInfo, 'version' | 'mismatch'> {
+  if (!ok) return {}
+  const version = extractVersion(output, pattern)
+  if (version) return { version }
+  return pattern && output.trim() ? { mismatch: true } : {}
 }
 
 /** バージョンを出力から抜き出す。pattern があれば1つ目のグループ、無ければ最初の空でない行 */

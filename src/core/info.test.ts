@@ -18,6 +18,7 @@ import {
   registryDefaultName,
   sectionText,
   selectDrives,
+  toolResult,
   toolVersionLabel,
   usedMemoryFromVmStat
 } from './info'
@@ -174,6 +175,16 @@ describe('ツールのバージョン', () => {
     expect(toolVersionLabel({ name: 'git', version: '2.50.1' })).toBe('2.50.1')
     expect(toolVersionLabel({ name: 'git' })).toBe('未インストール')
     expect(toolVersionLabel({ name: 'steam', unsupported: true })).toBe('この OS では取れません')
+    expect(toolVersionLabel({ name: 'git', mismatch: true })).toBe('pattern が一致しません')
+  })
+
+  it('toolResult: 出力はあるのに pattern に当たらなければ mismatch、出力が空や失敗なら未インストール', () => {
+    const out = 'git version 2.50.0.windows.2\r\n'
+    expect(toolResult(true, out, 'git version (\\d+)')).toEqual({ version: '2' })
+    expect(toolResult(true, out, 'git version(\\d+)')).toEqual({ mismatch: true })
+    expect(toolResult(true, '  \r\n', 'v(\\d+)')).toEqual({})
+    expect(toolResult(false, out, 'git version(\\d+)')).toEqual({})
+    expect(toolResult(true, '11.6.2\n')).toEqual({ version: '11.6.2' })
   })
 
   it('pattern が無ければ最初の空でない行、当たらなければ undefined', () => {

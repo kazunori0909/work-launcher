@@ -32,7 +32,8 @@ export function Info(): React.JSX.Element {
       </p>
       <Table head={['名前', '出すもの']} rows={BUILTIN_TOOLS.map((t) => [t.name, t.help])} />
       <p>
-        ツールのコマンドは、ランチャーのフォルダで実行します。見つからないときは「未インストール」と出ます。Steam
+        ツールのコマンドは、ランチャーのフォルダで実行します。見つからないときは「未インストール」、出力が{' '}
+        <code>pattern</code> に当たらないときは「pattern が一致しません」と出ます。Steam
         は、一度も起動していなければ「未インストール」と出ます。
       </p>
       <p>

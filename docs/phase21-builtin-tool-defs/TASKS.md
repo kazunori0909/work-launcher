@@ -15,7 +15,8 @@
 - [x] Windows の実機で上書き（pattern だけ・command）が効く
 - [x] Windows の実機でヘルプの Info の章（表・上書きの説明）が崩れずに出る
 - [x] 個人情報チェックの hook が Windows でも動く（Bash ツール）
-- [ ] PowerShell ツールでも hook が走る（HANDOFF.md で依頼中）
+- [x] PowerShell ツールでも hook が走る
+- [x] 出力はあるのに pattern に当たらないときは「pattern が一致しません」と出す（Mac の実機で確認）
 
 ## 共通
 

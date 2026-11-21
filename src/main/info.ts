@@ -5,7 +5,6 @@ import { app } from 'electron'
 import { handle } from './ipc'
 import { builtinTool, isUnsupportedTool, toolCommand, toolDisplayName } from '../core/builtinTools'
 import {
-  extractVersion,
   isUsefulIpv4,
   parseDisplays,
   parseKeyValues,
@@ -15,6 +14,7 @@ import {
   parseWindowsInfo,
   REGISTRY_ENV,
   selectDrives,
+  toolResult,
   usedMemoryFromVmStat,
   windowsInfoScript
 } from '../core/info'
@@ -135,10 +135,7 @@ async function tool(
   }
   // 案件ごとにバージョンを切り替えるツール（mise など）に合わせ、案件フォルダで動かす
   const r = await runShell(cmd.command, launcherDir)
-  return {
-    name,
-    version: r.ok ? extractVersion(r.text, cmd.pattern) : undefined
-  }
+  return { name, ...toolResult(r.ok, r.text, cmd.pattern) }
 }
 
 /** OS ごとに取り方が違う項目 */
