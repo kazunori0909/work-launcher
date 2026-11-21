@@ -8,10 +8,9 @@ import { ItemList } from '../components/PageView'
 import { SelectContext } from '../components/selectContext'
 import type { SelectContextValue } from '../components/selectContext'
 import type { Cheat, Example } from './examples'
+import { t } from '../../../core/i18n'
 
 // ヘルプの章で使う部品（章の枠・コード・表・見本・早見表）
-
-export const NOT_OPEN = '（開かれていません）'
 
 /** 章に渡すもの（使う章だけが受け取る） */
 export interface SectionProps {
@@ -106,9 +105,9 @@ export function CheatSheet({
       <table className="cheatsheet">
         <thead>
           <tr>
-            <th>種類</th>
-            <th>コード</th>
-            <th>表示</th>
+            <th>{t().help.cheatKind}</th>
+            <th>{t().help.cheatCode}</th>
+            <th>{t().help.preview}</th>
           </tr>
         </thead>
         <tbody>
@@ -191,7 +190,7 @@ export function SampleView({
     <div className="sample">
       <Code lang="yaml">{example.yaml}</Code>
       <div className="preview">
-        <span className="preview-label">表示</span>
+        <span className="preview-label">{t().help.preview}</span>
         <SelectContext.Provider value={selections}>
           <ItemList
             items={example.items}
@@ -202,7 +201,7 @@ export function SampleView({
         </SelectContext.Provider>
         {ran !== undefined && (
           <div className="preview-ran">
-            実行する内容（見本なので実行はしません）: <code>{ran}</code>
+            {t().help.sampleRan} <code>{ran}</code>
           </div>
         )}
       </div>

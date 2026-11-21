@@ -1,11 +1,11 @@
-import { CheatSheet, Code, SampleView, Section, Table } from '../parts'
-import { EXAMPLES, ITEM_CHEATS } from '../examples'
-import type { SectionProps } from '../parts'
+import { CheatSheet, Code, SampleView, Table } from '../../parts'
+import { EXAMPLES, ITEM_CHEATS } from '../../examples'
+import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「ボタンを追加」 */
 export function Items({ platform }: SectionProps): React.JSX.Element {
   return (
-    <Section id="items" title="ボタンを追加">
+    <>
       <h3>早見表</h3>
       <CheatSheet cheats={ITEM_CHEATS} platform={platform} />
 
@@ -121,6 +121,6 @@ module.exports = {
       <p>
         読み込む JS は、最上位の <code>scripts</code> にファイルかフォルダを並べて変えられます。
       </p>
-    </Section>
+    </>
   )
 }

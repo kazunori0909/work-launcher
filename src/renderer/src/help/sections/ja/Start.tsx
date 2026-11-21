@@ -1,9 +1,9 @@
-import { Code, Section } from '../parts'
+import { Code } from '../../parts'
 
 /** ヘルプの章「はじめに」 */
 export function Start(): React.JSX.Element {
   return (
-    <Section id="start" title="はじめに">
+    <>
       <p>
         WorkLauncher は、案件でよく使うコマンドや資料をボタンにまとめておくアプリです。ボタンは{' '}
         <code>launcher/config.yaml</code> に YAML で書きます。保存すると、すぐ画面に反映されます。
@@ -53,6 +53,6 @@ pages:
     items:
       - bat: build.bat
         label: ビルド`}</Code>
-    </Section>
+    </>
   )
 }

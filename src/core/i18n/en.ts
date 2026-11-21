@@ -213,6 +213,20 @@ export const en: Messages = {
     langSwitch: 'Display language'
   },
 
+  help: {
+    notOpen: '(not open)',
+    cheatKind: 'Type',
+    cheatCode: 'Code',
+    preview: 'Preview',
+    sampleRan: 'Would run (this is a sample, so nothing runs):',
+    iconSearch: 'Search by name (e.g. folder, play, file)',
+    iconCount: (n) => count(n, 'icon'),
+    iconShown: (max) => ` (showing the first ${max})`,
+    iconCopied: (name) => ` · Copied icon: ${name}`,
+    licenseListBuiltOnly: 'The list is shown only in a built app.',
+    noLicenseText: (license) => `(no license text: ${license})`
+  },
+
   menu: {
     file: 'File',
     newWindow: 'New Window',

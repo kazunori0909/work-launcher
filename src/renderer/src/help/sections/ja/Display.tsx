@@ -1,15 +1,15 @@
 import { useContext } from 'react'
-import { EmbedContext } from '../../components/embedContext'
-import { CheatSheet, Code, SampleView, Section, Table } from '../parts'
-import { EXAMPLES, LAYOUT_CHEATS } from '../examples'
-import { IconBrowser } from '../IconBrowser'
-import type { SectionProps } from '../parts'
+import { EmbedContext } from '../../../components/embedContext'
+import { CheatSheet, Code, SampleView, Table } from '../../parts'
+import { EXAMPLES, LAYOUT_CHEATS } from '../../examples'
+import { IconBrowser } from '../../IconBrowser'
+import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「レイアウトと装飾」（並べ方・枠・文章・アイコン） */
 export function Display({ platform }: SectionProps): React.JSX.Element {
   const { onLink } = useContext(EmbedContext)
   return (
-    <Section id="display" title="レイアウトと装飾">
+    <>
       <h3>早見表</h3>
       <CheatSheet cheats={LAYOUT_CHEATS} platform={platform} />
 
@@ -88,6 +88,6 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
         アイコンを消したいときは <code>icon: &quot;&quot;</code> と書きます。
       </p>
       <IconBrowser />
-    </Section>
+    </>
   )
 }

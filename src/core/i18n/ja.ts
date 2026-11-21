@@ -216,6 +216,21 @@ export const ja = {
     langSwitch: '表示の言語'
   },
 
+  /** ヘルプの部品の文言（章の本文は renderer/src/help/sections/<言語>/） */
+  help: {
+    notOpen: '（開かれていません）',
+    cheatKind: '種類',
+    cheatCode: 'コード',
+    preview: '表示',
+    sampleRan: '実行する内容（見本なので実行はしません）:',
+    iconSearch: '英語で検索（例: folder, play, file）',
+    iconCount: (n: number) => `${n} 件`,
+    iconShown: (max: number) => `（先頭 ${max} 件を表示）`,
+    iconCopied: (name: string) => ` ・ icon: ${name} をコピーしました`,
+    licenseListBuiltOnly: '一覧はビルドしたアプリでだけ出ます。',
+    noLicenseText: (license: string) => `（ライセンス文なし: ${license}）`
+  },
+
   menu: {
     file: 'ファイル',
     newWindow: '新規ウィンドウ',

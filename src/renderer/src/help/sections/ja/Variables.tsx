@@ -1,10 +1,11 @@
-import { NOT_OPEN, Section, Table } from '../parts'
-import type { SectionProps } from '../parts'
+import { t } from '../../../../../core/i18n'
+import { Table } from '../../parts'
+import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「変数」 */
 export function Variables({ launcherDir, workDir }: SectionProps): React.JSX.Element {
   return (
-    <Section id="variables" title="変数">
+    <>
       <p>パス、コマンド、URL の中に書くと、ボタンを押したときに実際の値に置き換わります。</p>
       <Table
         head={['書き方', '内容', 'いまの値']}
@@ -12,12 +13,12 @@ export function Variables({ launcherDir, workDir }: SectionProps): React.JSX.Ele
           [
             '${launcherDir}',
             'ランチャーのフォルダ（work.launcher があるフォルダ）',
-            launcherDir ?? NOT_OPEN
+            launcherDir ?? t().help.notOpen
           ],
           [
             '${workDir}',
             '作業フォルダ（cwd。書かなければランチャーのフォルダと同じ）',
-            workDir ?? NOT_OPEN
+            workDir ?? t().help.notOpen
           ],
           [
             '${env:NAME}',
@@ -41,6 +42,6 @@ export function Variables({ launcherDir, workDir }: SectionProps): React.JSX.Ele
         <code>{'${workDir}'}</code>{' '}
         を変える方法と、そのとき何が変わるかは「設定ファイルの編集」の章にあります。
       </p>
-    </Section>
+    </>
   )
 }

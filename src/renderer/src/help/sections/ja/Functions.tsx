@@ -1,9 +1,9 @@
-import { Code, Section, Table } from '../parts'
+import { Code, Table } from '../../parts'
 
 /** ヘルプの章「関数から呼び出す」 */
 export function Functions(): React.JSX.Element {
   return (
-    <Section id="functions" title="関数から呼び出す">
+    <>
       <p>
         function で呼ぶ JS の関数の中から、ボタンと同じ動作を呼べます。<code>ctx</code> に、YAML
         の種類キーと同じ名前の関数があります。いくつかの動作を順に行う、結果を見て次を決める、
@@ -118,6 +118,6 @@ ctx.log(\`ブランチ: \${r.stdout}\`)`}</Code>
 } catch (e) {
   ctx.log('まだログがありません')
 }`}</Code>
-    </Section>
+    </>
   )
 }

@@ -1,11 +1,11 @@
-import { CheatSheet, SampleView, Section, Table } from '../parts'
-import { ELEMENT_CHEATS, EXAMPLES } from '../examples'
-import type { SectionProps } from '../parts'
+import { CheatSheet, SampleView, Table } from '../../parts'
+import { ELEMENT_CHEATS, EXAMPLES } from '../../examples'
+import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「ボタン以外の要素」 */
 export function Elements({ platform }: SectionProps): React.JSX.Element {
   return (
-    <Section id="elements" title="ボタン以外の要素">
+    <>
       <p>
         値を選ぶための部品です。選んだ値は、ほかのボタンのコマンドやパスに{' '}
         <code>{'${select:ID}'}</code> と書いて差し込みます。function からは{' '}
@@ -77,6 +77,6 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
         ID は select、radio、checkbox の3つで共通です。種類が違っても、同じ ID
         なら同じ値を指します。
       </p>
-    </Section>
+    </>
   )
 }

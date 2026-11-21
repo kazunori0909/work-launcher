@@ -1,5 +1,6 @@
-import { Code, NOT_OPEN, Section, Table } from '../parts'
-import type { SectionProps } from '../parts'
+import { t } from '../../../../../core/i18n'
+import { Code, Table } from '../../parts'
+import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「設定ファイルの編集」 */
 export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element {
@@ -12,10 +13,10 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
     if (r.error) onError(r.error)
   }
   return (
-    <Section id="edit" title="設定ファイルの編集">
+    <>
       <p>いま開いているランチャーのフォルダはここです。</p>
       <div className="help-row">
-        <code>{launcherDir ?? NOT_OPEN}</code>
+        <code>{launcherDir ?? t().help.notOpen}</code>
         {launcherDir && (
           <button className="item" onClick={openFolder}>
             フォルダを開く
@@ -120,6 +121,6 @@ pages:
         <code>cwd</code> を書かなければ、2つは同じフォルダなので違いはありません。ページや項目に{' '}
         <code>cwd</code> を書くと、そこではそちらが作業フォルダになります。
       </p>
-    </Section>
+    </>
   )
 }
