@@ -116,6 +116,8 @@ process.parentPort.once('message', async (e) => {
       workDir,
       env: process.env,
       select,
+      /** 表示の言語（ja / en） */
+      lang,
       ...(changed ? { changed } : {}),
       log: (text: unknown) => post({ type: 'log', text: String(text) }),
       ...Object.fromEntries(

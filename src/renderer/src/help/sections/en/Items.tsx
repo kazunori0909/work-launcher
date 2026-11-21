@@ -28,6 +28,19 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
           ['id', 'Marker for replacing the item from local settings']
         ]}
       />
+      <p>
+        Written as <code>{'{ ja: …, en: … }'}</code>, <code>label</code>, <code>tooltip</code> and{' '}
+        <code>confirm</code> follow the language chosen at the top right. Plain strings are shown as
+        is in every language.
+      </p>
+      <Code lang="yaml">{`- bat: deploy.bat
+  label: { ja: デプロイ, en: Deploy }
+  confirm: { ja: 本番に出しますか？, en: Deploy to production? }`}</Code>
+      <p>
+        Not only buttons: most text shown in the window, such as group headings, page tabs, headings
+        and md text, can be written the same way. See &quot;Writing per language&quot; in
+        &quot;Editing the settings&quot; for details.
+      </p>
 
       <h3>Running commands (bat / sh / powershell / python)</h3>
       <p>
@@ -117,7 +130,8 @@ module.exports = {
           ['env', 'Environment variables'],
           ['log(text)', 'Writes a line to the console'],
           ['open(path) etc.', 'Does what a button does (see Calling from functions)'],
-          ['select', 'Values of select, radio and checkbox (ctx.select.target, etc.)']
+          ['select', 'Values of select, radio and checkbox (ctx.select.target, etc.)'],
+          ['lang', 'Display language (ja or en)']
         ]}
       />
       <p>

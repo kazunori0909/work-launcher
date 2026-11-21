@@ -85,6 +85,26 @@ items: [...]`}</Code>
         <code>title</code> です。案件ならではの手順やメモを置く場所に使えます。
       </p>
 
+      <h3>言語ごとに書く</h3>
+      <p>
+        日本語と英語で表示を変えたい文字は、<code>{'{ ja: …, en: … }'}</code>{' '}
+        の表で書きます。右上のボタンで選んだ言語の値が出て、表にその言語が無ければ表の最初の値が出ます。文字列で書いたものは、どの言語でもそのまま出ます。訳したいところだけ表にすれば十分です。
+      </p>
+      <Code lang="yaml">{`- id: top
+  title: { ja: メイン, en: Main }
+  items:
+    - bat: deploy.bat
+      label: { ja: デプロイ, en: Deploy }
+    - md:
+        ja: launcher/notes/setup.md     # 長い本文はファイルを分ける
+        en: launcher/notes/setup.en.md`}</Code>
+      <p>
+        表で書けるのは、ページと案件の <code>title</code>、<code>label</code>、<code>tooltip</code>
+        、<code>confirm</code>、<code>heading</code>、<code>group</code> の見出し、選択肢の{' '}
+        <code>label</code>、<code>md</code>、<code>html</code> です。関数では <code>ctx.lang</code>{' '}
+        で表示の言語（<code>ja</code> か <code>en</code>）がわかります。
+      </p>
+
       <h3>作業フォルダを変える（cwd）</h3>
       <p>
         <code>config.yaml</code> の最上位に <code>cwd</code> を書くと、作業フォルダ（
