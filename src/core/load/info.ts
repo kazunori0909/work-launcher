@@ -52,14 +52,15 @@ function readTool(r: Reader, raw: unknown, file: string): InfoTool | undefined {
         ? {
             name: raw.name,
             command: r.str(raw, 'command', file),
-            pattern: r.str(raw, 'pattern', file)
+            pattern: r.str(raw, 'pattern', file),
+            ...(raw.hidden === true && { hidden: true })
           }
         : undefined
   if (!tool) {
-    r.error(file, 'info.tools にはツール名か { name, command, pattern } を書いてください')
+    r.error(file, 'info.tools にはツール名か { name, command, pattern, hidden } を書いてください')
     return undefined
   }
-  if (!tool.command && !builtinTool(tool.name)) {
+  if (!tool.hidden && !tool.command && !builtinTool(tool.name)) {
     r.error(file, `組み込みに無いツールには command が要ります: ${tool.name}`)
     return undefined
   }
