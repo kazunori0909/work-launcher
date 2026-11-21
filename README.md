@@ -212,7 +212,7 @@ WorkLauncher が自分からインターネットに何かを送ることはあ�
 
 ### 開発
 
-Node.js 24 が必要です。バージョンは `mise.toml` で [mise](https://mise.jdx.dev/) に固定しています。
+Node.js 26 が必要です。バージョンは `mise.toml` で [mise](https://mise.jdx.dev/) に固定しています。
 
 ```bash
 npm install
@@ -456,7 +456,7 @@ WorkLauncher never sends anything to the internet on its own. There is no teleme
 
 ### Development
 
-You need Node.js 24. The version is pinned in `mise.toml` for [mise](https://mise.jdx.dev/).
+You need Node.js 26. The version is pinned in `mise.toml` for [mise](https://mise.jdx.dev/).
 
 ```bash
 npm install
