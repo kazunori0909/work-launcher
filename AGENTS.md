@@ -33,6 +33,7 @@ src/renderer/  # 画面（React）。hooks/ は App の状態、assets/styles/ �
 build/ resources/  # アイコン等（electron-builder 用）。アイコンの元は build/icons/*.svg（npm run icons で書き出す）
 scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs）
 examples/sample/  # 動作確認用の案件（開発中は既定でこれを開く）
+handoff/     # Mac と Windows の Claude どうしの依頼ファイル（ルールは handoff/README.md）
 mise.toml    # Node.js のバージョン固定
 .claude/skills/  # phase-new / phase-compress / run-app（実機を Playwright で動かす）
 ```

@@ -11,6 +11,9 @@
 - [x] 組み込みの取り方を config.yaml で上書きできるようにする（pattern だけでも効く・表示名は製品名のまま）
 - [x] config.md とヘルプに上書きの書き方を足す
 - [x] 実機で上書き（pattern だけ・command）が効くか確かめる
+- [x] Windows の実機で Info のツール（git・node・python・java・Steam・Epic）が前と同じに出る
+- [ ] Windows の実機で上書き（pattern だけ・command）が効く
+- [ ] Windows の実機でヘルプの Info の章（表・上書きの説明）が崩れずに出る
 
 ## 共通
 
