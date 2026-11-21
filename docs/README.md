@@ -8,6 +8,7 @@
 - `PLAN.md` — 設計上の選択とその理由
 - `TASKS.md` — 作業チェックリスト
 - `KNOWLEDGE.md`（任意）— 実機・OS・外部ツールで判明した挙動・制約
+- `HANDOFF.md`（任意）— Mac と Windows の Claude どうしの依頼と回答（`/handoff`）。圧縮では統合しない
 
 完了したフェーズは決定事項・確定仕様を `phases.md` へ、KNOWLEDGE.md（あれば）は
 要約せず `knowledge.md` へ統合し、フォルダは削除する（元の記録は git 履歴に残る）。
