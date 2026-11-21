@@ -52,12 +52,14 @@
 | 22  | リリースノート ✅   | 冒頭の案内を表と README へのリンクに   |
 | 23  | 作業フォルダ起点 ✅ | open・Office の相対パスを workDir 起点 |
 | 24  | ローカル設定 ✅     | ヘルプから config.local.yaml を作る    |
+| 25  | 多言語対応 ✅       | 画面とヘルプを ja / en で切り替え      |
 
 ## 次に扱う候補
 
 **まだフェーズにしていない課題。** 次のフェーズを決めるときにここから選ぶ。
 フェーズにしたら（`/phase-new`）、ここから消す。経緯は括弧内の PLAN.md を見る。
 
+- ユーザーの設定の文字の項目を「文字列か、言語の表」で書けるようにする（→ phase25 の方針 3）
 - 設定ファイルの JSON Schema を作り、エディタで補完と誤りの指摘を出す（Phase 11 の C のあとが作りやすい）（→ phase11）
 - eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）

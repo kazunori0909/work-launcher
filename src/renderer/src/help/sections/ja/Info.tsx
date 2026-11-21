@@ -1,10 +1,10 @@
-import { BUILTIN_TOOLS } from '../../../../core/builtinTools'
-import { Code, Section, Table } from '../parts'
+import { BUILTIN_TOOLS, toolHelp } from '../../../../../core/builtinTools'
+import { Code, Table } from '../../parts'
 
 /** ヘルプの章「Info ページ」 */
 export function Info(): React.JSX.Element {
   return (
-    <Section id="info" title="Info ページ">
+    <>
       <p>
         OS、CPU、メモリ、GPU、ドライブ、IP アドレスなど、この PC
         の情報をまとめて出します。問い合わせや不具合の報告では、「テキストでコピー」を押せばそのまま貼り付けられます。枠ごとにコピーしたいときは、見出しの右上のボタンを押します。
@@ -30,7 +30,10 @@ export function Info(): React.JSX.Element {
         で使えます。ここに無いものは、上の Maven のように <code>command</code> と{' '}
         <code>pattern</code> を書きます。
       </p>
-      <Table head={['名前', '出すもの']} rows={BUILTIN_TOOLS.map((t) => [t.name, t.help])} />
+      <Table
+        head={['名前', '出すもの']}
+        rows={BUILTIN_TOOLS.map((t) => [t.name, toolHelp(t, 'ja')])}
+      />
       <p>
         ツールのコマンドは、ランチャーのフォルダで実行します。見つからないときは「未インストール」、出力が{' '}
         <code>pattern</code> に当たらないときは「pattern が一致しません」と出ます。Steam
@@ -62,6 +65,6 @@ export function Info(): React.JSX.Element {
         <code>\</code> がエスケープの文字として読まれてしまいます。末尾を <code>\</code>{' '}
         で終えると、キーの既定値を読みます。
       </p>
-    </Section>
+    </>
   )
 }

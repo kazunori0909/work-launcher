@@ -14,6 +14,7 @@ import { HtmlEmbed, Markdown } from './embed'
 import { EmbedContext } from './embedContext'
 import { Icon } from './Icon'
 import { SelectContext } from './selectContext'
+import { t } from '../../../core/i18n'
 
 interface Props {
   page: Page
@@ -138,7 +139,7 @@ function ButtonView({ item, platform, path, running, onActivate }: ItemProps): R
   const select = useContext(SelectContext)
   const unavailable =
     item.kind === 'exec' && !execKindFor(item.scripts, platform)
-      ? `この OS では実行できません（${Object.keys(item.scripts).join(' / ')} のみ）`
+      ? t().run.notOnThisOsOnly(Object.keys(item.scripts))
       : undefined
   const icon = 'icon' in item ? item.icon : undefined
   const tooltip = 'tooltip' in item ? item.tooltip : undefined
@@ -224,7 +225,7 @@ function SelectView({ item }: { item: Extract<Item, { kind: 'select' }> }): Reac
 function MdfileView({ path }: { path: string }): React.JSX.Element {
   const file = useContext(EmbedContext).mdfiles[path]
   if (file?.text === undefined) {
-    return <div className="item-error">md のファイルがありません: {path}</div>
+    return <div className="item-error">{t().load.mdMissing(path)}</div>
   }
   // 案件フォルダの外の md は、相対リンク・画像を launcherDir 起点で解決する
   return (

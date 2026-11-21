@@ -13,9 +13,12 @@ import { callEvent, prepareClose } from './events'
 import { handle, send } from './ipc'
 import { handleFileScheme } from './links'
 import { loadProjectView } from './project'
-import { addRecent, listRecent } from './recent'
+import { addRecent, listRecent, refreshJumpList } from './recent'
+import { saveLang } from './lang'
 import { readRemembered } from './selections'
 import { WindowSession } from './session'
+import { getLang, isLang, t } from '../core/i18n'
+import type { Lang } from '../core/i18n'
 
 const windows = new Map<number, WindowSession>()
 let nextPartition = 1
@@ -49,7 +52,7 @@ export function openProject(launcherDir?: string, from?: WebContents): void {
 /** 「案件を開く…」のダイアログ。選んだ案件は、呼んだウィンドウが開始画面ならそこで開く */
 export async function openProjectDialog(from?: BrowserWindow): Promise<void> {
   const options: Electron.OpenDialogOptions = {
-    title: '案件を開く',
+    title: t().menu.openDialogTitle,
     properties: ['openFile'],
     filters: [{ name: 'WorkLauncher', extensions: ['launcher'] }]
   }
@@ -80,7 +83,12 @@ async function load(w: WindowSession): Promise<ProjectView> {
   const loaded = await loadProjectView(w.launcherDir)
   w.watcher.set(loaded.files)
   const remembered = readRemembered(loaded.view.launcherDir)
-  const view = (w.view = { ...loaded.view, appVersion: app.getVersion(), remembered })
+  const view = (w.view = {
+    ...loaded.view,
+    appVersion: app.getVersion(),
+    remembered,
+    lang: getLang()
+  })
   const { project, launcherDir } = view
   if (!project || !launcherDir) return view
   // 画面で選んだ値は残し、選択肢から消えた値は記憶した値・既定値に戻す（画面の currentSelections と同じ）
@@ -169,15 +177,27 @@ export function registerWindowHandlers(): void {
   handle('openProject', (e, arg) => {
     const dir = asString(arg)
     if (dir === undefined || !existsSync(path.join(dir, PROJECT_FILE)))
-      return { error: `${PROJECT_FILE} がありません: ${String(arg)}` }
+      return { error: t().open.noProjectFile(PROJECT_FILE, String(arg)) }
     openProject(dir, e.sender)
     return {}
   })
   handle('listRecent', () => listRecent())
+  handle('setLang', (_, arg) => {
+    if (isLang(arg)) changeLang(arg)
+  })
   // 「待たずに閉じる」: 待っている beforeClose の子プロセスを止める（止まれば prepareClose が終わり、閉じる）
   handle('closeNow', (e) => {
     windows.get(e.sender.id)?.stopAll()
   })
+}
+
+/** 表示の言語を変えて記憶し、メニューと開いているすべてのウィンドウを作り直す */
+function changeLang(lang: Lang): void {
+  if (lang === getLang()) return
+  saveLang(lang)
+  setAppMenu()
+  refreshJumpList()
+  for (const w of windows.values()) void reload(w)
 }
 
 /** アプリを終了する前に、案件を開いているすべてのウィンドウで beforeClose を待つ */
@@ -189,24 +209,24 @@ export function prepareQuit(): Promise<void> | undefined {
 export function setAppMenu(): void {
   const isMac = process.platform === 'darwin'
   const file: MenuItemConstructorOptions = {
-    label: 'ファイル',
+    label: t().menu.file,
     submenu: [
       {
-        label: '新規ウィンドウ',
+        label: t().menu.newWindow,
         accelerator: 'CmdOrCtrl+N',
         click: () => openProject()
       },
       {
-        label: '案件を開く…',
+        label: t().menu.openProject,
         accelerator: 'CmdOrCtrl+O',
         click: (_, window) => void openProjectDialog(window as BrowserWindow | undefined)
       },
       ...(isMac
         ? ([
             {
-              label: '最近開いた案件',
+              label: t().menu.recent,
               role: 'recentDocuments',
-              submenu: [{ label: 'メニューを消去', role: 'clearRecentDocuments' }]
+              submenu: [{ label: t().menu.clearRecent, role: 'clearRecentDocuments' }]
             }
           ] satisfies MenuItemConstructorOptions[])
         : []),
@@ -226,8 +246,8 @@ export function setAppMenu(): void {
   // Dock のアイコンの右クリックメニュー（最近開いた案件は OS が自動で並べる）
   app.dock?.setMenu(
     Menu.buildFromTemplate([
-      { label: '新規ウィンドウ', click: () => openProject() },
-      { label: '案件を開く…', click: () => void openProjectDialog() }
+      { label: t().menu.newWindow, click: () => openProject() },
+      { label: t().menu.openProject, click: () => void openProjectDialog() }
     ])
   )
 }

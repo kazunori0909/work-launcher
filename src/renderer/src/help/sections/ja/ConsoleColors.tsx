@@ -1,9 +1,9 @@
-import { Code, Section } from '../parts'
+import { Code } from '../../parts'
 
 /** ヘルプの章「コンソールの色分け」 */
 export function ConsoleColors(): React.JSX.Element {
   return (
-    <Section id="console" title="コンソールの色分け">
+    <>
       <p>
         コマンドの出力を、行ごとに色分けできます。error
         を含む行に色を付けておけば、長いログの中でも失敗を見落としにくくなります。
@@ -23,6 +23,6 @@ export function ConsoleColors(): React.JSX.Element {
         自分だけのルールは <code>launcher/console.local.yaml</code>{' '}
         に書きます。こちらを先に照合します。
       </p>
-    </Section>
+    </>
   )
 }

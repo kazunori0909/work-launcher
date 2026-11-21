@@ -1,6 +1,7 @@
 // 画面とメインの両方から使うため、node: モジュールに依存させない
 import { assertNever } from './types'
 import type { ExecKind, Item, Project } from './types'
+import { t } from './i18n'
 
 /** この OS で実行する種類。実行できなければ undefined */
 export function execKindFor(
@@ -23,7 +24,7 @@ export function isMdFilePath(value: string): boolean {
 
 /** label が無いときの表示名。種類キーの値から作る（実行系はこの OS で実行する方の本文） */
 export function itemLabel(item: Item, platform: string): string {
-  if (item.kind === 'error') return 'エラー'
+  if (item.kind === 'error') return t().run.errorLabel
   if (item.kind === 'break') return ''
   if (item.kind === 'heading') return item.text
   if (item.kind === 'buttons') return ''

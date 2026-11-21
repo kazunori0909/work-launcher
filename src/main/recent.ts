@@ -6,6 +6,7 @@ import { PROJECT_FILE } from '../core/load'
 import { pushRecent, recentJumpTasks } from '../core/recent'
 import { readJson, stringList, userDataFile, writeJson } from './jsonStore'
 import { isPortable } from './project'
+import { t } from '../core/i18n'
 
 const recentFile = (): string => userDataFile('recent.json')
 
@@ -30,7 +31,7 @@ export function refreshJumpList(): void {
   if (osRecent() !== 'jumpList') return
   const items = recentJumpTasks(listRecent(), process.execPath, PROJECT_FILE)
   // 項目が無いときは既定に戻す（空のカテゴリは置けない）
-  app.setJumpList(items.length > 0 ? [{ type: 'custom', name: '最近開いた案件', items }] : null)
+  app.setJumpList(items.length > 0 ? [{ type: 'custom', name: t().menu.recent, items }] : null)
 }
 
 /** 最近開いた案件に足し、OS 側の「最近」（Mac の Dock・Windows のジャンプリスト）にも出す */

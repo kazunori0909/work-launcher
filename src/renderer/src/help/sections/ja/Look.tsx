@@ -1,9 +1,9 @@
-import { Code, Section } from '../parts'
+import { Code } from '../../parts'
 
 /** ヘルプの章「タイトルと見た目」 */
 export function Look(): React.JSX.Element {
   return (
-    <Section id="look" title="タイトルと見た目">
+    <>
       <p>
         <code>title</code>{' '}
         は画面上部とウィンドウのタイトルに出ます。いくつもの案件を開いているときの見分けに使えます。
@@ -25,6 +25,6 @@ style: launcher/style.css`}</Code>
         <code>--surface</code>、<code>--text</code>、<code>--muted</code>、<code>--border</code>{' '}
         です。
       </p>
-    </Section>
+    </>
   )
 }

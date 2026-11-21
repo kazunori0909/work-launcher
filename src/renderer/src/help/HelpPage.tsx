@@ -1,61 +1,17 @@
 import type { ReactNode } from 'react'
 import { Section } from './parts'
 import type { SectionProps } from './parts'
-import { ConsoleColors } from './sections/ConsoleColors'
-import { Display } from './sections/Display'
-import { Edit } from './sections/Edit'
-import { Elements } from './sections/Elements'
-import { Errors } from './sections/Errors'
-import { Events } from './sections/Events'
-import { Functions } from './sections/Functions'
-import { Info } from './sections/Info'
-import { Items } from './sections/Items'
-import { LicensesSection } from './sections/LicensesSection'
-import { Look } from './sections/Look'
-import { Start } from './sections/Start'
-import { Variables } from './sections/Variables'
+import { getLang } from '../../../core/i18n'
+import type { Lang } from '../../../core/i18n'
+import type { HelpGroup } from './sections/book'
+import { HELP_EN } from './sections/en'
+import { HELP_JA } from './sections/ja'
 
 // 組み込みのヘルプ。仕様の正は docs/config.md。ここは利用者向けに要点と見本を載せる。
-// 章の本文は sections/ に1章1ファイルで置く
+// 章の本文は sections/<言語>/ に1章1ファイルで置く
 
-interface HelpSection {
-  id: string
-  title: string
-  /** 章の本文（Section で囲んで返す）。案件の章は無し（設定の help ページを出す） */
-  Body?: (props: SectionProps) => React.JSX.Element
-}
-
-/** 章の一覧。サイドメニューでは分類ごとに二階層で出す（label が無い分類は見出しを出さない） */
-const SECTION_GROUPS: readonly { label?: string; sections: readonly HelpSection[] }[] = [
-  {
-    label: 'まず読む',
-    sections: [
-      { id: 'start', title: 'はじめに', Body: Start },
-      { id: 'variables', title: '変数', Body: Variables },
-      { id: 'edit', title: '設定ファイルの編集', Body: Edit },
-      { id: 'errors', title: 'エラーが出たとき', Body: Errors },
-      { id: 'licenses', title: 'ライセンス', Body: LicensesSection }
-    ]
-  },
-  {
-    label: '要素を追加する',
-    sections: [
-      { id: 'items', title: 'ボタンを追加', Body: Items },
-      { id: 'elements', title: 'ボタン以外の要素', Body: Elements },
-      { id: 'display', title: 'レイアウトと装飾', Body: Display },
-      { id: 'functions', title: '関数から呼び出す', Body: Functions }
-    ]
-  },
-  {
-    label: '設定',
-    sections: [
-      { id: 'events', title: 'イベント', Body: Events },
-      { id: 'console', title: 'コンソールの色分け', Body: ConsoleColors },
-      { id: 'info', title: 'Info ページ', Body: Info },
-      { id: 'look', title: 'タイトルと見た目', Body: Look }
-    ]
-  }
-]
+/** 言語ごとの章の一覧 */
+export const HELP_BOOKS: Record<Lang, readonly HelpGroup[]> = { ja: HELP_JA, en: HELP_EN }
 
 /** 設定に書いた help ページの項目を出す章 */
 const PROJECT_ID = 'project'
@@ -78,10 +34,14 @@ export function HelpPage({
   projectTitle,
   ...props
 }: Props): React.JSX.Element {
-  const projectSection: HelpSection = { id: PROJECT_ID, title: projectTitle }
-  const groups = projectHelp ? [{ sections: [projectSection] }, ...SECTION_GROUPS] : SECTION_GROUPS
-  const sections = groups.flatMap((g) => g.sections)
-  const active = sections.find((s) => s.id === selected) ?? sections[0]
+  const book = HELP_BOOKS[getLang()]
+  const projectSection = { id: PROJECT_ID, title: projectTitle }
+  const groups: readonly { label?: string; sections: readonly { id: string; title: string }[] }[] =
+    projectHelp ? [{ sections: [projectSection] }, ...book] : book
+  const sections = book.flatMap((g) => g.sections)
+  const all = groups.flatMap((g) => g.sections)
+  const active = all.find((s) => s.id === selected) ?? all[0]
+  const body = sections.find((s) => s.id === active.id)
 
   return (
     <div className="sidenav">
@@ -105,13 +65,9 @@ export function HelpPage({
         ))}
       </nav>
       <article className="sidenav-body help">
-        {active.Body ? (
-          <active.Body {...props} />
-        ) : (
-          <Section id={PROJECT_ID} title={projectTitle}>
-            {projectHelp}
-          </Section>
-        )}
+        <Section id={active.id} title={active.title}>
+          {body ? <body.Body {...props} /> : projectHelp}
+        </Section>
       </article>
     </div>
   )

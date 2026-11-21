@@ -7,6 +7,7 @@ import { loadConsoleRules, loadProject, PROJECT_FILE } from '../core/load'
 import type { ReadFile } from '../core/load'
 import type { Diagnostic, Item, MarkdownFile, Page, Project, ProjectView } from '../core/types'
 import { expandVariables, resolveConfigPath, variableContext } from '../core/variables'
+import { t } from '../core/i18n'
 
 const readFileIfExists: ReadFile = async (p) => {
   try {
@@ -112,8 +113,8 @@ async function readMdfiles(
       if (text === undefined) {
         diagnostics.push({
           level: 'warning',
-          file: `ページ ${page.id}`,
-          message: `md のファイルがありません: ${item.path}`
+          file: t().load.page(page.id),
+          message: t().load.mdMissing(item.path)
         })
       }
       mdfiles[item.path] = { path: relativePath(abs, launcherDir), text }
@@ -133,7 +134,7 @@ async function readStyles(
     const { value } = expandVariables(style, variableContext(project, launcherDir, process.env))
     const text = await read(resolveConfigPath(value, launcherDir))
     if (text === undefined) {
-      diagnostics.push({ level: 'warning', file: style, message: 'style のファイルがありません' })
+      diagnostics.push({ level: 'warning', file: style, message: t().load.styleMissing })
     } else {
       css.push(text)
     }
@@ -152,5 +153,3 @@ export function findItem(
   if (!view?.project || !view.launcherDir || !page || !item) return undefined
   return { project: view.project, launcherDir: view.launcherDir, page, item }
 }
-
-export const ITEM_NOT_FOUND = '項目が見つかりません（設定が変わった可能性があります）'

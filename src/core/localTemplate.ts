@@ -1,4 +1,5 @@
 import type { Project } from './types'
+import { t } from './i18n'
 
 // ヘルプの「config.local.yaml を作る」で書き出す雛形（中身の決め方は docs/config.md 5章）
 
@@ -9,30 +10,25 @@ const NEW_PAGE_ID = 'my-page'
 const RESERVED = ['help', 'info']
 
 export function localConfigTemplate(project: Project): string {
-  const lines = [
-    '# 自分だけの設定（ヘルプの「config.local.yaml を作る」で作りました）',
-    '# 書き方は config.yaml と同じで、共通の設定に重ねて読みます。保存すると画面に反映されます',
-    '# ほかの人に見せない設定なので、.gitignore に入れてください',
-    '',
-    'pages:'
-  ]
+  const m = t().local.template
+  const lines = [...m.head, '', 'pages:']
   const first = project.pages.find((p) => !RESERVED.includes(p.id))
   if (first) {
     lines.push(
-      '  # 共通と同じ ID のページは、そのページの最後に項目を足す（replace: true で丸ごと置き換え）',
+      `  ${m.samePage}`,
       `  - id: ${first.id}`,
       '    items:',
-      '      - md: このメッセージは、config.local.yaml から追加しています',
+      `      - md: ${m.samePageMd}`,
       ''
     )
   }
   lines.push(
-    '  # 新しい ID のページは、タブの最後に足す',
+    `  ${m.newPage}`,
     `  - id: ${newPageId(project)}`,
-    '    title: 自分用',
+    `    title: ${m.newPageTitle}`,
     '    icon: user',
     '    items:',
-    '      - md: このページは、config.local.yaml から追加しています',
+    `      - md: ${m.newPageMd}`,
     '',
     'info:',
     '  tools:',
@@ -52,18 +48,16 @@ function newPageId(project: Project): string {
 function toolLines(project: Project): string[] {
   const names = project.info.tools.map((t) => t.name)
   const others = names.filter((n) => n !== 'git')
+  const m = t().local.template
   const lines: string[] = []
   if (others.length > 0) {
-    lines.push('    # hidden: true で、共通の設定にあるツールを出さない')
+    lines.push(`    ${m.hidden}`)
     for (const name of others) lines.push(`    - { name: ${yamlString(name)}, hidden: true }`)
   }
   if (!names.includes('git')) {
-    lines.push('    # 名前だけなら組み込みの取り方で足す', '    - git')
+    lines.push(`    ${m.builtin}`, '    - git')
   }
-  lines.push(
-    '    # 組み込みに無いツールは command（と pattern）を書いて足す',
-    '    # - { name: Maven, command: mvn -v }'
-  )
+  lines.push(`    ${m.custom}`, '    # - { name: Maven, command: mvn -v }')
   return lines
 }
 

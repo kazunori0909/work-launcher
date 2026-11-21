@@ -1,9 +1,7 @@
-import { Section } from '../parts'
-
 /** ヘルプの章「エラーが出たとき」 */
 export function Errors(): React.JSX.Element {
   return (
-    <Section id="errors" title="エラーが出たとき">
+    <>
       <p>書き間違いの種類によって、エラーの出る場所が変わります。</p>
       <p>
         YAML
@@ -20,6 +18,6 @@ export function Errors(): React.JSX.Element {
       <p>
         コマンドが失敗したときや、ファイルを開けなかったときは、コンソールが開いて理由が出ます。
       </p>
-    </Section>
+    </>
   )
 }

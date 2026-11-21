@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Icon } from '../components/Icon'
 import { ICON_NAMES } from '../icons'
+import { t } from '../../../core/i18n'
 
 const MAX_SHOWN = 120
 
@@ -23,13 +24,14 @@ export function IconBrowser(): React.JSX.Element {
       <div className="icon-search">
         <input
           type="search"
-          placeholder="英語で検索（例: folder, play, file）"
+          placeholder={t().help.iconSearch}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <span className="muted">
-          {matched.length} 件{matched.length > MAX_SHOWN && `（先頭 ${MAX_SHOWN} 件を表示）`}
-          {copied && ` ・ icon: ${copied} をコピーしました`}
+          {t().help.iconCount(matched.length)}
+          {matched.length > MAX_SHOWN && t().help.iconShown(MAX_SHOWN)}
+          {copied && t().help.iconCopied(copied)}
         </span>
       </div>
       <div className="icon-grid">

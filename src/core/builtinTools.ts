@@ -2,6 +2,7 @@
 // ツールを足すときは BUILTIN_TOOLS に1件足す。ヘルプの表もここから作る
 
 import type { InfoTool } from './types'
+import type { Lang } from './i18n'
 
 /**
  * OS ごとのコマンド。文字列なら全 OS 共通。
@@ -9,13 +10,17 @@ import type { InfoTool } from './types'
  */
 type PerOs = string | { win?: string; mac?: string; other?: string }
 
+/** ヘルプの表に出す説明（いまの言語） */
+export const toolHelp = (tool: BuiltinTool, lang: Lang): string =>
+  typeof tool.help === 'string' ? tool.help : tool.help[lang]
+
 export interface BuiltinTool {
   /** 設定の tools に書く名前 */
   name: string
   /** Info に出す名前（省略時は name） */
   label?: string
-  /** ヘルプの表の「出すもの」 */
-  help: string
+  /** ヘルプの表の「出すもの」。言語で変わるときは言語ごとに書く */
+  help: string | Record<Lang, string>
   /** バージョンを出すコマンド。ランチャーのフォルダで動かす */
   command: PerOs
   /** 出力からバージョンを抜く正規表現（1つ目のグループ）。省略時は最初の空でない行 */
@@ -60,7 +65,10 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
   { name: 'npm', help: 'npm', command: 'npm --version' },
   {
     name: 'python',
-    help: 'Python（Windows は py、無ければ python。Mac は python3）',
+    help: {
+      ja: 'Python（Windows は py、無ければ python。Mac は python3）',
+      en: 'Python (py on Windows, or python if missing; python3 on Mac)'
+    },
     // Windows は実行と同じく py を先に試す（python.exe は Store へ案内するスタブのことがある）
     command: {
       win: 'py --version 2>nul || python --version',
@@ -87,7 +95,10 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
   {
     name: 'steam',
     label: 'Steam',
-    help: 'Steam（「Steam について」に出るクライアントのバージョン）',
+    help: {
+      ja: 'Steam（「Steam について」に出るクライアントのバージョン）',
+      en: 'Steam (the client version shown in "About Steam")'
+    },
     command: { win: powershell(WIN_STEAM_SCRIPT), mac: `head -n 5 ${MAC_STEAM_MANIFEST}` },
     pattern: '"version"\\s+"(\\d+)"'
   },

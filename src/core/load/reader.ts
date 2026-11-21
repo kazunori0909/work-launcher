@@ -1,5 +1,6 @@
 import { parseDocument } from 'yaml'
 import type { Diagnostic } from '../types'
+import { t } from '../i18n'
 
 // 設定ファイルの読み方の共通部分（YAML の読み込み・値の確かめ方・エラーの集め方）
 
@@ -51,28 +52,27 @@ export class Reader {
   list(v: unknown, file: string, where: string): unknown[] {
     if (v === undefined || v === null) return []
     if (Array.isArray(v)) return v
-    this.error(file, `${where} は「- 」で始まる並びで書いてください`)
+    this.error(file, t().load.notList(where))
     return []
   }
 
   strings(v: unknown, file: string, where: string): string[] {
     const list = this.list(v, file, where)
-    if (list.some((x) => typeof x !== 'string'))
-      this.error(file, `${where} にはパスを並べてください`)
+    if (list.some((x) => typeof x !== 'string')) this.error(file, t().load.notPaths(where))
     return list.filter((x) => typeof x === 'string')
   }
 
   str(raw: Obj, key: string, file: string): string | undefined {
     const v = raw[key]
     if (v === undefined || typeof v === 'string') return v
-    this.error(file, `${key} は文字列で書いてください`)
+    this.error(file, t().load.notString(key))
     return undefined
   }
 
   warnUnknown(raw: Obj, known: readonly string[], file: string, where: string): void {
     for (const key of Object.keys(raw)) {
       if (!known.includes(key)) {
-        this.diagnostics.push({ level: 'warning', file, message: `${where}: 未知のキー ${key}` })
+        this.diagnostics.push({ level: 'warning', file, message: t().load.unknownKey(where, key) })
       }
     }
   }

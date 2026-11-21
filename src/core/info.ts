@@ -1,6 +1,8 @@
 // Info ページの値の形と、コマンド出力の読み取り。
 // 画面（コピー用のテキスト）とメインの両方から使うため、node: モジュールに依存させない
 
+import { t } from './i18n'
+
 export interface DriveInfo {
   name: string
   mountPoint: string
@@ -150,7 +152,7 @@ export function selectDrives(
           !imageMountPoints.includes(m.mountPoint))
     )
     .map((m) => ({
-      name: m.mountPoint === '/' ? '起動ディスク' : m.mountPoint.slice('/Volumes/'.length),
+      name: m.mountPoint === '/' ? t().info.bootDisk : m.mountPoint.slice('/Volumes/'.length),
       mountPoint: m.mountPoint,
       network: NETWORK_TYPES.includes(m.type)
     }))
@@ -172,7 +174,7 @@ export function parseDisplays(json: string): GpuInfo[] {
       String(d.spdisplays_mtlgpufamilysupport ?? d.spdisplays_metal ?? '')
     )?.[1]
     return {
-      model: String(d.sppci_model ?? d._name ?? '不明'),
+      model: String(d.sppci_model ?? d._name ?? t().unknown),
       cores: d.sppci_cores === undefined ? undefined : String(d.sppci_cores),
       metal: metal ? `Metal ${metal}` : undefined
     }
@@ -308,7 +310,7 @@ export function parseWindowsInfo(json: string): WindowsInfo | undefined {
     const driver = str(g.driver)
     const nvidia = /VEN_10DE/i.test(String(g.pnp ?? '')) || /^NVIDIA/i.test(String(g.name ?? ''))
     return {
-      model: str(g.name) ?? '不明',
+      model: str(g.name) ?? t().unknown,
       driver,
       vendorDriver: nvidia && driver ? nvidiaDriverVersion(driver) : undefined
     }
@@ -362,8 +364,8 @@ export function isUsefulIpv4(address: string): boolean {
 
 export function toolVersionLabel(tool: ToolInfo): string {
   if (tool.version) return tool.version
-  if (tool.unsupported) return 'この OS では取れません'
-  return tool.mismatch ? 'pattern が一致しません' : '未インストール'
+  if (tool.unsupported) return t().info.unsupported
+  return tool.mismatch ? t().info.mismatch : t().info.notInstalled
 }
 
 /** コマンドの結果からバージョンを取る。出力が空なら未インストールとみなす */
@@ -411,13 +413,13 @@ export function osLabel(info: SystemInfo): string {
 /** モデル名の後ろに付ける括弧書き（コア数・Metal・ドライバーのバージョン）。無ければ undefined */
 export function gpuDetail(gpu: GpuInfo): string | undefined {
   const parts = [
-    gpu.cores && `${gpu.cores} コア`,
+    gpu.cores && t().info.cores(gpu.cores),
     gpu.metal,
     // GPU の行なので、Ver. だけでドライバーのバージョンと分かる
     gpu.driver && `Ver. ${gpu.vendorDriver ? `${gpu.vendorDriver} / ` : ''}${gpu.driver}`
   ]
-  const extra = parts.filter(Boolean).join('・')
-  return extra ? `（${extra}）` : undefined
+  const extra = t().list(parts.filter((p): p is string => Boolean(p)))
+  return extra ? t().paren(extra) : undefined
 }
 
 export function gpuLabel(gpu: GpuInfo): string {
@@ -428,7 +430,7 @@ export function memoryLabel(memory: SystemInfo['memory']): string {
   const total = formatBytes(memory.totalBytes)
   return memory.usedBytes === undefined
     ? total
-    : `${total}（使用中 ${formatBytes(memory.usedBytes)}）`
+    : total + t().paren(t().info.used(formatBytes(memory.usedBytes)))
 }
 
 /** 内訳の容量。メモリは GB 単位で揃うことが多いので、割り切れれば小数を付けない */
@@ -449,16 +451,16 @@ export function memoryModulesLabel(m: MemoryModules): string {
     m.type && m.speedMHz
       ? `${m.type}-${m.speedMHz}`
       : (m.type ?? (m.speedMHz ? `${m.speedMHz} MHz` : undefined))
-  const slots = m.slots ? `スロット ${m.sizes.length}/${m.slots}` : undefined
-  return [capacity, speed, slots].filter(Boolean).join('・')
+  const slots = m.slots ? t().info.slots(m.sizes.length, m.slots) : undefined
+  return t().list([capacity, speed, slots].filter((p): p is string => Boolean(p)))
 }
 
 /** 例: 表示 ja・地域 ja-JP・システム ja-JP（cp932） */
 export function languageLabel(language: LanguageInfo): string {
   const { display, region, systemLocale: s } = language
-  const parts = [`表示 ${display.join(', ') || '不明'}`, `地域 ${region}`]
-  if (s) parts.push(`システム ${s.name}${s.codePage ? `（cp${s.codePage}）` : ''}`)
-  return parts.join('・')
+  const parts = [t().info.display(display.join(', ') || t().unknown), t().info.region(region)]
+  if (s) parts.push(t().info.system(s.name + (s.codePage ? t().paren(`cp${s.codePage}`) : '')))
+  return t().list(parts)
 }
 
 export interface InfoRow {
@@ -485,23 +487,23 @@ export function systemGroups(info: SystemInfo): InfoGroup[] {
       key: 'pc',
       title: 'PC',
       rows: [
-        row('コンピュータ名', info.computerName),
-        row('ユーザー名', info.userName),
-        ...info.addresses.map((a) => row('IP', `${a.address}（${a.name}）`))
+        row(t().info.computerName, info.computerName),
+        row(t().info.userName, info.userName),
+        ...info.addresses.map((a) => row('IP', a.address + t().paren(a.name)))
       ]
     },
     {
       key: 'os',
       title: 'OS',
-      rows: [row('OS', osLabel(info)), row('言語', languageLabel(language))]
+      rows: [row('OS', osLabel(info)), row(t().info.language, languageLabel(language))]
     },
     {
       key: 'hardware',
-      title: 'ハードウェア',
+      title: t().info.hardware,
       rows: [
-        row('CPU', `${info.cpu.model}（${info.cpu.cores} コア）`),
+        row('CPU', info.cpu.model + t().paren(t().info.cores(info.cpu.cores))),
         {
-          label: 'メモリ',
+          label: t().info.memory,
           value: memoryLabel(memory),
           sub: memory.modules && memoryModulesLabel(memory.modules)
         },
@@ -524,8 +526,8 @@ function rowText(r: InfoRow): string {
 }
 
 export function driveLabel(drive: DriveInfo): string {
-  if (drive.totalBytes === undefined || drive.freeBytes === undefined) return '取得できません'
-  return `空き ${formatBytes(drive.freeBytes)} / ${formatBytes(drive.totalBytes)}`
+  if (drive.totalBytes === undefined || drive.freeBytes === undefined) return t().info.noDrive
+  return t().info.free(formatBytes(drive.freeBytes), formatBytes(drive.totalBytes))
 }
 
 export type InfoSectionKey = InfoGroup['key'] | 'tools' | 'drives' | 'env' | 'registry'
@@ -547,25 +549,25 @@ export function infoSections(info: SystemInfo): InfoSection[] {
     })),
     {
       key: 'tools',
-      title: 'ツール',
+      title: t().info.tools,
       lines: info.tools.map((t) => `${t.name}: ${toolVersionLabel(t)}`)
     },
     {
       key: 'drives',
-      title: 'ドライブ',
+      title: t().info.drives,
       lines: info.drives.map(
-        (d) => `${d.name}${d.network ? '（ネットワーク）' : ''}: ${driveLabel(d)}`
+        (d) => `${d.name}${d.network ? t().info.network : ''}: ${driveLabel(d)}`
       )
     },
     {
       key: 'env',
-      title: '環境変数',
-      lines: info.env.map((e) => `${e.name}=${e.value ?? '（未設定）'}`)
+      title: t().info.env,
+      lines: info.env.map((e) => `${e.name}=${e.value ?? t().notSet}`)
     },
     {
       key: 'registry',
-      title: 'レジストリ',
-      lines: (info.registry ?? []).map((r) => `${r.name}=${r.value ?? '（未設定）'}`)
+      title: t().info.registry,
+      lines: (info.registry ?? []).map((r) => `${r.name}=${r.value ?? t().notSet}`)
     }
   ]
 }

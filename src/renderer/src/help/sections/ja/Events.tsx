@@ -1,9 +1,9 @@
-import { Code, Section, Table } from '../parts'
+import { Code, Table } from '../../parts'
 
 /** ヘルプの章「イベント」 */
 export function Events(): React.JSX.Element {
   return (
-    <Section id="events" title="イベント">
+    <>
       <p>
         案件を開いたときや閉じるとき、選択肢を変えたときに、<code>launcher/scripts/</code> の JS
         の関数を呼べます。開いたら接続先をコンソールに出す、閉じる前に後片付けをする、といった使い方です。関数の書き方と{' '}
@@ -69,6 +69,6 @@ module.exports = {
         案件を開いて記憶した値を戻すときは呼びません。開いたときの処理は <code>beforeOpen</code> か{' '}
         <code>afterOpen</code> に書きます。
       </p>
-    </Section>
+    </>
   )
 }

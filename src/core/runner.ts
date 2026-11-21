@@ -8,6 +8,7 @@ import iconv from 'iconv-lite'
 import { execKindFor } from './items'
 import type { ExecKind, Item, Page, Project } from './types'
 import { effectiveCwd, expandVariables, resolveWorkDir } from './variables'
+import { t } from './i18n'
 
 export interface RunRequest {
   kind: ExecKind
@@ -45,9 +46,9 @@ export function prepareRun(
   /** select の値（resolveSelections で決めたもの） */
   select: Record<string, string> = {}
 ): RunRequest | string {
-  if (item.kind !== 'exec') return '実行できる項目ではありません'
+  if (item.kind !== 'exec') return t().run.notExec
   const kind = execKindFor(item.scripts, platform)
-  if (!kind) return 'この OS では実行できません'
+  if (!kind) return t().run.notOnThisOs
   return prepareScript(
     {
       kind,
@@ -83,11 +84,11 @@ export function prepareScript(
 ): RunRequest | string {
   const { launcherDir, env, platform = process.platform, select = {} } = base
   const { kind } = spec
-  if (execKindFor({ [kind]: spec.script }, platform) !== kind) return 'この OS では実行できません'
+  if (execKindFor({ [kind]: spec.script }, platform) !== kind) return t().run.notOnThisOs
 
   const warnings: string[] = []
   const warnMissing = (names: string[]): void => {
-    for (const name of names) warnings.push(`環境変数 ${name} が定義されていません`)
+    for (const name of names) warnings.push(t().run.envMissing(name))
   }
 
   let cwd = base.defaultDir ?? launcherDir
@@ -96,13 +97,13 @@ export function prepareScript(
     warnMissing(work.missingEnv)
     cwd = work.dir
   }
-  if (!isDirectory(cwd)) return `作業フォルダがありません: ${cwd}`
+  if (!isDirectory(cwd)) return t().run.noWorkDir(cwd)
 
   const ctx = { launcherDir, workDir: cwd, env, select }
   const expand = (text: string): string => {
     const r = expandVariables(text, ctx)
     warnMissing(r.missingEnv)
-    for (const name of r.missingSelect) warnings.push(`select ${name} がありません`)
+    for (const name of r.missingSelect) warnings.push(t().run.selectMissing(name))
     return r.value
   }
 
@@ -232,16 +233,15 @@ export async function startRun(
         if (req.kind === 'python' && req.platform === 'win32' && r.code === PYTHON_STUB_EXIT) {
           return {
             ...r,
-            error:
-              'Python が見つかりません。Microsoft Store の案内用の python.exe しか無いようです。python.org などから Python を入れてください'
+            error: t().run.storePython
           }
         }
         return r
       }
       throw new Error(
         req.kind === 'sh' && req.platform === 'win32'
-          ? 'sh を実行する Git Bash（Git for Windows）が見つかりません'
-          : `実行するコマンドが見つかりません（${req.kind}）`
+          ? t().run.noGitBash
+          : t().run.noCommand(req.kind)
       )
     } finally {
       await rm(dir, { recursive: true, force: true })

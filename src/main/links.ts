@@ -9,6 +9,7 @@ import type { ProjectView } from '../core/types'
 import { openAbsolute, openExternal } from './open'
 import { handle } from './ipc'
 import type { ViewOf } from './project'
+import { t } from '../core/i18n'
 
 /** app の ready より前に呼ぶ */
 export function registerFileScheme(): void {
@@ -38,7 +39,7 @@ export function registerLinkHandlers(viewOf: ViewOf): void {
   handle('openLink', async (e, hrefArg, baseDirArg) => {
     const href = asString(hrefArg)
     const baseDir = asString(baseDirArg)
-    if (href === undefined || baseDir === undefined) return { error: 'リンクが正しくありません' }
+    if (href === undefined || baseDir === undefined) return { error: t().open.badLink }
     const target = resolveLink(href, baseDir)
     const view = viewOf(e.sender)
     switch (target.type) {
@@ -46,7 +47,7 @@ export function registerLinkHandlers(viewOf: ViewOf): void {
         return openExternal(target.url, view?.project?.openSchemes)
       // md のリンクは launcherDir 起点（resolveLink が launcherDir からの相対にしてある）
       case 'file':
-        if (!view?.launcherDir) return { error: '案件が開かれていません' }
+        if (!view?.launcherDir) return { error: t().noProject }
         return openAbsolute(path.join(view.launcherDir, target.path))
       // ページ内のリンクは画面で動かす
       case 'anchor':

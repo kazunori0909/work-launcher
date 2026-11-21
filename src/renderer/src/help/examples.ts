@@ -274,7 +274,7 @@ export interface Cheat extends Example {
   more?: Example[]
 }
 
-const exec = (kind: string, script: string, label: string): Item => ({
+export const exec = (kind: string, script: string, label: string): Item => ({
   kind: 'exec',
   scripts: { [kind]: script },
   label
