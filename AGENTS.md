@@ -24,6 +24,7 @@ docs/        # 開発フェーズの記録（README.md が索引）
   config.md  # 設定ファイル仕様（実装の正）
 src/core/      # Electron 非依存のロジック（vitest でテスト）
   load/        #   設定の読み込み（項目の種類の表は items.ts）
+  builtinTools.ts #   Info の組み込みのツールの表（ツールを足すときはここだけ直す）
   ipc.ts       #   メイン ↔ 画面の IPC の約束（チャンネル名と型）。引数の確かめ方は ipcArgs.ts
 src/main/      # Electron メインプロセス。ウィンドウごとの状態は session.ts
 src/preload/   # プリロード（core/ipc.ts の約束を ipcRenderer につなぐだけ）

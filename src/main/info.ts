@@ -3,10 +3,9 @@ import { statfs } from 'node:fs/promises'
 import os from 'node:os'
 import { app } from 'electron'
 import { handle } from './ipc'
+import { builtinTool, isUnsupportedTool, toolCommand, toolDisplayName } from '../core/builtinTools'
 import {
-  builtinToolCommand,
   extractVersion,
-  isUnsupportedTool,
   isUsefulIpv4,
   parseDisplays,
   parseKeyValues,
@@ -15,7 +14,6 @@ import {
   parseRegistryPath,
   parseWindowsInfo,
   REGISTRY_ENV,
-  toolDisplayName,
   selectDrives,
   usedMemoryFromVmStat,
   windowsInfoScript
@@ -112,18 +110,14 @@ async function windowsInfo(
   return r.ok ? parseWindowsInfo(r.text) : undefined
 }
 
-/**
- * Mac の /usr/bin/git・python3・java は、本体が入っていないと導入を促すダイアログを出す
- * スタブのことがある。本体が無いと分かるときは呼ばずに未インストールとする
- */
+/** Mac の導入を促すスタブで、本体が無いもの（→ BuiltinTool.macStub）。呼ばずに未インストールとする */
 async function macStubMissing(name: string): Promise<boolean> {
-  const stub = { git: '/usr/bin/git', python: '/usr/bin/python3', java: '/usr/bin/java' }[name]
+  const stub = builtinTool(name)?.macStub
   if (!stub) return false
-  const which = await runShell(`command -v ${name === 'python' ? 'python3' : name}`, undefined)
-  if (which.text.trim() !== stub) return false
-  const check =
-    name === 'java' ? await run('/usr/libexec/java_home', []) : await run('xcode-select', ['-p'])
-  return !check.ok
+  const which = await runShell(`command -v ${stub.path.split('/').pop()}`, undefined)
+  if (which.text.trim() !== stub.path) return false
+  const [command, ...args] = stub.check
+  return !(await run(command, args)).ok
 }
 
 async function tool(
@@ -134,9 +128,7 @@ async function tool(
   if (!t.command && isUnsupportedTool(t.name, process.platform)) {
     return { name, unsupported: true }
   }
-  const cmd = t.command
-    ? { command: t.command, pattern: t.pattern }
-    : builtinToolCommand(t.name, process.platform)
+  const cmd = toolCommand(t, process.platform)
   if (!cmd) return { name }
   if (process.platform === 'darwin' && !t.command && (await macStubMissing(t.name))) {
     return { name }
@@ -145,7 +137,7 @@ async function tool(
   const r = await runShell(cmd.command, launcherDir)
   return {
     name,
-    version: r.ok ? extractVersion(r.text, cmd.pattern ?? t.pattern) : undefined
+    version: r.ok ? extractVersion(r.text, cmd.pattern) : undefined
   }
 }
 

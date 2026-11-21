@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
-  builtinToolCommand,
   extractVersion,
   formatBytes,
   gpuLabel,
   infoSections,
   infoText,
-  isUnsupportedTool,
   isUsefulIpv4,
   languageLabel,
   memoryModulesLabel,
@@ -20,11 +18,11 @@ import {
   registryDefaultName,
   sectionText,
   selectDrives,
-  toolDisplayName,
   toolVersionLabel,
   usedMemoryFromVmStat
 } from './info'
 import type { SystemInfo } from './info'
+import { builtinToolCommand, isUnsupportedTool, toolDisplayName } from './builtinTools'
 
 it('parseKeyValues: sw_vers の出力', () => {
   const text = 'ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n'
@@ -165,12 +163,11 @@ describe('ツールのバージョン', () => {
     expect(extractVersion('0.117.0\n', epic.pattern)).toBe('0.117.0')
   })
 
-  it('toolDisplayName: 組み込みの steam・epic は製品名で出す', () => {
+  it('toolDisplayName: 組み込みの steam・epic は製品名で出す（上書きしても同じ）', () => {
     expect(toolDisplayName({ name: 'epic' })).toBe('Epic Games Launcher')
     expect(toolDisplayName({ name: 'steam' })).toBe('Steam')
     expect(toolDisplayName({ name: 'git' })).toBe('git')
-    // command を書いたら、設定の name のまま
-    expect(toolDisplayName({ name: 'epic', command: 'echo 1' })).toBe('epic')
+    expect(toolDisplayName({ name: 'Maven' })).toBe('Maven')
   })
 
   it('toolVersionLabel: 取れない理由を出し分ける', () => {

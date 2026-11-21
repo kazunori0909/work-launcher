@@ -10,7 +10,6 @@ import type { ReadFile } from './reader'
 // 設定ファイルを読み、正規化する（仕様は docs/config.md）。
 // 共通の読み方は reader.ts、項目は items.ts、info は info.ts、コンソールのルールは console.ts
 
-export { BUILTIN_TOOLS } from './info'
 export { CONSOLE_FILES, loadConsoleRules } from './console'
 export type { ReadFile } from './reader'
 
