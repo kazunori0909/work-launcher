@@ -83,9 +83,12 @@ const GENERIC = new Set([
   'name',
   'username'
 ])
-const needles = []
+const needles = new Map()
 const addNeedle = (kind, v) => {
-  if (v && v.length >= 3 && !GENERIC.has(v.toLowerCase())) needles.push({ kind, re: word(v) })
+  const key = v?.toLowerCase()
+  if (key && key.length >= 3 && !GENERIC.has(key) && !needles.has(key)) {
+    needles.set(key, { kind, re: word(v) })
+  }
 }
 addNeedle('この PC のユーザー名', os.userInfo().username)
 addNeedle('この PC のユーザー名', process.env.USERNAME)
@@ -107,17 +110,20 @@ const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g
 const OK_EMAIL =
   /@(example\.(com|org|net)|[\w.-]+\.example|users\.noreply\.github\.com)$|^(noreply@anthropic\.com|noreply@github\.com|git@github\.com)$/i
 
-const findings = []
+// 同じ行・同じ種類は1つにまとめる
+const found = new Map()
+const report = (where, kind, text) => found.set(`${where}\n${kind}`, { where, kind, text })
 for (const { where, text } of targets) {
   if (text.includes('personal-info:allow')) continue
-  for (const { kind, re } of needles) if (re.test(text)) findings.push({ where, kind, text })
+  for (const { kind, re } of needles.values()) if (re.test(text)) report(where, kind, text)
   for (const m of text.matchAll(HOME)) {
-    if (!DUMMY_HOME.has(m[1].toLowerCase())) findings.push({ where, kind: 'ホームのパス', text })
+    if (!DUMMY_HOME.has(m[1].toLowerCase())) report(where, 'ホームのパス', text)
   }
   for (const m of text.matchAll(EMAIL)) {
-    if (!OK_EMAIL.test(m[0])) findings.push({ where, kind: 'メールアドレス', text })
+    if (!OK_EMAIL.test(m[0])) report(where, 'メールアドレス', text)
   }
 }
+const findings = [...found.values()]
 
 if (findings.length === 0) {
   if (!hook) console.log('個人情報らしい文字列は見つかりませんでした')
