@@ -66,5 +66,4 @@
 - Electron 46（安定版は 2027-01 予定、Node 26 入り）に上げ、`@types/node` も 26 にする（2026-11）
 - Dependabot #1（minimatch の DoS、開発用の依存のみ）の残り。electron-builder が minimatch 11 に上げたら更新で消す（27 alpha でも ^10、2026-11）
 - 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
-- 次のリリースノートで、open・Office の相対パスが workDir 起点に変わったこと（`cwd` を書いた設定は互換が崩れる）を知らせる（→ phase23）
 - Steam の入っていない Windows で、Info の steam が「pattern が一致しません」ではなく「未インストール」と出るか確かめる（→ phase21）
