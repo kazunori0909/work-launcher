@@ -140,7 +140,7 @@ PC の情報を1画面にまとめて表示します。「テキストでコピ�
 | ドライブの空き容量             |   ✅    | ✅  |
 | 環境変数                       |   ✅    | ✅  |
 | ツールのバージョン             |   ✅    | ✅  |
-| Steam・Epic Games Launcher     |   ✅    |  —  |
+| Steam・Epic Games Launcher     |   ✅    | ✅  |
 | レジストリの値                 |   ✅    |  —  |
 
 - 言語: Windows ではシステムロケールとコードページ（例: `cp932`）も出します
@@ -153,7 +153,7 @@ PC・OS・ハードウェアの枠は常に出ます。ドライブも既定で�
 info:
   env: [PATH, JAVA_HOME]
   tools:
-    - git # 組み込み: git・node・npm・python・java・docker・dotnet
+    - git # 組み込み: git・node・npm・python・java・docker・dotnet・steam・epic
     - node
     - name: Maven # 組み込みに無いものは、コマンドと取り出し方を書く
       command: mvn -v
@@ -384,7 +384,7 @@ The Info page gathers your PC's details on one screen. "テキストでコピー
 | Free space on drives         |   ✅    | ✅  |
 | Environment variables        |   ✅    | ✅  |
 | Tool versions                |   ✅    | ✅  |
-| Steam, Epic Games Launcher   |   ✅    |  —  |
+| Steam, Epic Games Launcher   |   ✅    | ✅  |
 | Registry values              |   ✅    |  —  |
 
 - Language: on Windows, it also shows the system locale and code page (e.g. `cp932`)
@@ -397,7 +397,7 @@ The PC, OS and hardware boxes always appear, and drives appear by default (hide 
 info:
   env: [PATH, JAVA_HOME]
   tools:
-    - git # built in: git, node, npm, python, java, docker, dotnet
+    - git # built in: git, node, npm, python, java, docker, dotnet, steam, epic
     - node
     - name: Maven # for anything else, give a command and what to pick out
       command: mvn -v

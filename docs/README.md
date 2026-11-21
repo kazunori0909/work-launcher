@@ -46,7 +46,7 @@
 | 17  | CI の絞り込み ✅    | docs だけの変更では check を飛ばす     |
 | 18  | 関数から項目 ✅     | ctx から url・Office・実行系を呼ぶ     |
 | 19  | CI の重複 ✅        | main への push では CI を流さない      |
-| 20  | Mac のゲーム 🚧     | Mac でも Steam・Epic のバージョン      |
+| 20  | Mac のゲーム ✅     | Mac でも Steam・Epic のバージョン      |
 
 ## 次に扱う候補
 
@@ -57,3 +57,5 @@
 - eslint 10 に上げる。eslint-plugin-react が対応してから（Dependabot の PR を 2026-11 に閉じた）（→ phase12）
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
 - 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
+- Info のツールの定義（コマンド・pattern・表示名・対応 OS・ヘルプの説明）を1ファイルにまとめ、そこだけ直せばツールを足せるようにする（→ phase20）
+- Windows の実機で、Phase 20 のあとも Steam・Epic のバージョンが変わらず出るか確かめる（→ phase20）

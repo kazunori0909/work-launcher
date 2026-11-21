@@ -454,3 +454,16 @@ export const LAYOUT_CHEATS: Cheat[] = [
     items: [{ kind: 'html', content: '<b>注意</b>' }]
   }
 ]
+
+/** 組み込みのツール（tools に名前だけで書けるもの）。core の BUILTIN_TOOLS と同じ並び（examples.test.ts で確かめる） */
+export const BUILTIN_TOOL_ROWS: [name: string, shows: string][] = [
+  ['git', 'Git'],
+  ['node', 'Node.js'],
+  ['npm', 'npm'],
+  ['python', 'Python（Windows は py、無ければ python。Mac は python3）'],
+  ['java', 'Java'],
+  ['docker', 'Docker'],
+  ['dotnet', '.NET SDK'],
+  ['steam', 'Steam（「Steam について」に出るクライアントのバージョン）'],
+  ['epic', 'Epic Games Launcher']
+]
