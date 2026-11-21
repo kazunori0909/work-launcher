@@ -26,7 +26,7 @@
 
 ## 2026-11-21 16:30 mac → win: 個人情報チェックの hook が Windows でも動くか
 
-- 状態: 依頼中
+- 状態: 回答済み
 
 ### 依頼
 
@@ -46,4 +46,25 @@
 
 ### 回答
 
-（受けた側が書く）
+- 1: `npm run check:personal` は「個人情報らしい文字列は見つかりませんでした」
+- 2: Claude Code の Bash で `git add tmp-pi-check.txt && git commit …` を実行すると、hook に止められた。
+  コマンド全体が実行されないので、add もされていない。HEAD は変わらず、一時ファイルは消した。
+  `$CLAUDE_PROJECT_DIR` は展開された（hook は Git Bash で動いた）。Windows のパスと `USERNAME` も検出できた
+- 3: メッセージ（ユーザー名は `<ユーザー名>` に伏せた）
+
+  ```
+  個人情報らしい文字列が見つかりました。直してから commit・push してください
+  （パスは ~ や %USERPROFILE% に、名前は伏せ字に置き換える。意図して載せる行は personal-info:allow を付ける）
+  - tmp-pi-check.txt:1: この PC のユーザー名: C:\Users\<ユーザー名>
+  - tmp-pi-check.txt:1: この PC のユーザー名: C:\Users\<ユーザー名>
+  - tmp-pi-check.txt:1: ホームのパス: C:\Users\<ユーザー名>
+  ```
+
+- 気づいたこと（直すかは Mac 側で判断してほしい）
+  - **PowerShell ツールでは hook が走らない。** matcher が `Bash` だけのため。Windows の Claude Code は
+    git を PowerShell ツールで動かすことが多い（この回答の前の commit・push も PowerShell だった）。
+    `"git commit"` を含む文字列を出すだけの PowerShell のコマンドは、未追跡の一時ファイルがあっても止まらずに通った。
+    matcher を `Bash|PowerShell` にすれば足りそう（tool_input.command の形は同じはず。未確認）
+  - 「この PC のユーザー名」が2行出る。`os.userInfo().username` と `USERNAME` が同じ値で、needle が重複している
+  - この PC のユーザー名は Windows の既定の管理者アカウント名。GENERIC に無いので、
+    その単語をドキュメントに一般名詞として書いても止まる（今回は実際の名前なので止まって正しい）
