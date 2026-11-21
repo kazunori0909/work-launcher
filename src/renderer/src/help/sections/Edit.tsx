@@ -7,6 +7,10 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
     const r = await window.launcher.openProjectFolder()
     if (r.error) onError(r.error)
   }
+  const createLocal = async (): Promise<void> => {
+    const r = await window.launcher.createLocalConfig()
+    if (r.error) onError(r.error)
+  }
   return (
     <Section id="edit" title="設定ファイルの編集">
       <p>いま開いているランチャーのフォルダはここです。</p>
@@ -24,11 +28,18 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
 
       <h3>自分だけの設定</h3>
       <p>
-        自分の PC だけで使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
+        ローカル環境でのみ使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
         に書きます。書き方は <code>config.yaml</code>{' '}
         と同じで、アプリは共通の設定にこのファイルを重ねて読みます。<code>.gitignore</code>{' '}
         に入れておけば、ほかの人の画面には出ません。
       </p>
+      {launcherDir && (
+        <div className="help-row">
+          <button className="item" onClick={createLocal}>
+            config.local.yaml を作る
+          </button>
+        </div>
+      )}
       <p>重ね方は、書いたものによって変わります。</p>
       <Table
         plain
@@ -39,9 +50,39 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
           ['共通と同じ id の項目', 'その項目を同じ位置で置き換える'],
           ['新しい ID のページ', '最後にページを足す'],
           ['title・cwd', '上書きする'],
-          ['style・scripts', '共通の分の後ろに足す']
+          ['style・scripts', '共通の分の後ろに足す'],
+          ['info の tools', '後ろに足す（同じ名前は上書き、hidden: true で出さない）']
         ]}
       />
+
+      <h3>ページの追加</h3>
+      <p>
+        タブは <code>pages</code> に書いた順に並びます。<code>id</code> に使えるのは英数字と{' '}
+        <code>-</code>、<code>_</code> です。<code>top</code>{' '}
+        のページは、案件を開いたときに最初に出ます。
+      </p>
+      <p>
+        ページが増えて <code>config.yaml</code> が長くなったら、<code>include</code>{' '}
+        で別のファイルに分けられます。1つのファイルには1ページ分を書きます。
+      </p>
+      <Code lang="yaml">{`pages:
+  - id: top
+    title: メイン
+    icon: house
+    items: [...]
+  - include: launcher/pages/tools.yaml
+
+# launcher/pages/tools.yaml
+id: tools
+title: ツール
+cwd: tools        # このページのコマンドを動かすフォルダ
+items: [...]`}</Code>
+      <p>
+        <code>help</code> という ID は、このヘルプのために取ってあります。<code>pages</code> に{' '}
+        <code>id: help</code>{' '}
+        のページを書くと、その項目がヘルプのいちばん上の章に出ます。章の名前は案件の{' '}
+        <code>title</code> です。案件ならではの手順やメモを置く場所に使えます。
+      </p>
 
       <h3>作業フォルダを変える（cwd）</h3>
       <p>

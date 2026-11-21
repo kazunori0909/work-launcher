@@ -46,6 +46,17 @@ export function Info(): React.JSX.Element {
   tools:
     - name: steam              # 表示名は Steam のまま
       pattern: '"version"\\s+"(\\d+)"'`}</Code>
+      <h3>自分の PC だけツールを変える</h3>
+      <p>
+        <code>config.local.yaml</code> の <code>tools</code>{' '}
+        に書いたツールは、共通の設定の後ろに足されます。共通の設定にあるツールを出したくないときは、同じ名前で{' '}
+        <code>hidden: true</code> を書きます。
+      </p>
+      <Code lang="yaml">{`info:
+  tools:
+    - { name: node, hidden: true }   # 共通の設定の node を出さない
+    - name: Maven                    # 自分だけ使うツールを足す
+      command: mvn -v`}</Code>
       <p>
         レジストリのパスには引用符を付けないでください。<code>{'"…"'}</code> で囲むと、
         <code>\</code> がエスケープの文字として読まれてしまいます。末尾を <code>\</code>{' '}

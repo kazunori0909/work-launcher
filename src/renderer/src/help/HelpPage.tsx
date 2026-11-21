@@ -12,7 +12,6 @@ import { Info } from './sections/Info'
 import { Items } from './sections/Items'
 import { LicensesSection } from './sections/LicensesSection'
 import { Look } from './sections/Look'
-import { Pages } from './sections/Pages'
 import { Start } from './sections/Start'
 import { Variables } from './sections/Variables'
 
@@ -34,7 +33,6 @@ const SECTION_GROUPS: readonly { label?: string; sections: readonly HelpSection[
       { id: 'start', title: 'はじめに', Body: Start },
       { id: 'variables', title: '変数', Body: Variables },
       { id: 'edit', title: '設定ファイルの編集', Body: Edit },
-      { id: 'pages', title: 'ページの追加', Body: Pages },
       { id: 'errors', title: 'エラーが出たとき', Body: Errors },
       { id: 'licenses', title: 'ライセンス', Body: LicensesSection }
     ]

@@ -55,6 +55,8 @@ export interface InvokeApi {
   activate(pageId: string, path: number[], select: Record<string, string>): Promise<ActionResult>
   /** 案件フォルダを開く（ヘルプから使う） */
   openProjectFolder(): Promise<ActionResult>
+  /** launcher/config.local.yaml の雛形を作る（ヘルプから使う）。作れた・既にあるはメインがポップアップで知らせる */
+  createLocalConfig(): Promise<ActionResult>
   /** md・html のリンクを開く（baseDir は相対パスの起点） */
   openLink(href: string, baseDir: string): Promise<ActionResult>
   /** Info ページの値を集める（ツールの確認で数秒かかることがある） */
@@ -84,6 +86,7 @@ export const INVOKE_CHANNELS = {
   stop: 'run:stop',
   activate: 'item:activate',
   openProjectFolder: 'project:openFolder',
+  createLocalConfig: 'project:createLocalConfig',
   openLink: 'link:open',
   getInfo: 'info:get',
   listLicenses: 'licenses:list',

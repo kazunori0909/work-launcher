@@ -86,6 +86,8 @@ export interface InfoTool {
   name: string
   command?: string
   pattern?: string
+  /** 同じ名前のツールを Info に出さない（ローカル設定で案件のツールを消すときに書く） */
+  hidden?: boolean
 }
 
 /** 表示するレジストリの値（Windows だけ） */

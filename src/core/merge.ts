@@ -3,7 +3,7 @@ import type { InfoConfig, Item, Page, Project } from './types'
 /** config.local.yaml を config.yaml に重ねる（規則は docs/config.md 5章） */
 export function mergeProject(base: Project, local?: Project): Project {
   const pages = base.pages.map(withoutReplace)
-  if (!local) return { ...base, pages }
+  if (!local) return { ...base, pages, info: mergeInfo(base.info) }
   for (const { replace, ...lp } of local.pages) {
     const i = pages.findIndex((p) => p.id === lp.id)
     if (i < 0) {
@@ -59,7 +59,9 @@ function replaceById(items: Item[], item: Item): Item[] | undefined {
   return undefined
 }
 
-function mergeInfo(base: InfoConfig, local: InfoConfig): InfoConfig {
+/** hidden のツールは同じ名前のものを上書きしたうえで除く */
+function mergeInfo(base: InfoConfig, local?: InfoConfig): InfoConfig {
+  if (!local) return { ...base, tools: base.tools.filter((t) => !t.hidden) }
   const tools = [...base.tools]
   for (const tool of local.tools) {
     const i = tools.findIndex((t) => t.name === tool.name)
@@ -76,7 +78,7 @@ function mergeInfo(base: InfoConfig, local: InfoConfig): InfoConfig {
   return {
     drives: local.drives ?? base.drives,
     env: [...new Set([...base.env, ...local.env])],
-    tools,
+    tools: tools.filter((t) => !t.hidden),
     registry
   }
 }

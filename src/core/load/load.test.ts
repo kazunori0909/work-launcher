@@ -318,6 +318,24 @@ info:
     expect(r.project?.info.env).toEqual(['PATH', 'HOME'])
   })
 
+  it('ローカルで hidden: true を書いたツールは出さない（組み込みに無い名前でも command は要らない）', async () => {
+    const r = await loadFiles({
+      [CONFIG]: `
+version: 1
+pages: []
+info:
+  tools:
+    - git
+    - node
+    - { name: Maven, command: mvn -v }
+`,
+      [LOCAL]:
+        'info:\n  tools:\n    - { name: node, hidden: true }\n    - { name: Maven, hidden: true }'
+    })
+    expect(r.project?.info.tools.map((t) => t.name)).toEqual(['git'])
+    expect(r.diagnostics).toEqual([])
+  })
+
   it('レジストリはパスだけか { name, path }。ローカルは同じパスを上書きする', async () => {
     const r = await loadFiles({
       [CONFIG]: `
