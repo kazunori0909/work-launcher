@@ -3,7 +3,7 @@ import { ja } from './ja'
 import type { Messages } from './ja'
 
 // 表示の言語と辞書。メインと画面はプロセスが別なので、それぞれで setLang する（既定は ja）。
-// 決め方は docs/phase25-i18n-switch/PLAN.md
+// 決め方は docs/archive/phase25-i18n-switch/PLAN.md
 
 export type { Messages }
 export const LANGS = ['ja', 'en'] as const

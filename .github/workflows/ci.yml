@@ -1,6 +1,6 @@
 # PR で、lint・typecheck・test を Mac と Windows で流す。
-# ビルドに関係しないファイルだけの変更なら check を飛ばす（→ docs/phase17-ci-path-filter/PLAN.md）。
-# main への push では流さない。PR で確かめた中身がそのまま main になるため（→ docs/phase19-ci-dedupe/PLAN.md）。
+# ビルドに関係しないファイルだけの変更なら check を飛ばす（→ docs/archive/phase17-ci-path-filter/PLAN.md）。
+# main への push では流さない。PR で確かめた中身がそのまま main になるため（→ docs/archive/phase19-ci-dedupe/PLAN.md）。
 # main の Ruleset は ci-ok ジョブが通ることを必須にしている
 name: CI
 

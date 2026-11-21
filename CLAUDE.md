@@ -3,7 +3,7 @@
 # 開発方針
 
 **このファイルは「守るルール」だけを置く。** 何がどこにあるかは [AGENTS.md](AGENTS.md)、
-決定の理由は `docs/`（[phases.md](docs/phases.md) と各フェーズフォルダ）にある。
+決定の理由は `docs/`（[design.md](docs/design.md) と進行中のフェーズフォルダ）にある。
 
 ## 進め方
 
@@ -28,8 +28,8 @@
 
 ## トークンを抑える読み方
 
-- `docs/phases.md` と `docs/knowledge.md` は**全文を読まない**。`## Phase <N>:` や見出しで検索し、
-  その節だけ読む（番号は `docs/README.md` の表で引く）
+- `docs/design.md` と `docs/knowledge.md` は**全文を読まない**。見出しで検索し、その節だけ読む
+- `docs/archive/` は経緯を遡るときだけ開く。普段の検索からは外す（`--exclude-dir=archive`）
 - 作業前に読むのは、このファイル・AGENTS.md・進行中フェーズの PLAN.md/TASKS.md だけ。
   それ以外は必要になったときに、必要な範囲だけ開く
 - 同じ理由を2箇所に書かない（`docs/` かコードのどちらかに置き、もう一方からは参照する）
@@ -41,10 +41,12 @@
 - `TASKS.md` … 作業チェックリスト
 - `HANDOFF.md`（任意）… Mac と Windows の Claude どうしの依頼と回答（`/handoff`）。push は都度ユーザーに確かめる
 - `KNOWLEDGE.md`（任意）… 実機・OS・外部ツールで確かめた挙動と制約。気づいた時点で作る
+- フェーズを閉じたら（`/phase-close`）、`design.md`・`knowledge.md` は追記ではなく書き換える。
+  `docs/archive/` は当時の記録なので編集しない（リンク先が動いたときの張り替えだけ）
 - コメントには「いまのコードを読むのに要ること」だけを書く。経緯・実測値・不採用案は `docs/` へ
 
 ## 開発環境
 
-- 開発・起動・ビルドはホスト（macOS）で行う。devcontainer は使わない（→ docs/phase1-overall-design/PLAN.md）
+- 開発・起動・ビルドはホスト（macOS）で行う。devcontainer は使わない（→ docs/archive/phase1-overall-design/PLAN.md）
 - Node.js はリポジトリで固定したバージョンを使う（mise の `mise.toml`。パッケージマネージャは npm）
 - 設定の読み込み・合成などのロジックは Electron に依存させない（Electron なしでテストできる形に保つ）

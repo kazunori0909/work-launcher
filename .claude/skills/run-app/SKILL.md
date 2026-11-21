@@ -60,4 +60,4 @@ description: WorkLauncher の実機（Electron）を Playwright で起動し、�
 - VS Code のシェルは `ELECTRON_RUN_AS_NODE=1` が入っており、そのままだと Electron が Node として起動して
   `bad option` で落ちる。ドライバは起動時にこの変数を外している
 - 画面の JS の `window.close()` は `close` イベントを経ずに閉じるので、閉じる確認には `close` を使う
-- 背景は docs/phase10-lifecycle-events/KNOWLEDGE.md（フェーズを閉じたあとは docs/knowledge.md）
+- 背景は docs/archive/phase10-lifecycle-events/KNOWLEDGE.md

@@ -8,22 +8,21 @@
 - `PLAN.md` — 設計上の選択とその理由
 - `TASKS.md` — 作業チェックリスト
 - `KNOWLEDGE.md`（任意）— 実機・OS・外部ツールで判明した挙動・制約
-- `HANDOFF.md`（任意）— Mac と Windows の Claude どうしの依頼と回答（`/handoff`）。圧縮では統合しない
+- `HANDOFF.md`（任意）— Mac と Windows の Claude どうしの依頼と回答（`/handoff`）
 
-完了したフェーズは決定事項・確定仕様を `phases.md` へ、KNOWLEDGE.md（あれば）は
-要約せず `knowledge.md` へ統合し、フォルダは削除する（元の記録は git 履歴に残る）。
-どちらのファイルも最初の圧縮時に作る。
+完了したフェーズは `/phase-close`（ユーザーが明示的に指示したときのみ）で閉じる。
 
-新規フェーズの追加は `/phase-new`、完了済みフェーズの圧縮は
-`/phase-compress`（ユーザーが明示的に指示したときのみ）で行う。
+- いまも有効でコードに表れない決定は [design.md](design.md)、OS の挙動は [knowledge.md](knowledge.md) の
+  トピックへ書き換えて反映する（**いまの正**）
+- フォルダは要約せずに `archive/` へ移し、以後は編集しない（**当時の記録**）。経緯を遡るときだけ開く
+
+新規フェーズの追加は `/phase-new` で行う。
 
 ## 開発フェーズ記録
 
-**この表は Phase 番号の索引。** 決定事項は `phases.md` で `## Phase <N>:` を検索し、
-**その節だけ**読む（全文は読まない）。
+**この表は Phase 番号の索引。** 当時の記録は `archive/phase<N>-*/` にある。
 
 - **🚧** … 進行中。`docs/phase<N>-<slug>/` に PLAN.md・TASKS.md がある
-- **📘** … `knowledge.md` にも節がある
 - 要点は1行の見分けが付く程度にとどめる
 
 | #   | フェーズ            | 要点                                   |
@@ -54,6 +53,7 @@
 | 24  | ローカル設定 ✅     | ヘルプから config.local.yaml を作る    |
 | 25  | 多言語対応 ✅       | 画面とヘルプを ja / en で切り替え      |
 | 26  | 設定の言語の表 ✅   | label などを { ja, en } でも書ける     |
+| 27  | 記録の archive ✅   | いまの正と当時の記録を分ける           |
 
 ## 次に扱う候補
 

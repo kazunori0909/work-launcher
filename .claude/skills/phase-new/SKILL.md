@@ -12,8 +12,8 @@ description: 新規開発フェーズの追加。テーマを引数にとり、�
 
 ## 手順
 
-1. **採番**: `docs/phase*/` のフォルダ番号と `docs/README.md` の表の番号の**両方**を見て、
-   最大 + 1 を `N` にする（圧縮済みフェーズはフォルダが無いため、片方だけだと巻き戻る）
+1. **採番**: `docs/phase*/`・`docs/archive/phase*/` のフォルダ番号と `docs/README.md` の表の番号を見て、
+   最大 + 1 を `N` にする
 2. **slug**: 英語 kebab-case 2〜4語（例: `overall-design` / `config-loader`）
 3. **PLAN.md** を作る。判明している内容は埋め、未定は見出しだけ残す
 

@@ -67,7 +67,7 @@ OS で決める（`uname` が `Darwin` なら `mac`、Windows なら `win`）。
 
 1. `git pull` し、自分が出した `回答済み` の節を読む
 2. 要点を PLAN.md（決定）・KNOWLEDGE.md（OS の挙動）・TASKS.md（`[x]`）へ移し、状態を `完了` にする。
-   節は消さない（フェーズを圧縮するときにフォルダごと消える）
+   節は消さない（フェーズを閉じるとフォルダごと docs/archive/ へ移る）
 
 ## 個人情報
 
