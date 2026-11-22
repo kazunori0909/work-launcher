@@ -37,7 +37,8 @@ src/renderer/  # 画面（React）。hooks/ は App の状態、assets/styles/ �
   help/        #   組み込みのヘルプ（Web サイトでも描く）。章は sections/<言語>/（一覧は各 index.ts）、書き方の例は examples.ts と examples.en.ts。アプリ / Web の出し分けは parts.tsx の OnlyApp・OnlyWeb
 build/ resources/  # アイコン等（electron-builder 用）。アイコンの元は build/icons/*.svg（npm run icons で書き出す）
 scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs・個人情報チェック check-personal-info.mjs・ツールの取得の確認 check-tools.mjs・Release 本文を作る release-notes.mjs）
-site/        # GitHub Pages のサイト（Astro）。章の本文はヘルプのものを描き、トップなど Web だけのページを足す。文言は src/i18n.ts
+site/        # GitHub Pages のサイト（Astro）。章の本文はヘルプのものを描き、トップなど Web だけのページを足す。文言は src/i18n.ts。
+             #   JS を小さくするため、アプリの icons.ts・embed.tsx をビルドで差し替える（astro.config.mjs）
 examples/sample/  # 動作確認用の案件（開発中は既定でこれを開く）
 mise.toml    # Node.js のバージョン固定
 .claude/skills/  # phase-new / phase-close / run-app（実機を Playwright で動かす）/ handoff（Mac ⇄ Windows）/ check-tools（ツールを入れて消して取得を確かめる）

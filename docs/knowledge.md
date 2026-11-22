@@ -28,3 +28,12 @@
 ## electron-builder と配布
 
 ## GitHub Actions
+
+- リリースの公開で動く workflow は、タグの上で動く。そのため、Environment `github-pages` にはタグ `v*` の許可が要る
+  （Pages を有効にしたときに自動で入るのは `main` だけ）（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+
+## ビルドツール
+
+- Rollup は、静的にも読み込むパッケージを `import()` しても別の塊にしない。あとから読ませたいものは、
+  別のファイルに分けてそこを `import()` する（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+- DOMPurify は DOM が要るので、ビルド時（Node）の描画では動かない（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
