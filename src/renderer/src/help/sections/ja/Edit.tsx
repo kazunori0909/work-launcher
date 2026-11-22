@@ -31,7 +31,7 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
 
       <h3>自分だけの設定</h3>
       <p>
-        ローカル環境でのみ使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
+        自分の PC だけで使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
         に書きます。書き方は <code>config.yaml</code>{' '}
         と同じで、アプリは共通の設定にこのファイルを重ねて読みます。<code>.gitignore</code>{' '}
         に入れておけば、ほかの人の画面には出ません。
