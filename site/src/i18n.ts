@@ -7,7 +7,12 @@ const ja = {
   htmlLang: 'ja',
   siteDescription:
     '案件でよく使うコマンド・資料・URL をボタンにまとめる、Windows / macOS のデスクトップアプリ',
-  nav: { docs: 'ドキュメント', download: 'ダウンロード', github: 'GitHub' },
+  nav: {
+    docs: 'ドキュメント',
+    releases: 'リリースノート',
+    download: 'ダウンロード',
+    github: 'GitHub'
+  },
   langSwitch: 'English',
   hero: {
     badge: 'Windows / macOS ・ MIT ライセンス',
@@ -88,6 +93,15 @@ const ja = {
     platform: '見本の OS',
     edit: 'ヘルプの原稿を GitHub で見る'
   },
+  releases: {
+    title: 'リリースノート',
+    lead: 'バージョンごとの変更です。上げる前に、使っているバージョンより新しい破壊的変更が無いかを確かめてください。',
+    breakingIndex: '破壊的変更のあったバージョン',
+    onlyBreaking: '破壊的変更のあるバージョンだけ表示',
+    breakingBadge: '破壊的変更あり',
+    github: 'GitHub の Release',
+    kinds: { breaking: '破壊的変更', added: '新機能', changed: '変更', fixed: '修正' }
+  },
   footer: 'MIT License'
 }
 
@@ -97,7 +111,7 @@ const en: SiteMessages = {
   htmlLang: 'en',
   siteDescription:
     'A desktop app for Windows and macOS that puts your project’s commands, documents and URLs on buttons',
-  nav: { docs: 'Docs', download: 'Download', github: 'GitHub' },
+  nav: { docs: 'Docs', releases: 'Releases', download: 'Download', github: 'GitHub' },
   langSwitch: '日本語',
   hero: {
     badge: 'Windows / macOS · MIT License',
@@ -177,6 +191,15 @@ const en: SiteMessages = {
     next: 'Next',
     platform: 'Sample OS',
     edit: 'See the help source on GitHub'
+  },
+  releases: {
+    title: 'Release notes',
+    lead: 'Changes in each version. Before upgrading, check for breaking changes newer than the version you use.',
+    breakingIndex: 'Versions with breaking changes',
+    onlyBreaking: 'Show only versions with breaking changes',
+    breakingBadge: 'Breaking changes',
+    github: 'Release on GitHub',
+    kinds: { breaking: 'Breaking changes', added: 'New', changed: 'Changed', fixed: 'Fixed' }
   },
   footer: 'MIT License'
 }

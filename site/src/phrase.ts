@@ -20,3 +20,15 @@ export function phrase(text: string, lang: Lang): string {
     .map((s) => `<span class="s-sentence">${parser.parse(s).map(escape).join('<wbr>')}</span>`)
     .join('')
 }
+
+/** `…` をコードにした HTML（リリースノートの項目など、本文として普通に折り返すもの） */
+export function inlineCode(text: string): string {
+  return text
+    .split(/(`[^`]+`)/)
+    .map((part) =>
+      part.startsWith('`') && part.endsWith('`') && part.length > 1
+        ? `<code>${escape(part.slice(1, -1))}</code>`
+        : escape(part)
+    )
+    .join('')
+}

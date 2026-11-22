@@ -225,10 +225,10 @@ npm run build
 
 `main` は保護しています。変更は PR で入れ、CI（Windows と macOS での lint・typecheck・test）が通ってからマージします。`v*` のタグを push できるのは管理者だけです。
 
-1. ブランチで `package.json` の `version` を上げ（例: `0.1.0`）、PR を作ってマージする
+1. ブランチで `package.json` の `version` を上げ（例: `0.1.0`）、[.github/changelog.yaml](.github/changelog.yaml) の `unreleased` をそのバージョンと日付に書き換える。PR を作ってマージする
 2. `git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0` を実行する。注釈付きタグにしておくと、タグのページに最後のコミットのメッセージではなくバージョンが出る
 3. GitHub Actions が Windows と macOS でビルドし、ファイルを添えた下書きの Release を作る。タグと `package.json` のバージョンが一致していないと失敗する
-4. Releases のページで下書きを確かめ、ノートを直してから「Publish release」を押す。公開した Release はあとから変えられない（Immutable releases）
+4. Releases のページで下書きを確かめてから「Publish release」を押す。本文の「主な変更」は changelog.yaml から作られ、直すならそちらを直す。公開した Release はあとから変えられない（Immutable releases）
 
 リリースせずにビルドだけしたいときは、Actions タブから Release ワークフローを手動で実行します。できたファイルは、その実行の Artifacts に置かれます。
 
@@ -469,10 +469,10 @@ npm run build
 
 `main` is protected. Changes go in through pull requests, and CI (lint, typecheck and test on Windows and macOS) must pass before merging. Only the admin can push `v*` tags.
 
-1. On a branch, bump `version` in `package.json` (e.g. `0.1.0`), then open a pull request and merge it
+1. On a branch, bump `version` in `package.json` (e.g. `0.1.0`) and turn `unreleased` in [.github/changelog.yaml](.github/changelog.yaml) into that version and date, then open a pull request and merge it
 2. Run `git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0`. With an annotated tag, the tag page shows the version instead of the last commit message
 3. GitHub Actions builds on Windows and macOS and creates a draft release with the files. It fails if the tag does not match the version in `package.json`
-4. Check the draft on the Releases page, edit the notes, and click "Publish release". A published release cannot be changed (immutable releases)
+4. Check the draft on the Releases page and click "Publish release". The highlights in the notes come from changelog.yaml; fix them there. A published release cannot be changed (immutable releases)
 
 To build without releasing, run the Release workflow manually from the Actions tab. The files are attached to that run as artifacts.
 

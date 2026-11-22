@@ -36,10 +36,11 @@ src/preload/   # プリロード（core/ipc.ts の約束を ipcRenderer につ�
 src/renderer/  # 画面（React）。hooks/ は App の状態、assets/styles/ は画面ごとの CSS
   help/        #   組み込みのヘルプ（Web サイトでも描く）。章は sections/<言語>/（一覧は各 index.ts）、書き方の例は examples.ts と examples.en.ts。アプリ / Web の出し分けは parts.tsx の OnlyApp・OnlyWeb
 build/ resources/  # アイコン等（electron-builder 用）。アイコンの元は build/icons/*.svg（npm run icons で書き出す）
-scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs・個人情報チェック check-personal-info.mjs・ツールの取得の確認 check-tools.mjs）
+scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs・個人情報チェック check-personal-info.mjs・ツールの取得の確認 check-tools.mjs・Release 本文を作る release-notes.mjs）
 site/        # GitHub Pages のサイト（Astro）。章の本文はヘルプのものを描き、トップなど Web だけのページを足す。文言は src/i18n.ts
 examples/sample/  # 動作確認用の案件（開発中は既定でこれを開く）
 mise.toml    # Node.js のバージョン固定
 .claude/skills/  # phase-new / phase-close / run-app（実機を Playwright で動かす）/ handoff（Mac ⇄ Windows）/ check-tools（ツールを入れて消して取得を確かめる）
+.github/changelog.yaml  # リリースノートの正（サイトのリリースノートと Release 本文の「主な変更」を作る。読み込みは src/core/changelog.ts）
 .claude/settings.json  # hook（commit・push の前の個人情報チェック）
 ```

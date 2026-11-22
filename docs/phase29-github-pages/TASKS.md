@@ -11,6 +11,8 @@
 - [x] AGENTS.md の地図に `site/` を足す
 - [x] URL のパラメータの英語の説明を直し、url の見本でエンコードしたあとの URL を出す
 - [x] 日本語の書き方と改行の指針（docs/writing.md）を作り、サイトとヘルプの改行に当てる
+- [x] リリースノート（.github/changelog.yaml）を正にして、サイトのページと Release 本文を作る
+- [ ] 次のリリースで、Release 本文が changelog.yaml から作られるのを確かめる
 
 ## 共通
 
