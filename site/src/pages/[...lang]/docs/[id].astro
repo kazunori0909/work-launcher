@@ -1,0 +1,115 @@
+---
+import Base from '../../../layouts/Base.astro'
+import { DocBody } from '../../../components/DocBody'
+import { HELP_BOOKS } from '../../../../../src/renderer/src/help/sections'
+import { href, LANG_PARAMS, REPO_URL, SITE } from '../../../i18n'
+import { phrase } from '../../../phrase'
+
+// ヘルプの章を1ページずつ書き出す。章の一覧と並びはヘルプのもの（HELP_BOOKS）
+export function getStaticPaths() {
+  return LANG_PARAMS.flatMap(({ lang, param }) =>
+    HELP_BOOKS[lang]
+      .flatMap((g) => g.sections)
+      .map((s) => ({ params: { lang: param, id: s.id }, props: { lang } }))
+  )
+}
+
+const { lang } = Astro.props
+const { id } = Astro.params
+const m = SITE[lang]
+const groups = HELP_BOOKS[lang]
+const sections = groups.flatMap((g) => g.sections)
+const index = sections.findIndex((s) => s.id === id)
+const section = sections[index]
+const prev = sections[index - 1]
+const next = sections[index + 1]
+---
+
+<Base lang={lang} title={section.title} path={`docs/${id}/`}>
+  <div class="s-docs">
+    <aside class="s-sidebar">
+      <details open>
+        <summary>{m.docs.menu}</summary>
+        <nav>
+          {
+            groups.map((g) => (
+              <div class="s-side-group">
+                {g.label && <div class="s-side-label">{g.label}</div>}
+                {g.sections.map((s) => (
+                  <a href={href(lang, `docs/${s.id}/`)} aria-current={s.id === id ? 'page' : undefined}>
+                    {s.title}
+                  </a>
+                ))}
+              </div>
+            ))
+          }
+        </nav>
+      </details>
+    </aside>
+
+    <main class="s-doc">
+      <h1 set:html={phrase(section.title, lang)} />
+      <article class="help doc-content">
+        <DocBody client:load lang={lang} id={id} />
+      </article>
+      <nav class="s-pager">
+        {
+          prev ? (
+            <a href={href(lang, `docs/${prev.id}/`)}>
+              <small>← {m.docs.prev}</small>
+              {prev.title}
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next && (
+            <a class="s-pager-next" href={href(lang, `docs/${next.id}/`)}>
+              <small>{m.docs.next} →</small>
+              {next.title}
+            </a>
+          )
+        }
+      </nav>
+      <p class="s-edit">
+        <a href={`${REPO_URL}/tree/main/src/renderer/src/help/sections/${lang}`} rel="noopener">{m.docs.edit}</a>
+      </p>
+    </main>
+
+    <aside class="s-toc" aria-label={m.docs.onThisPage}>
+      <div class="s-toc-title">{m.docs.onThisPage}</div>
+      <ul id="toc"></ul>
+    </aside>
+  </div>
+</Base>
+
+<script>
+  // 狭い画面では章の一覧を閉じておく
+  if (matchMedia('(max-width: 820px)').matches) document.querySelector('.s-sidebar details')?.removeAttribute('open')
+
+  // 章の本文は React で描くので、目次は描いたあとの h3 から作る
+  const list = document.getElementById('toc')
+  const heads = [...document.querySelectorAll<HTMLHeadingElement>('.doc-content h3')]
+  for (const h of heads) {
+    h.id ||= h.textContent!.trim().replace(/\s+/g, '-')
+    const a = document.createElement('a')
+    a.href = `#${h.id}`
+    a.textContent = h.textContent
+    const li = document.createElement('li')
+    li.append(a)
+    list?.append(li)
+  }
+  if (heads.length === 0) list?.closest('aside')?.setAttribute('hidden', '')
+  const links = list ? [...list.querySelectorAll('a')] : []
+  const seen = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue
+        for (const a of links) a.classList.toggle('active', a.hash === `#${e.target.id}`)
+      }
+    },
+    { rootMargin: '-80px 0px -70% 0px' }
+  )
+  heads.forEach((h) => seen.observe(h))
+</script>

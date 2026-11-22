@@ -1,0 +1,48 @@
+# Web サイト（site/）をビルドして GitHub Pages に出す。
+# 章の本文はヘルプと同じなので、出すのはリリースを公開したとき（配っているアプリとサイトの説明を揃える）。
+# サイトの見た目だけ直したときなどは、Actions タブから手で流す（→ docs/phase29-github-pages/PLAN.md）
+name: Pages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Node は mise.toml のバージョンに揃える
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+
+      # Electron 本体は要らないので、postinstall（Electron の取得）を飛ばす
+      - run: npm ci --ignore-scripts
+      - run: npm run site:build
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

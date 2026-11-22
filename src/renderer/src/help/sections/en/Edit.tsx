@@ -1,5 +1,5 @@
 import { t } from '../../../../../core/i18n'
-import { Code, Table } from '../../parts'
+import { Code, OnlyApp, Table } from '../../parts'
 import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「設定ファイルの編集」（英語） */
@@ -14,15 +14,17 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
   }
   return (
     <>
-      <p>This is the launcher folder that is open now.</p>
-      <div className="help-row">
-        <code>{launcherDir ?? t().help.notOpen}</code>
-        {launcherDir && (
-          <button className="item" onClick={openFolder}>
-            Open folder
-          </button>
-        )}
-      </div>
+      <OnlyApp>
+        <p>This is the launcher folder that is open now.</p>
+        <div className="help-row">
+          <code>{launcherDir ?? t().help.notOpen}</code>
+          {launcherDir && (
+            <button className="item" onClick={openFolder}>
+              Open folder
+            </button>
+          )}
+        </div>
+      </OnlyApp>
       <p>
         When you save, the app reloads the settings automatically. Open tabs and running commands
         keep going.

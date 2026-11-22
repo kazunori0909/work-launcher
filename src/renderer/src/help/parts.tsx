@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { execKindFor, expandSelect, itemAt, resolveSelections } from '../../../core/items'
+import { buildUrl, execKindFor, expandSelect, itemAt, resolveSelections } from '../../../core/items'
 import type { Project } from '../../../core/types'
 import { highlight } from '../components/highlight'
 import type { CodeLang } from '../components/highlight'
@@ -9,6 +9,7 @@ import { SelectContext } from '../components/selectContext'
 import type { SelectContextValue } from '../components/selectContext'
 import type { Cheat, Example } from './examples'
 import { t } from '../../../core/i18n'
+import { useHelpTarget } from './target'
 
 // ヘルプの章で使う部品（章の枠・コード・表・見本・早見表）
 
@@ -19,6 +20,16 @@ export interface SectionProps {
   workDir?: string
   platform: string
   onError(message: string): void
+}
+
+/** アプリのヘルプでだけ出す（アプリの API を呼ぶボタン・いま開いている案件の話など） */
+export function OnlyApp({ children }: { children: ReactNode }): React.JSX.Element | null {
+  return useHelpTarget() === 'app' ? <>{children}</> : null
+}
+
+/** Web サイト（site/）でだけ出す */
+export function OnlyWeb({ children }: { children: ReactNode }): React.JSX.Element | null {
+  return useHelpTarget() === 'web' ? <>{children}</> : null
 }
 
 export function Section(props: {
@@ -168,7 +179,10 @@ function CheatCells({
   )
 }
 
-/** 書き方の例と、その設定で出るボタン（本物の描画。押すと、実行する内容を下に出すだけ） */
+/**
+ * 書き方の例と、その設定で出るボタン（本物の描画）。押すと、実行するコマンドか開く URL を下に出すだけ。
+ * URL は params をエンコードしたあとのものを出す（エンコードされることを見せる）
+ */
 export function SampleView({
   example,
   platform
@@ -177,13 +191,26 @@ export function SampleView({
   platform: string
 }): React.JSX.Element {
   const selections = useSampleSelections(example.items)
-  const [ran, setRan] = useState<string>()
+  const [ran, setRan] = useState<{ label: string; value: string }>()
 
   const activate = (path: number[]): void => {
     const item = itemAt(example.items, path)
+    const expand = (v: string): string => expandSelect(v, selections.values).value
+    if (item?.kind === 'url') {
+      const params = Object.entries(item.params ?? {}).map(([k, v]) => [k, expand(v)])
+      try {
+        setRan({
+          label: t().help.sampleOpened,
+          value: buildUrl(expand(item.url), Object.fromEntries(params))
+        })
+      } catch {
+        setRan({ label: t().open.badUrl(item.url), value: '' })
+      }
+      return
+    }
     if (item?.kind !== 'exec') return
     const kind = execKindFor(item.scripts, platform)
-    if (kind) setRan(expandSelect(item.scripts[kind] ?? '', selections.values).value)
+    if (kind) setRan({ label: t().help.sampleRan, value: expand(item.scripts[kind] ?? '') })
   }
 
   return (
@@ -201,7 +228,7 @@ export function SampleView({
         </SelectContext.Provider>
         {ran !== undefined && (
           <div className="preview-ran">
-            {t().help.sampleRan} <code>{ran}</code>
+            {ran.label} {ran.value && <code>{ran.value}</code>}
           </div>
         )}
       </div>

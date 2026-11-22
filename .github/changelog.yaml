@@ -1,0 +1,110 @@
+# リリースノートの正。Web サイトのリリースノートと、GitHub の Release 本文の「主な変更」はここから作る。
+# - 新しい順に書く。まだ出していない変更は先頭の unreleased に足し、バージョンを上げる PR で version と date に書き換える
+# - date は公開した日（日本時間）
+# - 種類は breaking（破壊的変更）・added（新機能）・changed（変更）・fixed（修正）。ja と en の両方を書く
+# - 利用者に関係するものだけ書く（CI やドキュメントだけの変更は書かない）。書き方は docs/writing.md
+# - breaking には、直し方まで書く
+# - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
+
+- version: unreleased
+  added:
+    - ja: Info の組み込みのツールに ruby・go・rust・php を足しました。`tools` に名前を書くだけで、バージョンが出ます。
+      en: Added ruby, go, rust and php to the built-in tools of the Info page. Write the name in `tools` to show the version.
+
+- version: 0.3.0
+  date: 2026-11-22
+  summary:
+    ja: 画面とヘルプを、日本語と英語で切り替えられるようになりました。
+    en: The app and its help can now be switched between Japanese and English.
+  breaking:
+    - ja: >-
+        `open`・`excel`・`word`・`powerpoint`（関数の `ctx.open` なども）の相対パスを、作業フォルダ（`${workDir}`）から数えるようにしました。`cwd` を書いている設定では、開く先が変わります。ランチャーの中のファイルは `${launcherDir}/launcher/…` と書いてください。`cwd` を書いていなければ、動きは変わりません。
+      en: >-
+        Relative paths in `open`, `excel`, `word` and `powerpoint` (including `ctx.open` and the like) now count from the working folder (`${workDir}`).
+        If your settings set `cwd`, these paths now point elsewhere; write `${launcherDir}/launcher/…` for files inside the launcher.
+        Nothing changes if `cwd` is not set.
+  added:
+    - ja: 表示の言語を、ヘッダーの右端のボタンで日本語と英語に切り替えられるようになりました。選んだ言語は覚えます（既定は OS の言語）。
+      en: The display language can be switched between Japanese and English with the button at the right end of the header. The choice is remembered (the default follows the OS).
+    - ja: >-
+        設定の `title`・`label`・`md` などを `{ ja: …, en: … }` で書けるようになりました。関数には `ctx.lang` を渡します。
+      en: >-
+        Text in the settings (`title`, `label`, `md` and more) can be written as `{ ja: …, en: … }`. Functions receive `ctx.lang`.
+    - ja: ヘルプの「設定ファイルの編集」から、`config.local.yaml` の雛形を作れるようになりました。
+      en: A `config.local.yaml` template can be created from “Editing the settings” in the help.
+
+- version: 0.2.1
+  date: 2026-11-21
+  added:
+    - ja: Mac でも、Info ページに Steam と Epic Games Launcher のバージョンが出るようになりました。
+      en: The Info page now shows the Steam and Epic Games Launcher versions on Mac too.
+    - ja: >-
+        組み込みのツールのバージョンの取り方を、`config.yaml` で上書きできるようになりました。`pattern` だけ書けば抜き出し方を、`command` も書けば取り方をまるごと変えます。
+      en: >-
+        How a built-in tool's version is read can be overridden in `config.yaml`.
+        Write only `pattern` to change how the version is picked out, or `command` as well to replace the lookup entirely.
+  changed:
+    - ja: コマンドは成功したのに `pattern` に当たらないときは、「未インストール」ではなく「pattern が一致しません」と出るようにしました。
+      en: When the command succeeds but `pattern` does not match, the Info page now says “pattern did not match” instead of “not installed”.
+
+- version: 0.2.0
+  date: 2026-11-16
+  summary:
+    ja: 関数の中から、ボタンと同じ動作を呼べるようになりました。
+    en: Functions can now call the same actions as buttons.
+  breaking:
+    - ja: '`ctx.openUrl(url, params)` を `ctx.url(url, { params })` に変えました。関数の中の呼び出しを書き換えてください。'
+      en: '`ctx.openUrl(url, params)` is now `ctx.url(url, { params })`. Update the calls in your functions.'
+  added:
+    - ja: >-
+        関数の `ctx` から、ボタンと同じ動作を呼べるようになりました（`ctx.url`・`ctx.excel` / `word` / `powerpoint`・`ctx.bat` / `sh` / `powershell` / `python`）。コマンドは終わるまで待ち、終了コードと `stdout`・`stderr` を返します。
+      en: >-
+        Functions can call the same actions as buttons through `ctx` (`ctx.url`, `ctx.excel` / `word` / `powerpoint`, `ctx.bat` / `sh` / `powershell` / `python`).
+        Commands wait until they finish and return the exit code, `stdout` and `stderr`.
+    - ja: md のコードブロックに色が付くようになりました。
+      en: Code blocks in md are now syntax-highlighted.
+
+- version: 0.1.3
+  date: 2026-11-16
+  added:
+    - ja: ヘルプのコードの見本に色が付くようになりました。
+      en: Code samples in the help are now syntax-highlighted.
+  changed:
+    - ja: ヘルプのサイドメニューを短くし、文章を読みやすく書き直しました。
+      en: The help's side menu is shorter, and its text has been rewritten to read more easily.
+
+- version: 0.1.2
+  date: 2026-11-15
+  changed:
+    - ja: Windows のポータブル版の起動を速くしました（約8秒から約3.7秒）。
+      en: The Windows portable build starts faster (from about 8 seconds to about 3.7 seconds).
+
+- version: 0.1.1
+  date: 2026-11-15
+  breaking:
+    - ja: >-
+        `url` の項目、md・html のリンク、`ctx.openUrl` で開ける URL を、`http`・`https`・`mailto` だけにしました。`file://` などを開くには、`config.yaml` の最上位の `openSchemes` に並べてください（例: `openSchemes: [http, https, mailto, file]`）。
+      en: >-
+        `url` items, links in md and html, and `ctx.openUrl` now open only `http`, `https` and `mailto` URLs.
+        To open others such as `file://`, list them in `openSchemes` at the top level of `config.yaml` (e.g. `openSchemes: [http, https, mailto, file]`).
+
+- version: 0.1.0
+  date: 2026-11-15
+  summary:
+    ja: 最初の公開です。
+    en: The first release.
+  added:
+    - ja: '`launcher/config.yaml` に書いたページとボタンを並べます。保存すると、すぐ画面に反映されます。'
+      en: Pages and buttons written in `launcher/config.yaml` appear on screen, and update as soon as you save.
+    - ja: bat・sh・PowerShell・Python のコマンドを実行し、出力をコンソールに出します。
+      en: Runs bat, sh, PowerShell and Python commands and shows the output in the console.
+    - ja: ファイルやフォルダ、Office の資料、URL を開くボタンを置けます。
+      en: Buttons can open files, folders, Office documents and URLs.
+    - ja: 選択肢（select・radio・checkbox）、グループ、md・html の埋め込みを置けます。
+      en: Choices (select, radio, checkbox), groups and embedded md / html can be placed on pages.
+    - ja: JavaScript の関数を呼ぶボタンと、開く・閉じる・選択肢を変えたときのイベントがあります。
+      en: Buttons can call JavaScript functions, and events run on open, on close and when a choice changes.
+    - ja: PC の情報（OS・CPU・ツールのバージョンなど）をまとめる Info ページがあります。
+      en: The Info page gathers your PC's details (OS, CPU, tool versions and more).
+    - ja: 自分だけの設定（`config.local.yaml`）と、Windows のポータブル版があります。
+      en: Supports personal settings (`config.local.yaml`) and a portable build for Windows.

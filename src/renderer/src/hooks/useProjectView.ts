@@ -8,7 +8,11 @@ export function useProjectView(): ProjectView | undefined {
   useEffect(() => {
     // 描く前に言語を合わせる（文言は描くときに t() で引く）
     const apply = (v: ProjectView | undefined): void => {
-      if (v?.lang) setLang(v.lang)
+      if (v?.lang) {
+        setLang(v.lang)
+        // 日本語の文節での改行（help.css の auto-phrase）は lang が要る
+        document.documentElement.lang = v.lang
+      }
       setView(v)
     }
     window.launcher.loadProject().then(apply)

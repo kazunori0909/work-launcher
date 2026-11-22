@@ -1,0 +1,15 @@
+---
+import { HELP_BOOKS } from '../../../../../src/renderer/src/help/sections'
+import { href, LANG_PARAMS } from '../../../i18n'
+
+// /docs/ は最初の章へ送る
+export function getStaticPaths() {
+  return LANG_PARAMS.map(({ lang, param }) => ({ params: { lang: param }, props: { lang } }))
+}
+
+const { lang } = Astro.props
+const to = href(lang, `docs/${HELP_BOOKS[lang][0].sections[0].id}/`)
+---
+
+<meta http-equiv="refresh" content={`0; url=${to}`} />
+<link rel="canonical" href={to} />

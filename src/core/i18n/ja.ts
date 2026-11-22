@@ -224,11 +224,13 @@ export const ja = {
     cheatCode: 'コード',
     preview: '表示',
     sampleRan: '実行する内容（見本なので実行はしません）:',
+    sampleOpened: '開く URL（見本なので開きません）:',
     iconSearch: '英語で検索（例: folder, play, file）',
     iconCount: (n: number) => `${n} 件`,
     iconShown: (max: number) => `（先頭 ${max} 件を表示）`,
     iconCopied: (name: string) => ` ・ icon: ${name} をコピーしました`,
     licenseListBuiltOnly: '一覧はビルドしたアプリでだけ出ます。',
+    licenseListInApp: 'ライブラリごとのライセンス文は、アプリのヘルプで読めます。',
     noLicenseText: (license: string) => `（ライセンス文なし: ${license}）`
   },
 

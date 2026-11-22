@@ -26,8 +26,8 @@ export function Info(): React.JSX.Element {
       <h3>組み込みのツール</h3>
       <p>
         <code>tools</code>{' '}
-        に名前だけ書けば、バージョンの取り方を書かなくても出せるツールです。どれも Windows と Mac
-        で使えます。ここに無いものは、上の Maven のように <code>command</code> と{' '}
+        に名前を書くだけで出せるツールです。バージョンの取り方は書かなくてかまいません。どれも
+        Windows と Mac で使えます。ここに無いものは、上の Maven のように <code>command</code> と{' '}
         <code>pattern</code> を書きます。
       </p>
       <Table

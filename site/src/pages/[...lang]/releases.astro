@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro'
+import source from '../../../../.github/changelog.yaml?raw'
+import { CHANGE_KINDS, hasBreaking, parseChangelog, released } from '../../../../src/core/changelog'
+import { LANG_PARAMS, REPO_URL, SITE } from '../../i18n'
+import { inlineCode, phrase } from '../../phrase'
+
+// リリースノート。中身は .github/changelog.yaml（GitHub の Release 本文と同じもの）。未公開の分は出さない
+export function getStaticPaths() {
+  return LANG_PARAMS.map(({ lang, param }) => ({ params: { lang: param }, props: { lang } }))
+}
+
+const { lang } = Astro.props
+const m = SITE[lang]
+const releases = released(parseChangelog(source))
+const breaking = releases.filter(hasBreaking)
+---
+
+<Base lang={lang} title={m.releases.title} path="releases/">
+  <main class="s-container s-releases">
+    <header class="s-releases-head">
+      <h1 set:html={phrase(m.releases.title, lang)} />
+      <p class="s-section-lead" set:html={phrase(m.releases.lead, lang)} />
+    </header>
+
+    {
+      breaking.length > 0 && (
+        <section class="s-breaking-index" aria-label={m.releases.breakingIndex}>
+          <h2>{m.releases.breakingIndex}</h2>
+          <ul>
+            {breaking.map((r) => (
+              <li>
+                <a href={`#v${r.version}`}>{r.version}</a>
+              </li>
+            ))}
+          </ul>
+          <label class="s-only-breaking">
+            <input type="checkbox" id="only-breaking" />
+            {m.releases.onlyBreaking}
+          </label>
+        </section>
+      )
+    }
+
+    <ol class="s-timeline">
+      {
+        releases.map((r) => (
+          <li class="s-release" id={`v${r.version}`} data-breaking={hasBreaking(r) ? '' : undefined}>
+            <div class="s-release-meta">
+              <a class="s-release-version" href={`#v${r.version}`}>
+                {r.version}
+              </a>
+              <time datetime={r.date}>{r.date}</time>
+              {hasBreaking(r) && <span class="s-badge-breaking">{m.releases.breakingBadge}</span>}
+            </div>
+            <article class="s-release-card">
+              {r.summary && <p class="s-release-summary" set:html={phrase(r.summary[lang], lang)} />}
+              {CHANGE_KINDS.map(
+                (kind) =>
+                  r.changes[kind]?.length && (
+                    <section class={`s-change s-change-${kind}`}>
+                      <h3>{m.releases.kinds[kind]}</h3>
+                      <ul>
+                        {r.changes[kind]!.map((c) => (
+                          <li set:html={inlineCode(c[lang])} />
+                        ))}
+                      </ul>
+                    </section>
+                  )
+              )}
+              <a class="s-release-link" href={`${REPO_URL}/releases/tag/v${r.version}`} rel="noopener">
+                {m.releases.github} →
+              </a>
+            </article>
+          </li>
+        ))
+      }
+    </ol>
+  </main>
+</Base>
+
+<script>
+  // 破壊的変更のあるバージョンだけにする
+  const box = document.getElementById('only-breaking') as HTMLInputElement | null
+  box?.addEventListener('change', () => {
+    for (const el of document.querySelectorAll<HTMLElement>('.s-release')) {
+      el.hidden = box.checked && !el.hasAttribute('data-breaking')
+    }
+  })
+</script>

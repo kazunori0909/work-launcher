@@ -1,5 +1,5 @@
 import { t } from '../../../../../core/i18n'
-import { Code, Table } from '../../parts'
+import { Code, OnlyApp, Table } from '../../parts'
 import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「設定ファイルの編集」 */
@@ -14,22 +14,24 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
   }
   return (
     <>
-      <p>いま開いているランチャーのフォルダはここです。</p>
-      <div className="help-row">
-        <code>{launcherDir ?? t().help.notOpen}</code>
-        {launcherDir && (
-          <button className="item" onClick={openFolder}>
-            フォルダを開く
-          </button>
-        )}
-      </div>
+      <OnlyApp>
+        <p>いま開いているランチャーのフォルダはここです。</p>
+        <div className="help-row">
+          <code>{launcherDir ?? t().help.notOpen}</code>
+          {launcherDir && (
+            <button className="item" onClick={openFolder}>
+              フォルダを開く
+            </button>
+          )}
+        </div>
+      </OnlyApp>
       <p>
         保存すると、アプリが自動で読み直します。開いているタブや実行中のコマンドは止まりません。
       </p>
 
       <h3>自分だけの設定</h3>
       <p>
-        ローカル環境でのみ使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
+        自分の PC だけで使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
         に書きます。書き方は <code>config.yaml</code>{' '}
         と同じで、アプリは共通の設定にこのファイルを重ねて読みます。<code>.gitignore</code>{' '}
         に入れておけば、ほかの人の画面には出ません。

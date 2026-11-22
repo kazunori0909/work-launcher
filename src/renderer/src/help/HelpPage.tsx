@@ -2,16 +2,10 @@ import type { ReactNode } from 'react'
 import { Section } from './parts'
 import type { SectionProps } from './parts'
 import { getLang } from '../../../core/i18n'
-import type { Lang } from '../../../core/i18n'
-import type { HelpGroup } from './sections/book'
-import { HELP_EN } from './sections/en'
-import { HELP_JA } from './sections/ja'
+import { HELP_BOOKS } from './sections'
 
 // 組み込みのヘルプ。仕様の正は docs/config.md。ここは利用者向けに要点と見本を載せる。
 // 章の本文は sections/<言語>/ に1章1ファイルで置く
-
-/** 言語ごとの章の一覧 */
-export const HELP_BOOKS: Record<Lang, readonly HelpGroup[]> = { ja: HELP_JA, en: HELP_EN }
 
 /** 設定に書いた help ページの項目を出す章 */
 const PROJECT_ID = 'project'
