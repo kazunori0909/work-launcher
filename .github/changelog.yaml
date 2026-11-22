@@ -6,10 +6,19 @@
 # - breaking には、直し方まで書く
 # - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
 
-- version: unreleased
+- version: 0.3.1
+  date: 2026-11-22
+  summary:
+    ja: 使い方のサイト（GitHub Pages）を公開しました。
+    en: The WorkLauncher website (GitHub Pages) is now live.
   added:
     - ja: Info の組み込みのツールに ruby・go・rust・php を足しました。`tools` に名前を書くだけで、バージョンが出ます。
       en: Added ruby, go, rust and php to the built-in tools of the Info page. Write the name in `tools` to show the version.
+    - ja: ヘルプの url の見本を押すと、エンコードしたあとの URL が出るようになりました。
+      en: Clicking a url sample in the help now shows the URL after encoding.
+  changed:
+    - ja: ヘルプの見出しと表を、日本語の文節の切れ目で折り返すようにしました。
+      en: Headings and tables in the help now wrap Japanese text at phrase boundaries.
 
 - version: 0.3.0
   date: 2026-11-22
