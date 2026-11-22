@@ -1,4 +1,5 @@
 import { AppLicense, LicenseList } from '../../Licenses'
+import { OnlyApp } from '../../parts'
 
 /** ヘルプの章「ライセンス」（英語） */
 export function LicensesSection(): React.JSX.Element {
@@ -13,7 +14,9 @@ export function LicensesSection(): React.JSX.Element {
         Electron and Chromium are in <code>LICENSE.electron.txt</code> and{' '}
         <code>LICENSES.chromium.html</code>, bundled with the app.
       </p>
-      <p>Other libraries used are listed below. Click a name to open its license text.</p>
+      <OnlyApp>
+        <p>Other libraries used are listed below. Click a name to open its license text.</p>
+      </OnlyApp>
       <LicenseList />
     </>
   )

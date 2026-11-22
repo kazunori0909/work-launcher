@@ -25,6 +25,25 @@
   margin: 6px 0;
 }
 
+/* 日本語の改行（→ docs/writing.md「画面での改行」）。
+   見出しと表は文節で折り、本文は行頭の句読点と最後の行に1〜2文字だけ残るのを防ぐ */
+.help {
+  line-break: strict;
+}
+
+.help h2,
+.help h3,
+.help th,
+.help td,
+.cheat-note {
+  word-break: auto-phrase;
+}
+
+.help p,
+.help li {
+  text-wrap: pretty;
+}
+
 .help a {
   color: var(--accent);
 }

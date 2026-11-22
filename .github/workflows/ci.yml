@@ -71,6 +71,8 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      # ヘルプの章は Web サイトでも描くので、サイトのビルドが通るかも確かめる
+      - run: npm run site:build
 
   # 必須チェックはこの1つ。check が飛ばされたときも通す
   ci-ok:

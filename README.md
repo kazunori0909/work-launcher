@@ -252,7 +252,7 @@ WorkLauncher is a desktop app that puts the commands, documents and URLs you use
 
 - Put a YAML file in your project's repository, and its pages and buttons appear
 - Run bat / sh / PowerShell / Python scripts with one click and see the output
-- Write search and issue-form URLs with plain-text parameters, Japanese included
+- Write search and issue-form URLs without encoding them by hand: spaces, symbols and non-ASCII text included
 - See your PC's details (OS, CPU, tool versions, Windows registry values and more) on one screen, and copy them as text
 
 The app's menus and help are in Japanese, so the screenshots below are too.
@@ -336,9 +336,9 @@ The screenshot at the top shows the "Python" button below after a click. The out
 - Values picked in a `select` (and the like) go into scripts as `${select:ID}`, e.g. choose a target, then deploy
 - Regular expressions in `launcher/console.yaml` color console lines as errors, warnings or successes
 
-#### URL parameters in plain text
+#### URL parameters without manual encoding
 
-Values under `params` are URL-encoded for you and added as `?q=...`. Write them as they are, Japanese and line breaks included.
+Values under `params` are URL-encoded for you and added as `?q=...`. Write them as they are: spaces, symbols, non-ASCII text and line breaks included.
 
 ```yaml
 - url: https://www.google.com/search

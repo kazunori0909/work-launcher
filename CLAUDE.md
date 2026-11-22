@@ -22,13 +22,15 @@
 
 ## 書き方
 
+- 日本語の文章（アプリの文言・ヘルプ・Web サイト・docs・コミットメッセージ）は [docs/writing.md](docs/writing.md) に沿って書く。
+  画面に出す文言の改行も同じファイルの「画面での改行」に沿う
 - コミットメッセージは日本語で書く（件名・本文とも）
 - ソフトの version は「バージョン」と書く（「版」は使わない）。長くなるときは「Ver.」でよい
 - アプリの文言・ヘルプは日本語を正とし、直したら同じ変更で英語（`src/core/i18n/en.ts`・`help/sections/en/`・`examples.en.ts`）も直す
 
 ## トークンを抑える読み方
 
-- `docs/design.md` と `docs/knowledge.md` は**全文を読まない**。見出しで検索し、その節だけ読む
+- `docs/design.md`・`docs/knowledge.md`・`docs/writing.md` は**全文を読まない**。見出しで検索し、その節だけ読む
 - `docs/archive/` は経緯を遡るときだけ開く。普段の検索からは外す（`--exclude-dir=archive`）
 - 作業前に読むのは、このファイル・AGENTS.md・進行中フェーズの PLAN.md/TASKS.md だけ。
   それ以外は必要になったときに、必要な範囲だけ開く

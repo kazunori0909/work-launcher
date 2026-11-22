@@ -220,11 +220,13 @@ export const en: Messages = {
     cheatCode: 'Code',
     preview: 'Preview',
     sampleRan: 'Would run (this is a sample, so nothing runs):',
+    sampleOpened: 'Would open (this is a sample, so nothing opens):',
     iconSearch: 'Search by name (e.g. folder, play, file)',
     iconCount: (n) => count(n, 'icon'),
     iconShown: (max) => ` (showing the first ${max})`,
     iconCopied: (name) => ` · Copied icon: ${name}`,
     licenseListBuiltOnly: 'The list is shown only in a built app.',
+    licenseListInApp: "The license text of each library can be read in the app's help.",
     noLicenseText: (license) => `(no license text: ${license})`
   },
 

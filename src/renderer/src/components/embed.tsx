@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify'
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useContext, useMemo, useSyncExternalStore } from 'react'
 import type { ComponentProps } from 'react'
 import ReactMarkdown, { defaultUrlTransform } from 'react-markdown'
 import type { Components, ExtraProps } from 'react-markdown'
@@ -153,11 +153,18 @@ function sanitizeHtml(html: string, baseDir: string, openSchemes: readonly strin
   return div.innerHTML
 }
 
+const noSubscribe = (): (() => void) => () => {}
+const isClient = (): boolean => true
+const isServer = (): boolean => false
+
 export function HtmlEmbed({ html, baseDir }: { html: string; baseDir: string }): React.JSX.Element {
   const { onLink, openSchemes } = useContext(EmbedContext)
+  // DOMPurify は DOM が要る。Web サイト（site/）のビルドでは DOM が無いので空で書き出し、
+  // ブラウザで hydrate したあとに描く（アプリは createRoot なので最初から描く）
+  const hasDom = useSyncExternalStore(noSubscribe, isClient, isServer)
   const content = useMemo(
-    () => sanitizeHtml(html, baseDir, openSchemes),
-    [html, baseDir, openSchemes]
+    () => (hasDom ? sanitizeHtml(html, baseDir, openSchemes) : ''),
+    [hasDom, html, baseDir, openSchemes]
   )
   const open = (e: React.MouseEvent): void => {
     const a = (e.target as Element).closest('a')

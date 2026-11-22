@@ -1,0 +1,118 @@
+---
+import Base from '../../layouts/Base.astro'
+import { FeatureIcon } from '../../components/FeatureIcon'
+import { LiveSample } from '../../components/LiveSample'
+import { Code } from '../../../../src/renderer/src/help/parts'
+import mainShot from '../../../../docs/images/main.png'
+import infoShot from '../../../../docs/images/info.png'
+import heroShot from '../../../../docs/images/sample.png'
+import { href, LANG_PARAMS, REPO_URL, SITE } from '../../i18n'
+import { phrase } from '../../phrase'
+
+export function getStaticPaths() {
+  return LANG_PARAMS.map(({ lang, param }) => ({ params: { lang: param }, props: { lang } }))
+}
+
+const { lang } = Astro.props
+const m = SITE[lang]
+const tree = `my-project/
+  work.launcher  ${lang === 'ja' ? '# 空' : '# empty'}
+  launcher/
+    config.yaml  ${lang === 'ja' ? '# ボタン' : '# buttons'}`
+---
+
+<Base lang={lang} path="">
+  <main>
+    <section class="s-hero">
+      <div class="s-container s-hero-inner">
+        <p class="s-badge">{m.hero.badge}</p>
+        <h1>
+          <span set:html={phrase(m.hero.title[0], lang)} /><br /><span class="s-grad" set:html={phrase(m.hero.title[1], lang)} />
+        </h1>
+        <p class="s-lead" set:html={phrase(m.hero.lead, lang)} />
+        <div class="s-cta">
+          <a class="s-btn s-btn-primary" href="#download">{m.hero.primary}</a>
+          <a class="s-btn" href={href(lang, 'docs/start/')}>{m.hero.secondary} →</a>
+        </div>
+        <figure class="s-window">
+          <div class="s-window-bar"><i></i><i></i><i></i></div>
+          <img src={heroShot.src} width={heroShot.width} height={heroShot.height} alt={m.shots.hero} />
+        </figure>
+      </div>
+    </section>
+
+    <section class="s-section">
+      <div class="s-container">
+        <h2 class="s-h2">{m.features.title}</h2>
+        <div class="s-features">
+          {
+            m.features.items.map((f) => (
+              <article class="s-card">
+                <div class="s-card-icon">
+                  <FeatureIcon name={f.icon} />
+                </div>
+                <h3 set:html={phrase(f.title, lang)} />
+                <p set:html={phrase(f.body, lang)} />
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="s-section s-section-alt">
+      <div class="s-container">
+        <h2 class="s-h2">{m.how.title}</h2>
+        <p class="s-section-lead" set:html={phrase(m.how.lead, lang)} />
+        <div class="s-how">
+          <div class="help"><Code>{tree}</Code></div>
+          <div class="s-how-sample">
+            <LiveSample client:visible lang={lang} example="select" />
+            <p class="s-note" set:html={phrase(m.how.tryIt, lang)} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-section">
+      <div class="s-container">
+        <h2 class="s-h2">{m.shots.title}</h2>
+        <div class="s-shots">
+          <figure>
+            <img src={mainShot.src} width={mainShot.width} height={mainShot.height} alt={m.shots.main} loading="lazy" />
+            <figcaption set:html={phrase(m.shots.main, lang)} />
+          </figure>
+          <figure>
+            <img src={infoShot.src} width={infoShot.width} height={infoShot.height} alt={m.shots.info} loading="lazy" />
+            <figcaption set:html={phrase(m.shots.info, lang)} />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-section s-section-alt" id="download">
+      <div class="s-container">
+        <h2 class="s-h2">{m.download.title}</h2>
+        <p class="s-section-lead" set:html={phrase(m.download.lead, lang)} />
+        <div class="s-download">
+          <ul class="s-files">
+            {
+              m.download.files.map((f) => (
+                <li>
+                  <span class="s-os">{f.os || '—'}</span>
+                  <code>{f.name}</code>
+                  <span class="s-file-note" set:html={phrase(f.note, lang)} />
+                </li>
+              ))
+            }
+          </ul>
+          <div class="s-download-side">
+            <a class="s-btn s-btn-primary" href={`${REPO_URL}/releases/latest`} rel="noopener">{m.download.button}</a>
+            <h3>{m.download.unsignedTitle}</h3>
+            {m.download.unsigned.map((t) => <p set:html={phrase(t, lang)} />)}
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
