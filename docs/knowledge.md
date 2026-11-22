@@ -11,7 +11,19 @@
 
 ## macOS
 
+- `/usr/bin/ruby` はスタブではなく本物（2.6 系）。Mac では ruby の「未インストール」は出ない（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- ログインシェルの PATH で Homebrew の bin が `/usr/bin` より後ろにあると、Homebrew で ruby を入れても
+  `/usr/bin/ruby` が先に見つかる（ターミナルの `ruby --version` と同じ値）（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- `rustup self uninstall -y` は、自分で作った `~/.zshenv`・`~/.profile` を空のまま残す。
+  `~/.cargo/bin` がいまのシェルの PATH に無いと `rustup` が見つからないので、フルパスで呼ぶ（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+
 ## Windows
+
+- アプリは起動したときの PATH を使い続ける。インストール後のツールは、エクスプローラーから起動し直せば見える
+  （インストールより前に開いたシェルから起動すると見えない）（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- winget のポータブルな php（`PHP.PHP.*`）は、アンインストール後も User PATH に winget が足した行が残る（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- winget は rust のバージョンとして rustup 自身のバージョンを出す。rustc のバージョンは `Rustlang.Rust.MSVC` の行（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- PowerShell 5.1 のパイプで日本語を渡すと `???` に化ける。Git Bash から子プロセスに PATH を渡すと、変換で崩れる（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
 
 ## electron-builder と配布
 

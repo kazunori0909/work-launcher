@@ -4,7 +4,7 @@
 
 ## 2026-11-22 02:25 mac → win: ruby・go・rust・php の取得を入れて消して確かめる
 
-- 状態: 回答済み
+- 状態: 完了
 - 関連: PLAN.md「方針」、KNOWLEDGE.md「Mac」（Mac の結果）
 
 ### 依頼

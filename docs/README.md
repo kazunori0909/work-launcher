@@ -54,7 +54,7 @@
 | 25  | 多言語対応 ✅       | 画面とヘルプを ja / en で切り替え      |
 | 26  | 設定の言語の表 ✅   | label などを { ja, en } でも書ける     |
 | 27  | 記録の archive ✅   | いまの正と当時の記録を分ける           |
-| 28  | ツールを増やす 🚧   | ruby・go・rust・php と確認の自動化     |
+| 28  | ツールを増やす ✅   | ruby・go・rust・php と確認の自動化     |
 
 ## 次に扱う候補
 
@@ -68,3 +68,5 @@
 - Dependabot #1（minimatch の DoS、開発用の依存のみ）の残り。electron-builder が minimatch 11 に上げたら更新で消す（27 alpha でも ^10、2026-11）
 - 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
 - Steam の入っていない Windows で、Info の steam が「pattern が一致しません」ではなく「未インストール」と出るか確かめる（→ phase21）
+- 組み込みのツールに pnpm・yarn（corepack の確認ダイアログに注意）・bun・deno・uv・gh・Unity Hub・Visual Studio を足す（→ phase28）
+- Windows で Info の「更新」のときにレジストリの PATH を読み直す（いまはアプリを起動し直すまで、入れたツールが見えない）（→ phase28）

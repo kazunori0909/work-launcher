@@ -32,11 +32,11 @@ describe('組み込みのツールの表', () => {
     })
     expect(builtinTool('python')?.macStub?.path).toBe('/usr/bin/python3')
     expect(builtinTool('java')?.macStub?.check).toEqual(['/usr/libexec/java_home'])
-    expect(BUILTIN_TOOLS.filter((t) => t.macStub).map((t) => t.name)).toEqual([
-      'git',
-      'python',
-      'java'
-    ])
+    expect(
+      BUILTIN_TOOLS.filter((t) => t.macStub)
+        .map((t) => t.name)
+        .sort()
+    ).toEqual(['git', 'java', 'python'])
   })
 })
 

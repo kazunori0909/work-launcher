@@ -525,7 +525,7 @@ info:
   Windows は固定・リムーバブル・ネットワークドライブ）
 - `env`: 表示する環境変数の名前。`PATH` は1行に1つずつ出す
 - `tools`: 名前だけなら組み込みの取り方を使う。組み込みに無い名前は `command` が必須
-  - 組み込み（初期）: `git`・`node`・`npm`・`python`（Mac は `python3`、Windows は `py` を先に試す）・`java`・`docker`・`dotnet`・`ruby`・`go`・`rust`（`rustc` のバージョン）・`php`
+  - 組み込み（初期）: `git`・`java`・`dotnet`・`go`・`rust`（`rustc` のバージョン）・`node`・`npm`・`python`（Mac は `python3`、Windows は `py` を先に試す）・`ruby`・`php`・`docker`
   - Windows と Mac だけの組み込み: `steam`（「Steam について」に出るクライアントのバージョン）・`epic`（Epic Games Launcher のバージョン）。
     Windows はインストール先をレジストリから探す。Mac は `/Applications` の Epic Games Launcher と、
     Steam が初回起動で入れるクライアントを見る（一度も起動していなければ「未インストール」）。

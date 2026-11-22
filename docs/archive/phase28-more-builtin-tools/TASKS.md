@@ -5,7 +5,7 @@
 - [x] アプリを起動せずにツールを判定する `scripts/check-tools.mjs`
 - [x] 入れる・確かめる・消すのスキル `/check-tools`
 - [x] Mac で回す
-- [ ] Windows で回す（`/handoff`）
+- [x] Windows で回す（`/handoff`）
 - [x] 実機で Info の画面を確かめる（`/run-app`）
 
 ## 共通

@@ -27,13 +27,16 @@ node scripts/check-tools.mjs ruby --json             # status: installed / missi
 2. **インストール**: 下の表のコマンドで入れる
    - Mac は先に `brew list --formula > <scratchpad>/before.txt` を取っておく（依存も入るため）
    - Windows は UAC の確認が出ることがある。出たらユーザーに押してもらうよう伝えて待つ
+     （管理者に昇格したシェルでは、4つとも出なかった）
 3. **インストール後**: `installed` で、バージョンがパッケージマネージャの言うバージョンと合うか
-   （Mac は `brew info --json=v2 <名前>`、Windows は `winget list --id <ID>`）
+   （Mac は `brew info --json=v2 <名前>`、Windows は `winget list --id <ID>`。
+   rust は winget が rustup 自身のバージョンを出すので、`Rustlang.Rust.MSVC` の行と比べる）
 4. **アンインストール**: 消して、`missing` に戻るか
    - Mac は `brew list --formula` と before.txt の差分（増えた分）だけを消し、元の一覧に戻ったかを `diff` で見る。
      `brew autoremove` は使わない（元からあった不要な依存まで消える）。
      差分は `comm -13 before.txt after.txt | xargs brew uninstall` で渡す（zsh は変数の改行で引数を分けない）
-   - Windows は `winget uninstall --id <ID> --silent`
+   - Windows は `winget uninstall --id <ID> --silent`。php（ポータブルの zip）は、winget が User PATH に足した
+     `%LOCALAPPDATA%\Microsoft\WinGet\Packages\PHP.PHP.…` の行が消したあとも残る（判定には響かない）
 
 Mac の Homebrew は `HOMEBREW_NO_AUTO_UPDATE=1` を付けて動かす（他のパッケージを巻き込んで更新しない）。
 
@@ -63,3 +66,4 @@ Mac の Homebrew は `HOMEBREW_NO_AUTO_UPDATE=1` を付けて動かす（他の�
 
 - 期待と違う結果は、原因（コマンドの出力・見つかった場所）まで調べ、進行中フェーズの KNOWLEDGE.md に書く
 - Windows で回したときは、結果を HANDOFF.md の回答に書く（`/handoff`）
+- 画面でも確かめるときは `/run-app`。Windows ではいまのシェルの PATH を引き継ぐので、run-app の「注意」に従ってレジストリの PATH を渡す
