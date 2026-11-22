@@ -55,6 +55,11 @@ description: WorkLauncher の実機（Electron）を Playwright で起動し、�
 
 ## 注意
 
+- アプリは起動したシェルの PATH を引き継ぐ。Windows でツールを入れた直後は、いまのシェルの PATH が古い
+  （エクスプローラーから新しく起動したアプリとは違う）。合わせるには PowerShell で
+  `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`
+  としてから driver を呼ぶ（Git Bash から PATH を渡すと変換で崩れる）
+- Windows の PowerShell 5.1 のパイプで日本語のセレクタを渡すと `???` に化ける
 - ドライバは起動のたびに新しいユーザーデータのフォルダ（`--user-data-dir`）を作り、案件を信頼済みにしておく。
   JS の実行の確認は出ず、記憶した select の値も持ち越さない。手元のアプリの設定にも触れない
 - VS Code のシェルは `ELECTRON_RUN_AS_NODE=1` が入っており、そのままだと Electron が Node として起動して

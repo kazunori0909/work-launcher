@@ -13,7 +13,7 @@ openSchemes: [http, https, mailto, file]
 #--------------------------------------
 info:
   env: [PATH, JAVA_HOME]
-  tools: [git, node, python, java, steam, epic]
+  tools: [git, node, python, java, ruby, go, rust, php, steam, epic]
   registry: # Windowsのみ
     - HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled
     - name: Windows Ver.

@@ -30,14 +30,14 @@ src/core/      # Electron 非依存のロジック（vitest でテスト）
   load/        #   設定の読み込み（項目の種類の表は items.ts）
   builtinTools.ts #   Info の組み込みのツールの表（ツールを足すときはここだけ直す）
   ipc.ts       #   メイン ↔ 画面の IPC の約束（チャンネル名と型）。引数の確かめ方は ipcArgs.ts
-src/main/      # Electron メインプロセス。ウィンドウごとの状態は session.ts
+src/main/      # Electron メインプロセス。ウィンドウごとの状態は session.ts。Info のツールの取り方は toolVersion.ts（Electron 非依存）
 src/preload/   # プリロード（core/ipc.ts の約束を ipcRenderer につなぐだけ）
 src/renderer/  # 画面（React）。hooks/ は App の状態、assets/styles/ は画面ごとの CSS
   help/        #   組み込みのヘルプ。章は sections/<言語>/（一覧は各 index.ts）、書き方の例は examples.ts と examples.en.ts
 build/ resources/  # アイコン等（electron-builder 用）。アイコンの元は build/icons/*.svg（npm run icons で書き出す）
-scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs・個人情報チェック check-personal-info.mjs）
+scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs・個人情報チェック check-personal-info.mjs・ツールの取得の確認 check-tools.mjs）
 examples/sample/  # 動作確認用の案件（開発中は既定でこれを開く）
 mise.toml    # Node.js のバージョン固定
-.claude/skills/  # phase-new / phase-close / run-app（実機を Playwright で動かす）/ handoff（Mac ⇄ Windows）
+.claude/skills/  # phase-new / phase-close / run-app（実機を Playwright で動かす）/ handoff（Mac ⇄ Windows）/ check-tools（ツールを入れて消して取得を確かめる）
 .claude/settings.json  # hook（commit・push の前の個人情報チェック）
 ```

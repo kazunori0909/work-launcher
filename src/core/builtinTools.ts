@@ -61,6 +61,22 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     pattern: 'git version (\\S+)',
     macStub: { path: '/usr/bin/git', check: XCODE_CHECK }
   },
+  {
+    name: 'java',
+    help: 'Java',
+    command: 'java -version',
+    pattern: 'version "([^"]+)"',
+    macStub: { path: '/usr/bin/java', check: ['/usr/libexec/java_home'] }
+  },
+  { name: 'dotnet', help: '.NET SDK', command: 'dotnet --version' },
+  // go version は「go version go1.23.1 darwin/arm64」と出す
+  { name: 'go', help: 'Go', command: 'go version', pattern: 'go(\\d\\S*)' },
+  {
+    name: 'rust',
+    help: { ja: 'Rust（rustc のバージョン）', en: 'Rust (rustc version)' },
+    command: 'rustc --version',
+    pattern: 'rustc (\\S+)'
+  },
   { name: 'node', help: 'Node.js', command: 'node --version', pattern: 'v?(\\S+)' },
   { name: 'npm', help: 'npm', command: 'npm --version' },
   {
@@ -78,20 +94,14 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     pattern: 'Python (\\S+)',
     macStub: { path: '/usr/bin/python3', check: XCODE_CHECK }
   },
-  {
-    name: 'java',
-    help: 'Java',
-    command: 'java -version',
-    pattern: 'version "([^"]+)"',
-    macStub: { path: '/usr/bin/java', check: ['/usr/libexec/java_home'] }
-  },
+  { name: 'ruby', help: 'Ruby', command: 'ruby --version', pattern: 'ruby (\\S+)' },
+  { name: 'php', help: 'PHP', command: 'php --version', pattern: 'PHP (\\S+)' },
   {
     name: 'docker',
     help: 'Docker',
     command: 'docker --version',
     pattern: 'Docker version ([^,\\s]+)'
   },
-  { name: 'dotnet', help: '.NET SDK', command: 'dotnet --version' },
   {
     name: 'steam',
     label: 'Steam',

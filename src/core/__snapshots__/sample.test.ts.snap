@@ -57,6 +57,18 @@ exports[`サンプル案件の読み込み結果 1`] = `
           "name": "java",
         },
         {
+          "name": "ruby",
+        },
+        {
+          "name": "go",
+        },
+        {
+          "name": "rust",
+        },
+        {
+          "name": "php",
+        },
+        {
           "name": "steam",
         },
         {
