@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
 
       # Node は mise.toml のバージョンに揃える
-      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+      - uses: jdx/mise-action@d5574b52816a478f9d4e6529a3f6ff17a8a36785 # v5.2.8
 
       # Electron 本体は要らないので、postinstall（Electron の取得）を飛ばす
       - run: npm ci --ignore-scripts
