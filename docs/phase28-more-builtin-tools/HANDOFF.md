@@ -4,7 +4,7 @@
 
 ## 2026-11-22 02:25 mac → win: ruby・go・rust・php の取得を入れて消して確かめる
 
-- 状態: 依頼中
+- 状態: 回答済み
 - 関連: PLAN.md「方針」、KNOWLEDGE.md「Mac」（Mac の結果）
 
 ### 依頼
@@ -27,4 +27,45 @@
 
 ### 回答
 
-（受けた側が書く）
+2026-11-22、Windows 11 Home 25H2（26200）、winget。4つとも元は未インストールだったので、すべて入れて消した。
+winget の ID は SKILL.md の表のままで通った（より新しい `RubyInstallerTeam.Ruby.4.0`・`PHP.PHP.8.6` もある）。
+
+| ツール | 未インストール時 | インストール                 | インストール後 | アンインストール後 |
+| ------ | ---------------- | ---------------------------- | -------------- | ------------------ |
+| go     | 未インストール   | `GoLang.Go`                  | 1.27.4         | 未インストール     |
+| ruby   | 未インストール   | `RubyInstallerTeam.Ruby.3.4` | 3.4.13         | 未インストール     |
+| php    | 未インストール   | `PHP.PHP.8.4`                | 8.4.28         | 未インストール     |
+| rust   | 未インストール   | `Rustlang.Rustup`            | 1.100.0        | 未インストール     |
+
+- バージョンは winget と合った（ruby は winget が `3.4.13-1-x64`。rust は winget が rustup 自身の `1.29.3` を出すので、
+  `Rustlang.Rust.MSVC` の `1.100.0` と比べた）
+- 見つかった場所: go `C:\Program Files\Go\bin\go.exe`、ruby `C:\Ruby34-x64\bin\ruby.exe`、
+  php `%LOCALAPPDATA%\Microsoft\WinGet\Packages\PHP.PHP.8.4_…\php.exe`、rust `%USERPROFILE%\.cargo\bin\rustc.exe`
+
+**Info 画面の値（run-app）**
+
+- レジストリの PATH（Machine + User）を渡して起動すると、4つともインストール後に `check-tools.mjs` と同じ値を出した
+- **いまのシェルの PATH のまま起動すると、インストール後でも「未インストール」**（go で確かめた）。
+  シェルを開いたのがインストールより前なので、PATH に `C:\Program Files\Go\bin` が無い。
+  エクスプローラーから新しく起動したアプリは更新後の PATH を受け取るので、利用者の操作としては問題ない
+- run-app に PATH を渡すときは、Git Bash からだと PATH の変換で崩れた（git や python まで未インストールになる）。
+  PowerShell で `$env:Path` をレジストリの値にしてから `driver.mjs` を呼ぶと正しく取れた
+- PowerShell 5.1 のパイプで driver に日本語のセレクタを渡すと `???` に化ける（eval の中は `escape()` で比べて避けた）
+
+**UAC**
+
+- どのツールでも出なかった。ただしこのシェルは管理者として昇格済みだった（`WindowsPrincipal.IsInRole` で管理者のロールが True）ので、
+  通常のユーザーのシェルでは出ない、とは言えない
+
+**期待と違ったこと**
+
+- **php はアンインストール後も User PATH に `%LOCALAPPDATA%\Microsoft\WinGet\Packages\PHP.PHP.8.4_…` が残る**
+  （フォルダ自体は消えている）。判定は「未インストール」に戻るので結果には影響しない。手では消していない
+- ruby・rust は残りなし（`C:\Ruby34-x64`・`~\.cargo`・`~\.rustup` も PATH の行も消えた）
+
+**直した方がよいと思うこと（コードは直していない）**
+
+- run-app の SKILL.md に「インストール直後はいまのシェルの PATH が古い。新しく起動したアプリと同じにするには
+  PowerShell で `$env:Path` をレジストリの値にしてから呼ぶ」と書いておくとよい
+- check-tools の SKILL.md の Windows のアンインストールに、「php は winget が User PATH に足した行が残る」と注を足す
+- `npm ci` で `install-scripts` の警告（electron-winstaller など）が出た。run-app・ビルドは動いた
