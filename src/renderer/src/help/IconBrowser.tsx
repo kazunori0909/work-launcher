@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Icon } from '../components/Icon'
-import { ICON_NAMES } from '../icons'
+import { useIconNames } from '../icons'
 import { t } from '../../../core/i18n'
 
 const MAX_SHOWN = 120
@@ -9,10 +9,11 @@ const MAX_SHOWN = 120
 export function IconBrowser(): React.JSX.Element {
   const [query, setQuery] = useState('')
   const [copied, setCopied] = useState<string>()
+  const names = useIconNames()
   const matched = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return q ? ICON_NAMES.filter((n) => n.includes(q)) : ICON_NAMES
-  }, [query])
+    return q ? names.filter((n) => n.includes(q)) : names
+  }, [query, names])
 
   const copy = async (name: string): Promise<void> => {
     await navigator.clipboard.writeText(`icon: ${name}`)

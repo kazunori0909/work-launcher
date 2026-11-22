@@ -6,14 +6,14 @@
 - [x] Web のデザイン（ヒーロー・特長・サイドバーと目次・ダーク / ライト）
 - [x] ビルドして見た目と動く見本を確かめる
 - [x] GitHub Actions で Pages にデプロイする workflow
-- [ ] サイトの JS を小さくする（アイコン一覧・highlight.js などを分ける）
-- [ ] リポジトリの Settings で Pages の Source を GitHub Actions にする（ユーザー）
+- [x] サイトの JS を小さくする（アイコンと埋め込みの描画を、使う章でだけ読む）
+- [x] リポジトリの Settings で Pages の Source を GitHub Actions にする（ユーザー）
 - [x] AGENTS.md の地図に `site/` を足す
 - [x] URL のパラメータの英語の説明を直し、url の見本でエンコードしたあとの URL を出す
 - [x] 日本語の書き方と改行の指針（docs/writing.md）を作り、サイトとヘルプの改行に当てる
 - [x] リリースノート（.github/changelog.yaml）を正にして、サイトのページと Release 本文を作る
-- [ ] 次のリリースで、Release 本文が changelog.yaml から作られるのを確かめる
+- [x] 次のリリースで、Release 本文が changelog.yaml から作られるのを確かめる
 
 ## 共通
 
-- [ ] 個人情報チェック（追跡ファイルに実値が混入していないか）
+- [x] 個人情報チェック（追跡ファイルに実値が混入していないか）

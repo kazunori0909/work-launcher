@@ -28,9 +28,9 @@ export default defineConfig(
       ...eslintPluginReactRefresh.configs.vite.rules
     }
   },
-  // 開発用の JS のスクリプトは型を書けないため、戻り値の型を求めない
+  // 開発用の JS のスクリプトとサイトの設定は型を書けないため、戻り値の型を求めない
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.mjs', 'site/*.mjs'],
     rules: { '@typescript-eslint/explicit-function-return-type': 'off' }
   },
   eslintConfigPrettier

@@ -1,6 +1,6 @@
 # Web サイト（site/）をビルドして GitHub Pages に出す。
 # 章の本文はヘルプと同じなので、出すのはリリースを公開したとき（配っているアプリとサイトの説明を揃える）。
-# サイトの見た目だけ直したときなどは、Actions タブから手で流す（→ docs/phase29-github-pages/PLAN.md）
+# サイトの見た目だけ直したときなどは、Actions タブから手で流す（→ docs/archive/phase29-github-pages/PLAN.md）
 name: Pages
 
 on:

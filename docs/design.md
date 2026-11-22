@@ -27,6 +27,22 @@
 
 ## 配布とリリース
 
+- Web サイトを出すのは、リリースの公開時と手動のときだけにする。main に入ったまま、まだ配っていない機能の説明を出さないため（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+- リリースノートは `.github/changelog.yaml` を正にし、サイトのページと Release 本文の「主な変更」の両方を作る。
+  サイト用に別に書く案（2箇所に書く）と、GitHub の本文を読んで解析する案（0.1.x に無く、書式も揃っていない）は採らなかった。
+  書き忘れは、テストと release.yml の確認で止める（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+
+## Web サイト
+
+- 本文の正はアプリのヘルプにし、サイトは章を描いて、トップ・リリースノートなど Web にだけ要るページを外側に足す。
+  ヘルプとサイトで構成が分かれると管理が大変なため。ヘルプを MDX にして VitePress / Starlight に載せる案
+  （TSX を全部移すことになり、動く見本も扱いにくい）と、Web 用に別の文章を書く案（二重管理）は採らなかった（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+- Astro で静的に書き出し、章の本文はブラウザで hydrate する。検索に載り、見本も動くため。
+  Vite の SPA は HTML が空になるので採らなかった。依存は root に置き、React を2つにしない（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+- JS を小さくするため、サイトのビルドでだけアプリの `icons.ts`・`embed.tsx` を差し替える。アプリは手元で動くので、読み込みの大きさは問題にならない。
+  アイコンはヘルプの見本で使う分だけを入れ、使う名前はソースから拾う。lucide の `DynamicIcon`（ビルド時の HTML にアイコンが出ない）と、
+  使うアイコンを手で並べる案（見本を足したときに漏れる）は採らなかった（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+
 ## CI と開発の進め方
 
 - いまの正（config.md・design.md・knowledge.md）と当時の記録（archive）を分け、記録は要約せずに移す。
