@@ -47,6 +47,10 @@
 - JS を小さくするため、サイトのビルドでだけアプリの `icons.ts`・`embed.tsx` を差し替える。アプリは手元で動くので、読み込みの大きさは問題にならない。
   アイコンはヘルプの見本で使う分だけを入れ、使う名前はソースから拾う。lucide の `DynamicIcon`（ビルド時の HTML にアイコンが出ない）と、
   使うアイコンを手で並べる案（見本を足したときに漏れる）は採らなかった（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+- 体験ページ（`/try/`）は、アプリの部品（`ItemList`・`InfoPage`・`useConsole`/`Console`）をそのまま描き、`window.launcher` を仮のものにして動かす
+  （`getInfo` は仮の値を返し、`onRunEvent` には仮の実行の知らせを流す）。体験用に画面を作り直すと、アプリと見た目がずれるため（由来: [Phase 32](archive/phase32-try-page/PLAN.md)）
+- 体験ページでは、押したボタンの YAML を自分の吹き出しに出し、説明は「アプリで起こること」だけにする（本文を繰り返さない）。
+  ボタンは種類ごとの見本に絞り、select は使わない（体験には複雑なため）（由来: [Phase 32](archive/phase32-try-page/PLAN.md)）
 
 ## CI と開発の進め方
 

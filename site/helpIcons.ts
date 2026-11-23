@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { icons } from 'lucide-react'
 import { iconKey, lookupIcon } from '../src/renderer/src/iconNames'
 
-// Web サイトに入れるアイコンを、ヘルプのソースから拾う（全部入れると JS が大きいため）。
+// Web サイトに入れるアイコンを、ヘルプと体験ページのソースから拾う（全部入れると JS が大きいため）。
 // 拾い漏れが無いかは helpIcons.test.ts で、見本のデータと突き合わせて確かめる
 
 const root = new URL('../', import.meta.url)
@@ -13,9 +13,20 @@ export function helpIconNames(): string[] {
   const names = new Set<string>()
   for (const file of [
     'src/renderer/src/help/examples.ts',
-    'src/renderer/src/help/examples.en.ts'
+    'src/renderer/src/help/examples.en.ts',
+    'site/src/try/demo.ts'
   ]) {
     for (const m of read(file).matchAll(/icon: '([a-z0-9-]+)'/g)) names.add(m[1])
+  }
+  // 体験ページで描く画面の部品（<Icon name="…"> と name={… ? '…' : '…'}）
+  for (const file of [
+    'src/renderer/src/components/InfoPage.tsx',
+    'site/src/components/TryLauncher.tsx'
+  ]) {
+    for (const m of read(file).matchAll(/<Icon name=(?:"([a-z0-9-]+)"|\{([^}]*)\})/g)) {
+      if (m[1]) names.add(m[1])
+      for (const q of (m[2] ?? '').matchAll(/'([a-z0-9-]+)'/g)) names.add(q[1])
+    }
   }
   const items = read('src/core/items.ts')
   const body = items.slice(
