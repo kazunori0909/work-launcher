@@ -47,8 +47,18 @@ const WIN_EPIC_SCRIPT =
 // Mac の Steam は初回起動でクライアントを Application Support に入れる。manifest の形は Windows と同じ
 const MAC_STEAM_MANIFEST =
   '"$HOME/Library/Application Support/Steam/Steam.AppBundle/Steam/Contents/MacOS/package/steam_client_osx.manifest"'
-// Mac の Epic はアプリの Info.plist のバージョン（アプリ内の表示と同じ）
-const MAC_EPIC_PLIST = '"/Applications/Epic Games Launcher.app/Contents/Info"'
+/**
+ * Windows のアンインストール情報から、表示名が match（正規表現）に当たるものの DisplayVersion を読む。
+ * ユーザーごとの入れ方（HKCU）も見る
+ */
+const winUninstallVersion = (match: string): string =>
+  powershell(
+    `Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match '${match}' } | Select-Object -First 1 -ExpandProperty DisplayVersion`
+  )
+
+/** Mac のアプリの Info.plist のバージョン（アプリの「バージョン情報」と同じ） */
+const macAppVersion = (app: string): string =>
+  `defaults read "/Applications/${app}.app/Contents/Info" CFBundleShortVersionString`
 
 /** git・python3 のスタブの本体はコマンドライン・デベロッパツール */
 const XCODE_CHECK: [string, ...string[]] = ['xcode-select', '-p']
@@ -118,7 +128,49 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     help: 'Epic Games Launcher',
     command: {
       win: powershell(WIN_EPIC_SCRIPT),
-      mac: `defaults read ${MAC_EPIC_PLIST} CFBundleShortVersionString`
+      mac: macAppVersion('Epic Games Launcher')
+    }
+  },
+  {
+    name: 'vscode',
+    label: 'Visual Studio Code',
+    help: 'Visual Studio Code',
+    command: {
+      win: winUninstallVersion('^Microsoft Visual Studio Code( \\(User\\))?$'),
+      mac: macAppVersion('Visual Studio Code')
+    }
+  },
+  {
+    name: 'claude',
+    label: 'Claude',
+    help: { ja: 'Claude（デスクトップ版）', en: 'Claude (desktop app)' },
+    command: { win: winUninstallVersion('^Claude$'), mac: macAppVersion('Claude') }
+  },
+  // claude --version は「2.1.330 (Claude Code)」と出す
+  {
+    name: 'claude-code',
+    label: 'Claude Code',
+    help: { ja: 'Claude Code（CLI）', en: 'Claude Code (CLI)' },
+    command: 'claude --version',
+    pattern: '(\\d+\\.\\S+)'
+  },
+  {
+    name: 'antigravity',
+    label: 'Antigravity',
+    help: 'Antigravity',
+    command: {
+      win: winUninstallVersion('^Antigravity( \\(User\\))?$'),
+      mac: macAppVersion('Antigravity')
+    }
+  },
+  // antigravity-ide --version は元にした VS Code のバージョンを出すので、アプリのバージョンを読む
+  {
+    name: 'antigravity-ide',
+    label: 'Antigravity IDE',
+    help: 'Antigravity IDE',
+    command: {
+      win: winUninstallVersion('^Antigravity IDE( \\(User\\))?$'),
+      mac: macAppVersion('Antigravity IDE')
     }
   }
 ]

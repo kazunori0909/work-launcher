@@ -14,10 +14,11 @@ describe('組み込みのツールの表', () => {
     expect(new Set(names).size).toBe(names.length)
   })
 
-  it('steam・epic 以外は全 OS で取れる', () => {
+  it('アプリ（steam・epic・vscode・claude・antigravity・antigravity-ide）以外は全 OS で取れる', () => {
+    const apps = ['steam', 'epic', 'vscode', 'claude', 'antigravity', 'antigravity-ide']
     for (const { name } of BUILTIN_TOOLS) {
       for (const platform of ['win32', 'darwin', 'linux']) {
-        const only = name === 'steam' || name === 'epic'
+        const only = apps.includes(name)
         expect(isUnsupportedTool(name, platform)).toBe(only && platform === 'linux')
         expect(!!builtinToolCommand(name, platform)).toBe(!(only && platform === 'linux'))
       }
@@ -88,5 +89,41 @@ describe('組み込みの pattern で実際の出力から抜き出す', () => {
     ]
   ])('%s: %j', (name, output, expected) => {
     expect(version(name, output)).toBe(expected)
+  })
+})
+
+describe('エディタと AI のツール', () => {
+  it('Mac はアプリの Info.plist、Windows はアンインストール情報の表示名で探す', () => {
+    const cases = [
+      ['vscode', 'Visual Studio Code', 'Microsoft Visual Studio Code'],
+      ['claude', 'Claude', 'Claude'],
+      ['antigravity', 'Antigravity', 'Antigravity'],
+      ['antigravity-ide', 'Antigravity IDE', 'Antigravity IDE']
+    ]
+    for (const [name, app, display] of cases) {
+      expect(builtinToolCommand(name, 'darwin')!.command).toBe(
+        `defaults read "/Applications/${app}.app/Contents/Info" CFBundleShortVersionString`
+      )
+      const win = builtinToolCommand(name, 'win32')!.command
+      expect(win).toContain('DisplayVersion')
+      expect(win).not.toMatch(/".*".*"/) // cmd.exe の二重引用符は外側の1組だけ
+      const match = /-match '([^']+)'/.exec(win)![1]
+      expect(new RegExp(match).test(display)).toBe(true)
+    }
+  })
+
+  it('表示名の正規表現は別の製品に当たらない', () => {
+    const match = (name: string): RegExp =>
+      new RegExp(/-match '([^']+)'/.exec(builtinToolCommand(name, 'win32')!.command)![1])
+    expect(match('vscode').test('Microsoft Visual Studio Code (User)')).toBe(true)
+    expect(match('vscode').test('Microsoft Visual Studio Code - Insiders')).toBe(false)
+    expect(match('antigravity').test('Antigravity IDE')).toBe(false)
+    expect(match('claude').test('Claude Code')).toBe(false)
+  })
+
+  it('claude-code は claude --version の先頭のバージョン', () => {
+    const cmd = builtinToolCommand('claude-code', 'linux')!
+    expect(cmd.command).toBe('claude --version')
+    expect(extractVersion('2.1.330 (Claude Code)\n', cmd.pattern)).toBe('2.1.330')
   })
 })
