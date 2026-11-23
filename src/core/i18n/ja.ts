@@ -91,7 +91,18 @@ export const ja = {
       (keys.length > 0 ? `（書けるのは ${keys.join(' / ')}）` : ''),
     notString: (key: string) => `${key} は文字列で書いてください`,
     notBoolean: (key: string) => `${key} は true / false で書いてください`,
-    notMap: (key: string) => `${key} は { 名前: 値 } で書いてください`
+    notMap: (key: string) => `${key} は { 名前: 値 } で書いてください`,
+    setValue: '2つ目の引数は文字列か true / false で書いてください',
+    ids: '引数は ID の文字列か、その配列で書いてください',
+    unknownId: (id: string) => `ID が ${id} の項目がありません`,
+    notOperable: (id: string) =>
+      `${id} は押せる項目ではありません（ボタン・group・buttons・select・radio・checkbox を指定してください）`,
+    noSelect: (id: string) => `ID が ${id} の select・radio・checkbox がありません`,
+    noSelectIn: (id: string) =>
+      `${id} は select・radio・checkbox でなく、中にも select・radio・checkbox がありません`,
+    booleanForCheckbox: 'true / false で書けるのは checkbox だけです',
+    notOption: (id: string, value: string, values: string[]) =>
+      `${value} は ${id} の選択肢にありません（選べるのは ${values.join(' / ')}）`
   },
 
   script: {

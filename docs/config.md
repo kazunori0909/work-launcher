@@ -171,15 +171,19 @@ info: # → 7章
   }
   ```
 
-  | `ctx` の中身      | 内容                                        |
-  | ----------------- | ------------------------------------------- |
-  | `launcherDir`     | work.launcher があるフォルダ                |
-  | `workDir`         | 作業フォルダ（関数もこのフォルダで動く）    |
-  | `env`             | 環境変数                                    |
-  | `log(text)`       | コンソールに1行書く（コンソールは開かない） |
-  | `open(path)` など | 項目と同じ動作を呼ぶ（下の表）              |
-  | `select`          | select・radio・checkbox の値（→ 3.8）       |
-  | `lang`            | 表示の言語（`ja` / `en`。→ 8章）            |
+  | `ctx` の中身      | 内容                                         |
+  | ----------------- | -------------------------------------------- |
+  | `launcherDir`     | work.launcher があるフォルダ                 |
+  | `workDir`         | 作業フォルダ（関数もこのフォルダで動く）     |
+  | `env`             | 環境変数                                     |
+  | `log(text)`       | コンソールに1行書く（コンソールは開かない）  |
+  | `open(path)` など | 項目と同じ動作を呼ぶ（下の表）               |
+  | `select`          | select・radio・checkbox の値（→ 3.8）        |
+  | `set(id, value)`  | select・radio・checkbox の値を変える（下）   |
+  | `reset(ids)`      | select・radio・checkbox を初期値に戻す（下） |
+  | `disable(ids)`    | 項目を押せなくする（下）                     |
+  | `enable(ids)`     | 項目を押せるようにする（下）                 |
+  | `lang`            | 表示の言語（`ja` / `en`。→ 8章）             |
   - 項目と同じ動作は、種類キーと同じ名前の関数で呼ぶ。2つ目の引数に書けるのは動作に関わるキーだけ
     （`label`・`icon` などは書けない。知らないキーは例外にする）
 
@@ -204,6 +208,32 @@ info: # → 7章
       関数は続ける。0 以外の終了コードは例外にしない
     - 関数は、頼んだ動作がすべて終わるまで終わらない（`wait: false` の実行は待たない）。
       関数から始めた実行は、関数が終わっても動き続け、ウィンドウを閉じたときに止める
+
+  - 項目の値と押せる・押せないは `ctx.set`・`ctx.disable`・`ctx.enable` で変える（どれも Promise を返す）
+
+    ```js
+    ctx.set('target', 'prod') // select・radio は選択肢の値
+    ctx.set('dry', true) // checkbox は on・off の値か true / false
+    ctx.reset('debug') // 初期値に戻す。group の ID なら中の項目。引数なしなら全部
+    ctx.disable('reset-db') // 項目の id。['a', 'b'] のように並べてもよい
+    ctx.disable() // 引数なしなら全部の項目
+    ctx.enable() // 引数なしの disable() を戻す（ID で押せなくした分はそのまま）
+    ```
+
+    - `set` の `id` は select・radio・checkbox の ID。選択肢に無い値・無い ID は例外にする。
+      `remember: true` なら記憶する。`change` の関数は呼ばない（互いに書き換えて止まらなくなるのを避ける）
+    - `reset` の初期値は `default`（無ければ最初の選択肢。checkbox はオフ）。ID は select の ID か、
+      `group`・`buttons` の ID（中の select・radio・checkbox を戻す）。`remember`・`change` の扱いは `set` と同じ
+    - `set`・`reset` を `await` したあとは、同じ関数の `ctx.select` と、そのあとに頼む動作の `${select:ID}` に入る
+    - `disable`・`enable` の ID は、項目の `id`（ボタン・`group`・`buttons`）か select の ID。
+      `group`・`buttons` を指定すると中の項目も変わる。同じ ID の項目はページをまたいで全部変わる。
+      無い ID・押せる項目でない ID（見出し・md など）は例外にする
+    - 引数なしの `disable()`・`enable()` は「全部」だけを切り替え、ID で押せなくした分は保つ
+      （処理の間だけ全部を止めて、終わったら元の状態に戻せる）。
+      `disable()` の間は、ID を指定した `enable` では戻らない。戻すのは引数なしの `enable()`
+    - 押せない状態は設定の読み直しでは保ち、案件を開き直したら戻す。開いたときから押せなくするなら
+      `beforeOpen`・`afterOpen` で呼ぶ（→ 10章）
+    - 押せなくするのは画面の操作だけ。関数から `ctx.bat` などで呼ぶ動作は止めない
 
   - それ以外は Node の機能（`child_process` など）を直接使える
   - 押すたびに別プロセスで JS を読み直して呼ぶ（編集はすぐ反映される）
@@ -378,7 +408,7 @@ openSchemes: [http, https, mailto, file] # config.yaml の最上位
   confirm: ${select:target} にデプロイしますか？
 ```
 
-- 選んだ値は `${select:ID}` で参照する（→ 4章）。function では `ctx.select.ID`（→ 3.2）
+- 選んだ値は `${select:ID}` で参照する（→ 4章）。function では `ctx.select.ID`、変えるときは `ctx.set`（→ 3.2）
 - `remember: true` なら、選んだ値を案件フォルダごとに記憶し、開き直したときもその値を使う。
   記憶はアプリのユーザーデータに置き、案件リポジトリには書かない
 - 記憶しないときは、開くたび（設定を読み直したときは除く）に既定値に戻る
@@ -685,7 +715,8 @@ module.exports = {
 ```
 
 - select・radio・checkbox に `change: 関数名` と書くと、その項目の値を画面で変えたときに呼ぶ
-- 開いたときの値の復元・設定の読み直しでは呼ばない（開いたときの処理は `beforeOpen`・`afterOpen` に書く）
+- 開いたときの値の復元・設定の読み直し・JS の `ctx.set`・`ctx.reset`（→ 3.2）では呼ばない
+  （開いたときの処理は `beforeOpen`・`afterOpen` に書く）
 - `ctx.changed` は `{ id, value, previous }`（ID・変えたあとの値・前の値）。`ctx.select` は変えたあとの値
 - 続けて変えたときは、前の関数が終わってから順に呼ぶ
 - 同じ ID の項目を複数置いたときは、画面で操作した項目の `change` を呼ぶ

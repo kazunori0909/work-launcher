@@ -1,7 +1,8 @@
 import type { BrowserWindow, UtilityProcess, WebContents } from 'electron'
 import type { RunEvent } from '../core/ipc'
 import type { RunHandle } from '../core/runner'
-import type { ProjectView } from '../core/types'
+import { NO_DISABLED } from '../core/itemState'
+import type { DisabledItems, ItemState, ProjectView } from '../core/types'
 import { send } from './ipc'
 import { FileWatcher } from './watch'
 
@@ -19,6 +20,8 @@ export class WindowSession {
   readonly scripts = new Set<UtilityProcess>()
   /** いまの select の値（ID → 値）。画面で変えるたびに知らされる。イベントの ctx.select に渡す */
   select: Record<string, string> = {}
+  /** 画面で押せない項目（JS の ctx.disable で変わる。案件を開き直したら戻す） */
+  disabled: DisabledItems = NO_DISABLED
   /** beforeOpen を呼んだ案件。設定の読み直しで呼び直さないために見る */
   openedDir?: string
   /** イベントで JS の実行を聞いて、許可されなかった（開いている間は聞き直さない） */
@@ -44,6 +47,15 @@ export class WindowSession {
   /** 実行の知らせを画面に送る */
   sendRun(event: RunEvent): void {
     send(this.contents, 'run:event', event)
+  }
+
+  get itemState(): ItemState {
+    return { select: this.select, disabled: this.disabled }
+  }
+
+  /** 項目の状態が変わったことを画面に送る */
+  sendState(): void {
+    send(this.contents, 'project:state', this.itemState)
   }
 
   /** このウィンドウで動いているものをすべて止める */

@@ -108,6 +108,13 @@ ctx.log(\`Branch: \${r.stdout}\`)`}</Code>
         A run with <code>console: false</code> is not listed as running, so it cannot be stopped
         from the window.
       </p>
+      <h3>Changing values and whether items can be pressed</h3>
+      <p>
+        <code>ctx.set</code> and <code>ctx.reset</code> change the values of selects and the like,
+        and <code>ctx.disable</code> and <code>ctx.enable</code> change whether items can be
+        pressed. See &quot;Changing elements&quot;.
+      </p>
+
       <h3>When something fails</h3>
       <p>
         A missing file or a command that cannot start throws an exception. If you <code>await</code>

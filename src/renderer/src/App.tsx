@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { itemAt, itemLabel, pathKey, walkItems } from '../../core/items'
+import { NO_DISABLED } from '../../core/itemState'
 import { resolveLink } from '../../core/markdown'
 import { DEFAULT_OPEN_SCHEMES } from '../../core/schemes'
 import { HELP_ID, INFO_ID, pageLayout } from '../../core/pages'
@@ -12,6 +13,7 @@ import { Icon } from './components/Icon'
 import { InfoPage } from './components/InfoPage'
 import { LangSwitch } from './components/LangSwitch'
 import { PageView } from './components/PageView'
+import { DisabledContext } from './components/disabledContext'
 import { SelectContext } from './components/selectContext'
 import { StartScreen } from './components/StartScreen'
 import { Tooltip } from './components/Tooltip'
@@ -46,6 +48,7 @@ function App(): React.JSX.Element {
   const consoleState = useConsole(view?.consoleRules)
   const { entries, runs, reportError } = consoleState
   const selections = useSelections(view, reportError)
+  const disabled = view?.state?.disabled ?? NO_DISABLED
 
   const onLink = useCallback(
     async (href: string, baseDir: string) => {
@@ -157,12 +160,14 @@ function App(): React.JSX.Element {
                 projectTitle={title}
                 projectHelp={
                   current && (
-                    <PageView
-                      page={current}
-                      platform={platform}
-                      running={running}
-                      onActivate={activate}
-                    />
+                    <DisabledContext.Provider value={disabled}>
+                      <PageView
+                        page={current}
+                        platform={platform}
+                        running={running}
+                        onActivate={activate}
+                      />
+                    </DisabledContext.Provider>
                   )
                 }
                 onError={(message) => reportError(`■ ${message}`)}
@@ -171,12 +176,14 @@ function App(): React.JSX.Element {
               <>
                 {infoOpen && <InfoPage key={view.lang} />}
                 {current ? (
-                  <PageView
-                    page={current}
-                    platform={platform}
-                    running={running}
-                    onActivate={activate}
-                  />
+                  <DisabledContext.Provider value={disabled}>
+                    <PageView
+                      page={current}
+                      platform={platform}
+                      running={running}
+                      onActivate={activate}
+                    />
+                  </DisabledContext.Provider>
                 ) : (
                   !infoOpen && <p className="status">{t().ui.noPages}</p>
                 )}

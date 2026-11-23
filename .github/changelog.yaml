@@ -13,6 +13,8 @@
   added:
     - ja: Info の組み込みのツールに、エディタ（vscode・cursor・antigravity-ide）と AI のツール（claude・claude-code・codex-cli・gemini-cli・copilot-cli・antigravity・antigravity-cli）を足しました。`tools` に名前を書くだけで、バージョンが出ます。
       en: Added editors (vscode, cursor, antigravity-ide) and AI tools (claude, claude-code, codex-cli, gemini-cli, copilot-cli, antigravity, antigravity-cli) to the built-in tools of the Info page. Write the name in `tools` to show the version.
+    - ja: JS（`scripts`）の関数から、select・radio・checkbox の値を `ctx.set` で変え、`ctx.reset` で初期値に戻せるようになりました。`ctx.disable`・`ctx.enable` で、項目を押せなくしたり戻したりもできます。
+      en: Functions in JS (`scripts`) can now change the value of a select, radio or checkbox with `ctx.set`, and reset it with `ctx.reset`. `ctx.disable` and `ctx.enable` make items unable to be pressed and bring them back.
 
 - version: 0.3.2
   date: 2026-11-23

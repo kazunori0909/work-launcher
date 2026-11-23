@@ -145,9 +145,21 @@
   font: inherit;
 }
 
-.item-select select:hover,
-.item-select select:focus {
+.item-select select:hover:not(:disabled),
+.item-select select:focus:not(:disabled) {
   border-color: var(--accent);
+}
+
+/* JS で押せなくした select・radio・checkbox（ボタンの .item:disabled と同じ見た目） */
+.item-select:has(:disabled) {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.item-select:has(:disabled) select,
+.item-select label:has(:disabled),
+.item-checkbox:has(:disabled) {
+  cursor: not-allowed;
 }
 
 .item-radio,

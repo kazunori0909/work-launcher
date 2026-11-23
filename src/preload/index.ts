@@ -22,7 +22,8 @@ function subscribe<C extends keyof EventPayloads>(channel: C) {
 const events: EventApi = {
   onRunEvent: subscribe(EVENT_CHANNELS.onRunEvent),
   onProjectChanged: subscribe(EVENT_CHANNELS.onProjectChanged),
-  onClosing: subscribe(EVENT_CHANNELS.onClosing)
+  onClosing: subscribe(EVENT_CHANNELS.onClosing),
+  onStateChanged: subscribe(EVENT_CHANNELS.onStateChanged)
 }
 
 const api: LauncherApi = { ...invoke, ...events }

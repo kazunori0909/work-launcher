@@ -91,7 +91,17 @@ export const en: Messages = {
       (keys.length > 0 ? ` (allowed: ${keys.join(' / ')})` : ''),
     notString: (key) => `${key} must be a string`,
     notBoolean: (key) => `${key} must be true or false`,
-    notMap: (key) => `${key} must be { name: value }`
+    notMap: (key) => `${key} must be { name: value }`,
+    setValue: 'The second argument must be a string or true / false',
+    ids: 'The argument must be an ID string or an array of them',
+    unknownId: (id) => `No item has the ID ${id}`,
+    notOperable: (id) =>
+      `${id} is not an item you can press (use a button, group, buttons, select, radio or checkbox)`,
+    noSelect: (id) => `No select, radio or checkbox has the ID ${id}`,
+    noSelectIn: (id) => `${id} is not a select, radio or checkbox, and has none inside`,
+    booleanForCheckbox: 'Only a checkbox takes true / false',
+    notOption: (id, value, values) =>
+      `${value} is not an option of ${id} (choose from ${values.join(' / ')})`
   },
 
   script: {

@@ -7,9 +7,11 @@ import {
   itemLabel,
   selectDefault
 } from '../../../core/items'
+import { isDisabled } from '../../../core/itemState'
 import { dirOf } from '../../../core/markdown'
 import { assertNever } from '../../../core/types'
 import type { Item, Page } from '../../../core/types'
+import { DisabledContext } from './disabledContext'
 import { HtmlEmbed, Markdown } from './embed'
 import { EmbedContext } from './embedContext'
 import { Icon } from './Icon'
@@ -71,7 +73,20 @@ interface ItemProps {
   onActivate(path: number[]): void
 }
 
+/** 押せない枠（group・buttons）の中は、全部を押せなくする */
+const ALL_DISABLED = { all: true, ids: [] }
+
 export function ItemView(props: ItemProps): React.JSX.Element {
+  const disabled = useContext(DisabledContext)
+  const view = <ItemViewInner {...props} />
+  const { item } = props
+  if ((item.kind === 'group' || item.kind === 'buttons') && isDisabled(disabled, item)) {
+    return <DisabledContext.Provider value={ALL_DISABLED}>{view}</DisabledContext.Provider>
+  }
+  return view
+}
+
+function ItemViewInner(props: ItemProps): React.JSX.Element {
   const { item, platform, path, running, onActivate } = props
   switch (item.kind) {
     case 'break':
@@ -137,6 +152,7 @@ export function ItemView(props: ItemProps): React.JSX.Element {
 
 function ButtonView({ item, platform, path, running, onActivate }: ItemProps): React.JSX.Element {
   const select = useContext(SelectContext)
+  const disabled = isDisabled(useContext(DisabledContext), item)
   const unavailable =
     item.kind === 'exec' && !execKindFor(item.scripts, platform)
       ? t().run.notOnThisOsOnly(Object.keys(item.scripts))
@@ -152,7 +168,7 @@ function ButtonView({ item, platform, path, running, onActivate }: ItemProps): R
       className={running.has(pathKey(path)) ? 'item running' : 'item'}
       data-tooltip={unavailable ?? tooltip ?? (iconOnly ? label : undefined)}
       aria-label={iconOnly ? label : undefined}
-      disabled={!!unavailable}
+      disabled={!!unavailable || disabled}
       onClick={() => {
         if (confirm && !window.confirm(expandSelect(confirm, select.values).value)) return
         onActivate(path)
@@ -166,6 +182,7 @@ function ButtonView({ item, platform, path, running, onActivate }: ItemProps): R
 
 function SelectView({ item }: { item: Extract<Item, { kind: 'select' }> }): React.JSX.Element {
   const { values, onChange } = useContext(SelectContext)
+  const disabled = isDisabled(useContext(DisabledContext), item)
   // 同じ ID の radio を2か所に置いても、ブラウザが互いのチェックを外さないように名前を分ける
   const radioName = useId()
   const value = values[item.name] ?? selectDefault(item)
@@ -177,6 +194,7 @@ function SelectView({ item }: { item: Extract<Item, { kind: 'select' }> }): Reac
       <label className="item-select item-checkbox" data-tooltip={item.tooltip}>
         <input
           type="checkbox"
+          disabled={disabled}
           checked={value === on.value}
           onChange={(e) => change(e.target.checked ? on.value : off.value)}
         />
@@ -197,6 +215,7 @@ function SelectView({ item }: { item: Extract<Item, { kind: 'select' }> }): Reac
           <label key={o.value}>
             <input
               type="radio"
+              disabled={disabled}
               name={radioName}
               value={o.value}
               checked={value === o.value}
@@ -211,7 +230,7 @@ function SelectView({ item }: { item: Extract<Item, { kind: 'select' }> }): Reac
   return (
     <label className="item-select" data-tooltip={item.tooltip}>
       {item.label && <span className="item-select-label">{item.label}</span>}
-      <select value={value} onChange={(e) => change(e.target.value)}>
+      <select value={value} disabled={disabled} onChange={(e) => change(e.target.value)}>
         {item.options.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}

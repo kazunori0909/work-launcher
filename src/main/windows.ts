@@ -15,7 +15,8 @@ import { handleFileScheme } from './links'
 import { loadProjectView } from './project'
 import { addRecent, listRecent, refreshJumpList } from './recent'
 import { saveLang } from './lang'
-import { readRemembered } from './selections'
+import { NO_DISABLED } from '../core/itemState'
+import { readRemembered } from './remembered'
 import { WindowSession } from './session'
 import { getLang, isLang, t } from '../core/i18n'
 import type { Lang } from '../core/i18n'
@@ -93,10 +94,14 @@ async function load(w: WindowSession): Promise<ProjectView> {
   if (!project || !launcherDir) return view
   // 画面で選んだ値は残し、選択肢から消えた値は記憶した値・既定値に戻す（画面の currentSelections と同じ）
   w.select = currentSelections(project, remembered, w.select)
-  if (w.openedDir === launcherDir) return view
-  w.openedDir = launcherDir
-  await callEvent('beforeOpen', w)
-  setTimeout(() => void callEvent('afterOpen', w))
+  if (w.openedDir !== launcherDir) {
+    w.openedDir = launcherDir
+    w.disabled = NO_DISABLED
+    await callEvent('beforeOpen', w)
+    setTimeout(() => void callEvent('afterOpen', w))
+  }
+  // beforeOpen で JS が変えた分も、最初の画面に出す
+  view.state = w.itemState
   return view
 }
 

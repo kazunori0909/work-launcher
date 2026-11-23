@@ -95,48 +95,58 @@ items:
             tooltip: 編集モードで開く
   - break
   # select・radio・checkbox: 選んだ値を ${select:ID} や ctx.select.ID で使う
-  # 値はページの中のどこからでも参照できるので、種類ごとにグループを分けて置ける
-  - group: { ja: 選択（select）, en: Select }
+  - group: { ja: 選択（select・radio・checkbox）, en: 'Select, radio and checkbox' }
     icon: list
     items:
       - select: target
         label: { ja: 接続先, en: Target }
-        options:
-          - dev
-          - stg
-          - { label: { ja: 本番, en: Production }, value: prod }
+        options: [dev, stg, prod] # 値だけ書く（表示も同じ）
         tooltip: { ja: 選択肢は記憶します, en: The choice is remembered }
         remember: true # 開き直しても前の選択を使う
         change: onTargetChange # 値を変えたときに呼ぶ関数（sample-scripts.js）
-  - group: { ja: ラジオボタン（radio）, en: Radio buttons }
-    icon: circle-dot
-    items:
+      - select: region
+        label: { ja: 地域, en: Region }
+        options: # 表示と値を分ける
+          - { label: { ja: 東京, en: Tokyo }, value: tokyo }
+          - { label: { ja: 大阪, en: Osaka }, value: osaka }
       - radio: mode
         label: { ja: モード, en: Mode }
         options: [debug, release]
         # remember を書かないので、開くたびに debug に戻る
-  - group: { ja: チェックボックス（checkbox）, en: Checkbox }
-    icon: square-check
-    items:
+        change: onModeChange # release にすると、デバッグ用のグループを押せなくする
       - checkbox: dry
         label: { ja: 試しに実行, en: Dry run }
         on: --dry-run # オンのときの値
         off: '' # オフのときの値（空）
         remember: true
-  - group: { ja: 選んだ値を使う, en: Use the chosen values }
-    icon: server
-    items:
-      - sh: echo "接続先=${select:target} モード=${select:mode} ${select:dry}"
+      - break
+      - sh: echo "接続先=${select:target} 地域=${select:region} モード=${select:mode} ${select:dry}"
         bat: |
           @echo off
-          echo 接続先=${select:target} モード=${select:mode} ${select:dry}
+          echo 接続先=${select:target} 地域=${select:region} モード=${select:mode} ${select:dry}
         label: { ja: 値を表示, en: Show values }
         env:
           TARGET_ENV: ${select:target}
-      - function: showSelect
+      - function: showSelect # release のときは、デバッグ用の値を出さない
         confirm:
           ja: ${select:target} の値で関数を呼びますか？
           en: Call the function with ${select:target}?
+  # JS（sample-scripts.js）から、項目を押せなくする（ctx.disable・ctx.enable）・値を初期値に戻す（ctx.reset）
+  # 押せない状態は開き直すと戻るので、既定値は「全部押せる」状態に合わせている
+  - group: { ja: デバッグ用, en: Debug }
+    id: debug-tools # ctx.disable('debug-tools') で、中の項目をまとめて押せなくする
+    icon: bug
+    items:
+      - select: log-level
+        label: { ja: ログ出力レベル, en: Log level }
+        options: [low, middle, high]
+        default: middle
+      - checkbox: log-file
+        label: { ja: ファイルにも書く, en: Also to a file }
+      - function: resetDebug # グループの値を初期値に戻す（ctx.reset）
+        label: ''
+        icon: rotate-ccw
+        tooltip: { ja: リセット, en: Reset }
   - break
   # md のコードブロック: 言語を書くと色が付く（yaml・json・sh・powershell・bat など）
   - group: md のコード

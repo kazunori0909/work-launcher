@@ -153,6 +153,21 @@ export interface ProjectView {
   /** mdfile に書いたパス（未展開）ごとの中身 */
   mdfiles: Record<string, MarkdownFile>
   diagnostics: Diagnostic[]
+  /** メインが持つ項目の状態（beforeOpen で JS が変えた分も入る） */
+  state?: ItemState
+}
+
+/** 画面で押せない項目。all なら全部、そうでなければ ids（項目の id・select の ID）に当たるもの */
+export interface DisabledItems {
+  all: boolean
+  ids: string[]
+}
+
+/** ウィンドウごとの項目の状態（JS の ctx.set・ctx.enable・ctx.disable で変わる） */
+export interface ItemState {
+  /** select の値（ID → 値） */
+  select: Record<string, string>
+  disabled: DisabledItems
 }
 
 /** アプリに入っているサードパーティのライブラリ（scripts/licenses.mjs がビルド時に集める） */

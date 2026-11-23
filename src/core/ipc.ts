@@ -1,7 +1,7 @@
 // メインと画面の IPC の約束。チャンネル名と型はここだけに書き、プリロードとメインはここから作る。
 // 画面とメインの両方から使うため、型と定数だけを置く（node: モジュール・Electron に依存させない）
 import type { SystemInfo } from './info'
-import type { ExecKind, ProjectView, ThirdPartyLicense } from './types'
+import type { ExecKind, ItemState, ProjectView, ThirdPartyLicense } from './types'
 import type { Lang } from './i18n'
 
 export type RunEvent =
@@ -105,6 +105,8 @@ export interface EventPayloads {
   'project:changed': ProjectView
   /** 閉じる前の beforeClose を待っている（しばらく終わらないとき） */
   'project:closing': undefined
+  /** JS（ctx.set・ctx.enable・ctx.disable）が項目の状態を変えた */
+  'project:state': ItemState
 }
 
 /** 知らせを受ける関数。戻り値を呼ぶと購読をやめる */
@@ -112,12 +114,14 @@ export interface EventApi {
   onRunEvent(listener: (event: RunEvent) => void): () => void
   onProjectChanged(listener: (view: ProjectView) => void): () => void
   onClosing(listener: () => void): () => void
+  onStateChanged(listener: (state: ItemState) => void): () => void
 }
 
 export const EVENT_CHANNELS = {
   onRunEvent: 'run:event',
   onProjectChanged: 'project:changed',
-  onClosing: 'project:closing'
+  onClosing: 'project:closing',
+  onStateChanged: 'project:state'
 } as const satisfies Record<keyof EventApi, keyof EventPayloads>
 
 export type LauncherApi = InvokeApi & EventApi

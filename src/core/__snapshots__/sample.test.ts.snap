@@ -489,22 +489,35 @@ echo done
                     "value": "stg",
                   },
                   {
-                    "label": "本番",
+                    "label": "prod",
                     "value": "prod",
                   },
                 ],
                 "remember": true,
                 "tooltip": "選択肢は記憶します",
               },
-            ],
-            "kind": "group",
-            "title": "選択（select）",
-          },
-          {
-            "icon": "circle-dot",
-            "id": undefined,
-            "items": [
               {
+                "control": "select",
+                "default": undefined,
+                "id": "region",
+                "kind": "select",
+                "label": "地域",
+                "name": "region",
+                "options": [
+                  {
+                    "label": "東京",
+                    "value": "tokyo",
+                  },
+                  {
+                    "label": "大阪",
+                    "value": "osaka",
+                  },
+                ],
+                "remember": false,
+                "tooltip": undefined,
+              },
+              {
+                "change": "onModeChange",
                 "control": "radio",
                 "default": undefined,
                 "id": "mode",
@@ -524,14 +537,6 @@ echo done
                 "remember": false,
                 "tooltip": undefined,
               },
-            ],
-            "kind": "group",
-            "title": "ラジオボタン（radio）",
-          },
-          {
-            "icon": "square-check",
-            "id": undefined,
-            "items": [
               {
                 "control": "checkbox",
                 "default": "",
@@ -552,14 +557,9 @@ echo done
                 "remember": true,
                 "tooltip": undefined,
               },
-            ],
-            "kind": "group",
-            "title": "チェックボックス（checkbox）",
-          },
-          {
-            "icon": "server",
-            "id": undefined,
-            "items": [
+              {
+                "kind": "break",
+              },
               {
                 "confirm": undefined,
                 "cwd": undefined,
@@ -573,9 +573,9 @@ echo done
                 "label": "値を表示",
                 "scripts": {
                   "bat": "@echo off
-echo 接続先=\${select:target} モード=\${select:mode} \${select:dry}
+echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mode} \${select:dry}
 ",
-                  "sh": "echo "接続先=\${select:target} モード=\${select:mode} \${select:dry}"",
+                  "sh": "echo "接続先=\${select:target} 地域=\${select:region} モード=\${select:mode} \${select:dry}"",
                 },
                 "tooltip": undefined,
               },
@@ -590,7 +590,68 @@ echo 接続先=\${select:target} モード=\${select:mode} \${select:dry}
               },
             ],
             "kind": "group",
-            "title": "選んだ値を使う",
+            "title": "選択（select・radio・checkbox）",
+          },
+          {
+            "icon": "bug",
+            "id": "debug-tools",
+            "items": [
+              {
+                "control": "select",
+                "default": "middle",
+                "id": "log-level",
+                "kind": "select",
+                "label": "ログ出力レベル",
+                "name": "log-level",
+                "options": [
+                  {
+                    "label": "low",
+                    "value": "low",
+                  },
+                  {
+                    "label": "middle",
+                    "value": "middle",
+                  },
+                  {
+                    "label": "high",
+                    "value": "high",
+                  },
+                ],
+                "remember": false,
+                "tooltip": undefined,
+              },
+              {
+                "control": "checkbox",
+                "default": "false",
+                "id": "log-file",
+                "kind": "select",
+                "label": "ファイルにも書く",
+                "name": "log-file",
+                "options": [
+                  {
+                    "label": "on",
+                    "value": "true",
+                  },
+                  {
+                    "label": "off",
+                    "value": "false",
+                  },
+                ],
+                "remember": false,
+                "tooltip": undefined,
+              },
+              {
+                "confirm": undefined,
+                "fn": "resetDebug",
+                "icon": "rotate-ccw",
+                "id": undefined,
+                "kind": "function",
+                "label": "",
+                "tooltip": "リセット",
+              },
+            ],
+            "kind": "group",
+            "title": "デバッグ用",
           },
           {
             "kind": "break",
