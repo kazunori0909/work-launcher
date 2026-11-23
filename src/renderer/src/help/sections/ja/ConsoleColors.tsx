@@ -23,6 +23,10 @@ export function ConsoleColors(): React.JSX.Element {
         自分だけのルールは <code>launcher/console.local.yaml</code>{' '}
         に書きます。こちらを先に照合します。
       </p>
+      <p>
+        コンソールの「警告以上」「エラーのみ」は、level
+        で行を絞り込みます。当たる行がある実行は、開始と終了の行も残します。
+      </p>
     </>
   )
 }

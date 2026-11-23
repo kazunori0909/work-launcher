@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Level } from '../../../core/console'
-import type { NewEntry } from '../../../core/consoleEntries'
+import { countLevel, filterEntries } from '../../../core/consoleEntries'
+import type { ConsoleFilter, NewEntry } from '../../../core/consoleEntries'
 import { t } from '../../../core/i18n'
 
 export type ConsoleEntry = NewEntry & { key: number }
@@ -8,14 +8,6 @@ export type ConsoleEntry = NewEntry & { key: number }
 export interface RunningRun {
   runId: number
   label: string
-}
-
-type Filter = 'all' | 'warn' | 'error'
-
-const SHOWN: Record<Filter, Level[]> = {
-  all: ['error', 'warn', 'info', 'success', 'debug'],
-  warn: ['error', 'warn'],
-  error: ['error']
 }
 
 interface Props {
@@ -27,7 +19,7 @@ interface Props {
 }
 
 export function Console({ entries, running, onStop, onClear, onClose }: Props): React.JSX.Element {
-  const [filter, setFilter] = useState<Filter>('all')
+  const [filter, setFilter] = useState<ConsoleFilter>('all')
   const body = useRef<HTMLDivElement>(null)
   const stick = useRef(true)
 
@@ -36,20 +28,15 @@ export function Console({ entries, running, onStop, onClear, onClose }: Props): 
     if (stick.current && body.current) body.current.scrollTop = body.current.scrollHeight
   }, [entries, filter])
 
-  const levelOf = (e: ConsoleEntry): Level =>
-    e.type === 'line' ? e.style.level : e.type === 'prompt' ? 'debug' : e.level
-  // 件数はスクリプトの出力行だけを数える（開始・終了の行は含めない）
-  const count = (level: Level): number =>
-    entries.filter((e) => e.type === 'line' && levelOf(e) === level).length
-  const shown = entries.filter((e) => e.type !== 'line' || SHOWN[filter].includes(levelOf(e)))
+  const shown = filterEntries(entries, filter)
 
   return (
     <section className="console">
       <div className="console-bar">
         <span className="console-title">{t().console.title}</span>
-        <span className="count error">{t().console.errors(count('error'))}</span>
-        <span className="count warn">{t().console.warnings(count('warn'))}</span>
-        <select value={filter} onChange={(e) => setFilter(e.target.value as Filter)}>
+        <span className="count error">{t().console.errors(countLevel(entries, 'error'))}</span>
+        <span className="count warn">{t().console.warnings(countLevel(entries, 'warn'))}</span>
+        <select value={filter} onChange={(e) => setFilter(e.target.value as ConsoleFilter)}>
           <option value="all">{t().console.all}</option>
           <option value="warn">{t().console.warnUp}</option>
           <option value="error">{t().console.errorOnly}</option>

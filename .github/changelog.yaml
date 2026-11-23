@@ -10,6 +10,11 @@
   added:
     - ja: Info のツールの枠に、脆弱性の情報のサイト（Cloudflare Radar の Zero Wire）へのリンクを置きました。
       en: Added a link to a vulnerability site (Zero Wire on Cloudflare Radar) under the tools box of the Info page.
+  fixed:
+    - ja: コンソールの「警告以上」「エラーのみ」で、成功した実行の開始・コマンド・終了の行が残っていたのを直しました。当たる行がある実行だけを、開始と終了の行つきで出します。
+      en: Fixed "Warnings and up" and "Errors only" in the console still showing the start, command and end lines of successful runs. Only runs with a matching line are shown, with their start and end lines.
+    - ja: コンソールのエラー・警告の件数に、失敗した実行・起動できなかった実行が入っていなかったのを直しました。
+      en: The error and warning counts in the console now include runs that failed or could not start.
 
 - version: 0.3.1
   date: 2026-11-22

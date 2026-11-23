@@ -22,6 +22,10 @@ export function ConsoleColors(): React.JSX.Element {
       <p>
         Your own rules go in <code>launcher/console.local.yaml</code>. They are checked first.
       </p>
+      <p>
+        &ldquo;Warnings and up&rdquo; and &ldquo;Errors only&rdquo; in the console filter lines by
+        level. For a run with a matching line, its start and end lines are kept too.
+      </p>
     </>
   )
 }
