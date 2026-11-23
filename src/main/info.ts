@@ -19,7 +19,7 @@ import type { DriveInfo, SystemInfo, WindowsInfo } from '../core/info'
 import type { InfoConfig, ProjectView } from '../core/types'
 import type { ViewOf } from './project'
 import { shellPathReady } from './shellPath'
-import { run } from './run'
+import { run } from './exec'
 import { toolInfo } from './toolVersion'
 import { t } from '../core/i18n'
 

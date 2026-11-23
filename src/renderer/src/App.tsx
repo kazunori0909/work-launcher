@@ -19,7 +19,7 @@ import { HelpPage } from './help/HelpPage'
 import { useConsole } from './hooks/useConsole'
 import { useClosing, useProjectView, useWindowTitle } from './hooks/useProjectView'
 import { useSelections } from './hooks/useSelections'
-import { findIcon } from './icons'
+import { findIcon } from './lib/icons'
 import { t } from '../../core/i18n'
 
 /** Lucide に無いアイコン名を警告にする（アイコンセットは画面側にしか無いため、ここで調べる） */

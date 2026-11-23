@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { icons as allIcons } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { HELP_ICONS } from 'virtual:help-icons'
-import { iconName, lookupIcon } from '../../src/renderer/src/iconNames'
+import { iconName, lookupIcon } from '../../src/renderer/src/lib/iconNames'
 
-// アプリの src/renderer/src/icons.ts の代わり（astro.config.mjs で差し替える）。
+// アプリの src/renderer/src/lib/icons.ts の代わり（astro.config.mjs で差し替える）。
 // ブラウザに送るのは、ヘルプの見本で使うアイコンだけ。全部はアイコン一覧を開いたときに読む。
 // ビルド時（SSR）は全部を使う（import.meta.env.SSR が false のブラウザ向けでは、allIcons は消える）
 

@@ -4,7 +4,7 @@ import { builtinTool, isUnsupportedTool, toolCommand, toolDisplayName } from '..
 import { toolResult } from '../core/info'
 import type { ToolInfo } from '../core/info'
 import type { InfoConfig } from '../core/types'
-import { run, runShell } from './run'
+import { run, runShell } from './exec'
 
 /** Mac の導入を促すスタブで、本体が無いもの（→ BuiltinTool.macStub）。呼ばずに未インストールとする */
 async function macStubMissing(name: string): Promise<boolean> {

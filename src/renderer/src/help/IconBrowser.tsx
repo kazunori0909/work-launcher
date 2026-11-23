@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Icon } from '../components/Icon'
-import { useIconNames } from '../icons'
+import { useIconNames } from '../lib/icons'
 import { t } from '../../../core/i18n'
 
 const MAX_SHOWN = 120
