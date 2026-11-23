@@ -6,6 +6,14 @@
 # - breaking には、直し方まで書く
 # - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
 
+- version: unreleased
+  summary:
+    ja: Info の組み込みのツールに、エディタと AI のツールを足しました。
+    en: Added editor and AI tools to the built-in tools of the Info page.
+  added:
+    - ja: Info の組み込みのツールに、エディタ（vscode・cursor・antigravity-ide）と AI のツール（claude・claude-code・codex-cli・gemini-cli・copilot-cli・antigravity・antigravity-cli）を足しました。`tools` に名前を書くだけで、バージョンが出ます。
+      en: Added editors (vscode, cursor, antigravity-ide) and AI tools (claude, claude-code, codex-cli, gemini-cli, copilot-cli, antigravity, antigravity-cli) to the built-in tools of the Info page. Write the name in `tools` to show the version.
+
 - version: 0.3.2
   date: 2026-11-23
   summary:

@@ -22,9 +22,14 @@
 
 - ツールの取り方（`src/main/toolVersion.ts`）は Electron に依存させない。アプリを起動せずに同じ判定を動かす
   `scripts/check-tools.mjs` から使い、Claude が Mac・Windows で入れて消して確かめられるようにするため（由来: [Phase 28](archive/phase28-more-builtin-tools/PLAN.md)）
-- 組み込みのツールはカテゴリ順（git → 開発用の言語 → スクリプト言語 → docker → ゲームのランチャー）に並べる。
+- 組み込みのツールはカテゴリ順（git → 開発用の言語 → スクリプト言語 → docker → ゲームのランチャー → エディタ → AI のアプリ → AI の CLI）に並べる。
   カテゴリ内を名前順にする案は、npm を node の直後に置く例外が要るので採らなかった。
   並びが効くのはヘルプの表だけで、Info は設定の `tools` の順（由来: [Phase 28](archive/phase28-more-builtin-tools/PLAN.md)）
+- アプリ（エディタ・AI のアプリ・ゲームのランチャー）は、アプリの「バージョン情報」と同じ値を出す。
+  Windows はアンインストール情報を表示名で探し、Mac は `/Applications`・`~/Applications` の順に見て、無ければ Spotlight でバンドル ID から探す。
+  アプリは好きな場所に置けるので、置き場所を固定しない。Spotlight だけで探す案は、索引を切った人が `/Applications` のアプリも取れなくなるので採らなかった。
+  Antigravity IDE の CLI は元にした VS Code のバージョンを返すので使わない（由来: [Phase 33](archive/phase33-editor-ai-tools/PLAN.md)）
+- AI の CLI の名前は、アプリと紛れないよう `-cli` を付ける（`gemini-cli` など）。`claude-code` は製品名のまま（由来: [Phase 33](archive/phase33-editor-ai-tools/PLAN.md)）
 
 ## 多言語
 

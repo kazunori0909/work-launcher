@@ -42,13 +42,27 @@ Mac の Homebrew は `HOMEBREW_NO_AUTO_UPDATE=1` を付けて動かす（他の�
 
 ## 入れ方の表
 
-| 名前 | Mac（Homebrew）     | Windows（winget の ID）      |
-| ---- | ------------------- | ---------------------------- |
-| ruby | `brew install ruby` | `RubyInstallerTeam.Ruby.3.4` |
-| go   | `brew install go`   | `GoLang.Go`                  |
-| rust | 下の注を見る        | `Rustlang.Rustup`            |
-| php  | `brew install php`  | `PHP.PHP.8.4`                |
+| 名前            | Mac（Homebrew）                          | Windows（winget の ID）      |
+| --------------- | ---------------------------------------- | ---------------------------- |
+| ruby            | `brew install ruby`                      | `RubyInstallerTeam.Ruby.3.4` |
+| go              | `brew install go`                        | `GoLang.Go`                  |
+| rust            | 下の注を見る                             | `Rustlang.Rustup`            |
+| php             | `brew install php`                       | `PHP.PHP.8.4`                |
+| vscode          | `brew install --cask visual-studio-code` | `Microsoft.VisualStudioCode` |
+| cursor          | `brew install --cask cursor`             | `Anysphere.Cursor`           |
+| claude          | `brew install --cask claude`             | `Anthropic.Claude`           |
+| claude-code     | `brew install --cask claude-code`        | `Anthropic.ClaudeCode`       |
+| codex-cli       | `brew install --cask codex`              | `OpenAI.Codex`               |
+| gemini-cli      | `brew install gemini-cli`（下の注）      | 無い（下の注）               |
+| copilot-cli     | `brew install --cask copilot-cli`        | `GitHub.Copilot`             |
+| antigravity     | `brew install --cask antigravity`        | `Google.Antigravity`         |
+| antigravity-ide | `brew install --cask antigravity-ide`    | `Google.AntigravityIDE`      |
+| antigravity-cli | `brew install --cask antigravity-cli`    | `Google.AntigravityCLI`      |
 
+- gemini-cli: Mac の Homebrew は node に依存し、入れると Homebrew の node が上がる（消しても戻らない）。入れる前にユーザーに伝える。
+  Windows は winget に無いので、PC の node の npm で `npm install -g @google/gemini-cli`（消すのは `npm uninstall -g`）。
+  PC に node が無ければ、`OpenJS.NodeJS.LTS` を一時的に入れるかユーザーに聞く
+- アプリ（vscode・cursor・claude・antigravity・antigravity-ide）は、元から入っていることが多い。0 の段で `installed` なら飛ばす
 - winget の ID は変わることがある。入れる前に `winget search <名前>` で確かめ、違えば表を直す
 - Windows は `winget install --id <ID> --exact --silent --accept-package-agreements --accept-source-agreements` で入れる
 - Mac の rust: Homebrew の `rust` は llvm を連れてきて大きい。rustup の公式インストーラ

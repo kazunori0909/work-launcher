@@ -161,6 +161,7 @@ describe('ツールのバージョン', () => {
     expect(extractVersion(manifest, steam.pattern)).toBe('1794536281')
     const epic = builtinToolCommand('epic', 'darwin')!
     expect(epic.command).toContain('CFBundleShortVersionString')
+    expect(epic.command).toContain("'com.epicgames.eglv2'")
     expect(extractVersion('0.117.0\n', epic.pattern)).toBe('0.117.0')
   })
 

@@ -47,8 +47,24 @@ const WIN_EPIC_SCRIPT =
 // Mac の Steam は初回起動でクライアントを Application Support に入れる。manifest の形は Windows と同じ
 const MAC_STEAM_MANIFEST =
   '"$HOME/Library/Application Support/Steam/Steam.AppBundle/Steam/Contents/MacOS/package/steam_client_osx.manifest"'
-// Mac の Epic はアプリの Info.plist のバージョン（アプリ内の表示と同じ）
-const MAC_EPIC_PLIST = '"/Applications/Epic Games Launcher.app/Contents/Info"'
+/**
+ * Windows のアンインストール情報から、表示名が match（正規表現）に当たるものの DisplayVersion を読む。
+ * ユーザーごとの入れ方（HKCU）も見る
+ */
+const winUninstallVersion = (match: string): string =>
+  powershell(
+    `Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match '${match}' } | Select-Object -First 1 -ExpandProperty DisplayVersion`
+  )
+
+/**
+ * Mac のアプリの Info.plist のバージョン（アプリの「バージョン情報」と同じ）。
+ * アプリは好きな場所に置けるので、/Applications・~/Applications を見て、無ければ Spotlight でバンドル ID から探す。
+ * 見つからない段のエラーをバージョンと取り違えないよう、エラー出力は捨てる
+ */
+export const macAppVersion = (app: string, bundleId: string): string =>
+  `v() { [ -d "$1" ] && defaults read "$1/Contents/Info" CFBundleShortVersionString 2>/dev/null; }; ` +
+  `v "/Applications/${app}.app" || v "$HOME/Applications/${app}.app" || ` +
+  `v "$(mdfind "kMDItemCFBundleIdentifier == '${bundleId}'" 2>/dev/null | head -n 1)"`
 
 /** git・python3 のスタブの本体はコマンドライン・デベロッパツール */
 const XCODE_CHECK: [string, ...string[]] = ['xcode-select', '-p']
@@ -118,8 +134,92 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     help: 'Epic Games Launcher',
     command: {
       win: powershell(WIN_EPIC_SCRIPT),
-      mac: `defaults read ${MAC_EPIC_PLIST} CFBundleShortVersionString`
+      mac: macAppVersion('Epic Games Launcher', 'com.epicgames.eglv2')
     }
+  },
+  {
+    name: 'vscode',
+    label: 'Visual Studio Code',
+    help: 'Visual Studio Code',
+    command: {
+      win: winUninstallVersion('^Microsoft Visual Studio Code( \\(User\\))?$'),
+      mac: macAppVersion('Visual Studio Code', 'com.microsoft.VSCode')
+    }
+  },
+  {
+    name: 'cursor',
+    label: 'Cursor',
+    help: 'Cursor',
+    command: {
+      win: winUninstallVersion('^Cursor( \\(User\\))?$'),
+      mac: macAppVersion('Cursor', 'com.todesktop.230313mzl4w4u92')
+    }
+  },
+  // antigravity-ide --version は元にした VS Code のバージョンを出すので、アプリのバージョンを読む
+  {
+    name: 'antigravity-ide',
+    label: 'Antigravity IDE',
+    help: 'Antigravity IDE',
+    command: {
+      win: winUninstallVersion('^Antigravity IDE( \\(User\\))?$'),
+      mac: macAppVersion('Antigravity IDE', 'com.google.antigravity-ide')
+    }
+  },
+  {
+    name: 'claude',
+    label: 'Claude',
+    help: { ja: 'Claude（デスクトップ版）', en: 'Claude (desktop app)' },
+    command: {
+      win: winUninstallVersion('^Claude$'),
+      mac: macAppVersion('Claude', 'com.anthropic.claudefordesktop')
+    }
+  },
+  {
+    name: 'antigravity',
+    label: 'Antigravity',
+    help: 'Antigravity',
+    command: {
+      // Windows の表示名は「Antigravity 2.34.0」のようにバージョンが付く
+      win: winUninstallVersion('^Antigravity( \\(User\\)| \\d+(\\.\\d+)+)?$'),
+      mac: macAppVersion('Antigravity', 'com.google.antigravity')
+    }
+  },
+  // claude --version は「2.1.330 (Claude Code)」と出す
+  {
+    name: 'claude-code',
+    label: 'Claude Code',
+    help: { ja: 'Claude Code（CLI）', en: 'Claude Code (CLI)' },
+    command: 'claude --version',
+    pattern: '(\\d+\\.\\S+)'
+  },
+  // codex --version は「codex-cli 0.169.0」と出す
+  {
+    name: 'codex-cli',
+    label: 'Codex CLI',
+    help: 'Codex CLI',
+    command: 'codex --version',
+    pattern: 'codex-cli (\\S+)'
+  },
+  {
+    name: 'gemini-cli',
+    label: 'Gemini CLI',
+    help: 'Gemini CLI',
+    command: 'gemini --version',
+    pattern: '(\\d+\\.\\S+)'
+  },
+  // copilot --version は「GitHub Copilot CLI 1.0.112.」と、末尾にピリオドを付けて出す
+  {
+    name: 'copilot-cli',
+    label: 'GitHub Copilot CLI',
+    help: 'GitHub Copilot CLI',
+    command: 'copilot --version',
+    pattern: 'Copilot CLI (\\d+(?:\\.\\d+)+)'
+  },
+  {
+    name: 'antigravity-cli',
+    label: 'Antigravity CLI',
+    help: 'Antigravity CLI',
+    command: 'agy --version'
   }
 ]
 
