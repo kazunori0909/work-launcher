@@ -5,11 +5,21 @@ import type { RunEvent } from './ipc'
 import type { ExecKind } from './types'
 import { t } from './i18n'
 
-export type NewEntry =
+/** runId は exec の実行の行にだけ入る（function の知らせ・アプリのエラーには無い） */
+export type NewEntry = { runId?: number } & (
   | { type: 'line'; text: string; style: LineStyle }
   /** text はプロンプト（作業フォルダ）か継続の `>`、command はその行のコマンド */
   | { type: 'prompt'; text: string; command: string }
   | { type: 'start' | 'end' | 'system'; text: string; level: Level }
+)
+
+export type ConsoleFilter = 'all' | 'warn' | 'error'
+
+const SHOWN: Record<ConsoleFilter, readonly Level[]> = {
+  all: ['error', 'warn', 'info', 'success', 'debug'],
+  warn: ['error', 'warn'],
+  error: ['error']
+}
 
 const MAX_COMMAND_LINES = 10
 
@@ -48,12 +58,41 @@ export function opensConsole(entry: NewEntry): boolean {
   return entry.type === 'start' || entry.level === 'error'
 }
 
+export function levelOf(entry: NewEntry): Level {
+  if (entry.type === 'line') return entry.style.level
+  return entry.type === 'prompt' ? 'debug' : entry.level
+}
+
+/** 絞り込み・件数で、そのレベルの行として扱うか。プロンプトの行は数えない */
+const isLevel = (entry: NewEntry, levels: readonly Level[]): boolean =>
+  entry.type !== 'prompt' && levels.includes(levelOf(entry))
+
+/** 件数の表示。絞り込みで当たる行と同じものを数える */
+export const countLevel = (entries: NewEntry[], level: Level): number =>
+  entries.filter((e) => isLevel(e, [level])).length
+
+/**
+ * 絞り込んだ行。選んだレベルに当たる行を残し、その行を含む実行は開始・終了の行も残す
+ * （どの実行のものか分かるように）。プロンプトの行は「すべて」のときだけ出す
+ */
+export function filterEntries<T extends NewEntry>(entries: T[], filter: ConsoleFilter): T[] {
+  if (filter === 'all') return entries
+  const hit = (e: T): boolean => isLevel(e, SHOWN[filter])
+  const runs = new Set(entries.filter(hit).map((e) => e.runId))
+  return entries.filter(
+    (e) =>
+      hit(e) ||
+      ((e.type === 'start' || e.type === 'end') && e.runId !== undefined && runs.has(e.runId))
+  )
+}
+
 /** 実行の知らせから、コンソールに足す行 */
 export function runEventEntries(event: RunEvent, rules: CompiledRule[]): NewEntry[] {
-  const line = (text: string): NewEntry => ({
+  const line = (text: string, runId?: number): NewEntry => ({
     type: 'line',
     text,
-    style: classifyLine(text, rules)
+    style: classifyLine(text, rules),
+    ...(runId === undefined ? {} : { runId })
   })
   switch (event.type) {
     case 'message':
@@ -61,14 +100,14 @@ export function runEventEntries(event: RunEvent, rules: CompiledRule[]): NewEntr
         ? [systemEntry('system', event.text, 'error')]
         : [line(event.text)]
     case 'output':
-      return event.lines.map(line)
+      return event.lines.map((text) => line(text, event.runId))
     case 'start':
       return [
         systemEntry('start', `▶ ${event.label}`, 'info'),
         ...promptLines(promptFor(event.kind, event.cwd), event.script)
-      ]
+      ].map((e) => ({ ...e, runId: event.runId }))
     case 'exit':
-      return [exitEntry(event)]
+      return [{ ...exitEntry(event), runId: event.runId }]
   }
 }
 
