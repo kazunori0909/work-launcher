@@ -80,7 +80,7 @@
 
 ## 2026-11-23 22:15 mac → win: Cursor と生成 AI の CLI の5件の取得を確かめる
 
-- 状態: 依頼中
+- 状態: 回答済み
 - 関連: PLAN.md「2026-11-23: 生成 AI の CLI と Cursor も足す」、前の依頼
 
 ### 依頼
@@ -102,4 +102,42 @@
 
 ### 回答
 
-（受けた側が書く）
+2026-11-23 win（Windows 11 Home）。6件とも元は入っておらず、入れて確かめて消した（`/check-tools`）。
+コードを直す必要は無い（期待どおりでなかったものは無い）。
+
+| ツール          | 入れ方                                 | 未インストール時 | インストール後 | アンインストール後 |
+| --------------- | -------------------------------------- | ---------------- | -------------- | ------------------ |
+| cursor          | `Anysphere.Cursor`                     | 未インストール   | 3.31.15        | 未インストール     |
+| codex-cli       | `OpenAI.Codex`                         | 未インストール   | 0.171.0        | 未インストール     |
+| gemini-cli      | npm（下の注）                          | 未インストール   | 0.70.0         | 未インストール     |
+| copilot-cli     | `GitHub.Copilot`                       | 未インストール   | 1.0.114        | 未インストール     |
+| antigravity-cli | `Google.AntigravityCLI`                | 未インストール   | 1.5.14         | 未インストール     |
+| antigravity     | `Google.Antigravity`（直した正規表現） | 未インストール   | 2.34.0         | 未インストール     |
+
+- winget list（gemini-cli は `npm ls -g`）のバージョンと、6件すべて一致
+- `--version` の実際の出力（PowerShell で、リポジトリの外から）
+  - `codex --version` → `codex-cli 0.171.0`
+  - `gemini --version` → `0.70.0`
+  - `copilot --version` → `GitHub Copilot CLI 1.0.114.` と `Run 'copilot update' to check for updates.` の2行
+  - `agy --version` → `1.5.14`
+- 見つかった場所: codex・agy は `%LOCALAPPDATA%\Microsoft\WinGet\Links\`（winget のエイリアス）、
+  copilot は `%LOCALAPPDATA%\GitHubCopilotCLI\copilot.exe`、gemini は `%APPDATA%\npm\gemini`
+- アンインストール情報の表示名（参考）
+
+  | ツール          | DisplayName          | ハイブ                      |
+  | --------------- | -------------------- | --------------------------- |
+  | cursor          | `Cursor (User)`      | HKCU（`{DADADADA-…}}_is1`） |
+  | antigravity     | `Antigravity 2.34.0` | HKCU                        |
+  | codex-cli       | `Codex CLI`          | HKCU（winget のポータブル） |
+  | antigravity-cli | `Antigravity CLI`    | HKCU（winget のポータブル） |
+  | copilot-cli     | `GitHub Copilot CLI` | HKLM                        |
+
+  Cursor の正規表現 `^Cursor( \(User\))?$` は推測どおり合った。
+  なお、この PC には元から Microsoft の `Copilot`（WOW6432Node）があるが、どのツールの正規表現にも合わない
+
+- gemini-cli: winget に無い（`Google.GeminiDesktop`・`Google.GeminiAPICLI` は別物）。
+  この PC には mise の node（リポジトリの `mise.toml` だけで有効）しか無かったので、
+  ユーザーに確かめて `OpenJS.NodeJS.LTS`（v26.13.1、`C:\Program Files\nodejs`）を winget で一時的に入れ、
+  その npm で `npm install -g @google/gemini-cli` → `npm uninstall -g @google/gemini-cli` した。最後に Node.js も消した
+  - 消したあと `%APPDATA%\npm\node_modules\@google` が空のフォルダで残った（判定には響かない。片付けた）
+  - User・Machine の PATH は、入れる前と消したあとで同じだった
