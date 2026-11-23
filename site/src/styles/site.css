@@ -1136,6 +1136,20 @@ body {
   min-height: 0;
 }
 
+/* Info の上の「デモの値です」 */
+.s-try-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .s-try-page {
   flex: 1;
   min-height: 0;
