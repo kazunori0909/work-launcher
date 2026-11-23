@@ -77,3 +77,29 @@
 - 表示名にバージョンが入るので、アップデートの仕方によっては古いキーと新しいキーが並ぶかもしれない（未確認）。
   その場合に備えるなら、合うキーが複数あったときに DisplayVersion の大きい方を取ると安全
 - winget には別に `Google.AntigravityCLI`（1.5.14）もある。いまの5件には入っていない
+
+## 2026-11-23 22:15 mac → win: Cursor と生成 AI の CLI の5件の取得を確かめる
+
+- 状態: 依頼中
+- 関連: PLAN.md「2026-11-23: 生成 AI の CLI と Cursor も足す」、前の依頼
+
+### 依頼
+
+- 背景: 前の依頼と同じブランチに、`cursor`・`codex-cli`・`gemini-cli`・`copilot-cli`・`antigravity-cli` を足した。
+  - cursor: アンインストール情報の表示名を `^Cursor( \(User\))?$` で探す（推測）
+  - CLI は `codex --version`・`gemini --version`・`copilot --version`・`agy --version` の出力から取る。
+    Mac の出力は KNOWLEDGE.md の「Mac」にある
+- やってほしいこと:
+  1. `git pull && npm ci`
+  2. `/check-tools` の手順で、5件を入れて消して確かめる（`node scripts/check-tools.mjs cursor codex-cli gemini-cli copilot-cli antigravity-cli`）。
+     winget の ID は `winget search` で確かめる（候補: `Anysphere.Cursor`・`OpenAI.Codex`・`GitHub.Copilot`・`Google.AntigravityCLI`）。
+     gemini-cli が winget に無ければ `npm install -g @google/gemini-cli` で入れ、`npm uninstall -g @google/gemini-cli` で消す
+     （このとき npm はリポジトリの mise の node ではなく、PC に入っている node のものを使う。どちらを使ったかを書く）
+  3. cursor が取れなかったら、前の依頼の PowerShell（`-match` を `'Cursor'` にする）で実際の表示名を調べる
+  4. 前の依頼で直した antigravity が取れるかも、入れられるなら確かめる（`Google.Antigravity`）
+- 返してほしいもの: ツールごとの4段の結果・`--version` の実際の出力・使った winget の ID。
+  正規表現や取り方を直した方がよければ、その案（コードは直さない）
+
+### 回答
+
+（受けた側が書く）
