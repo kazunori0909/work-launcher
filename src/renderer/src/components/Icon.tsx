@@ -1,5 +1,5 @@
 import { createElement } from 'react'
-import { findIcon } from '../icons'
+import { findIcon } from '../lib/icons'
 
 export function Icon({
   name,

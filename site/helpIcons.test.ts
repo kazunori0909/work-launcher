@@ -5,7 +5,7 @@ import type { Item } from '../src/core/types'
 import * as ja from '../src/renderer/src/help/examples'
 import * as en from '../src/renderer/src/help/examples.en'
 import type { Cheat, Example } from '../src/renderer/src/help/examples'
-import { lookupIcon } from '../src/renderer/src/iconNames'
+import { lookupIcon } from '../src/renderer/src/lib/iconNames'
 import { helpIconKeys } from './helpIcons'
 
 // サイトに入れるアイコン（ソースから拾ったもの）に、見本で描くアイコンが全部入っているか。

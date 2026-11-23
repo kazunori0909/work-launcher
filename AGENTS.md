@@ -33,7 +33,7 @@ src/core/      # Electron 非依存のロジック（vitest でテスト）
   ipc.ts       #   メイン ↔ 画面の IPC の約束（チャンネル名と型）。引数の確かめ方は ipcArgs.ts
 src/main/      # Electron メインプロセス。ウィンドウごとの状態は session.ts。Info のツールの取り方は toolVersion.ts（Electron 非依存）
 src/preload/   # プリロード（core/ipc.ts の約束を ipcRenderer につなぐだけ）
-src/renderer/  # 画面（React）。hooks/ は App の状態、assets/styles/ は画面ごとの CSS
+src/renderer/  # 画面（React）。hooks/ は App の状態、lib/ はコンポーネントでない処理（アイコン・色付け）、styles/ は画面ごとの CSS
   help/        #   組み込みのヘルプ（Web サイトでも描く）。章は sections/<言語>/（一覧は各 index.ts）、書き方の例は examples.ts と examples.en.ts。アプリ / Web の出し分けは parts.tsx の OnlyApp・OnlyWeb
 build/ resources/  # アイコン等（electron-builder 用）。アイコンの元は build/icons/*.svg（npm run icons で書き出す）
 scripts/     # 開発用のスクリプト（make-icons.mjs・ビルドでライセンス一覧を作る licenses.mjs・個人情報チェック check-personal-info.mjs・ツールの取得の確認 check-tools.mjs・Release 本文を作る release-notes.mjs）

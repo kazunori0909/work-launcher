@@ -10,7 +10,7 @@ const path = (p) => fileURLToPath(new URL(p, import.meta.url))
 
 /** アプリのモジュール → サイト用の差し替え（JS を小さくするため。それぞれのファイルの冒頭を参照） */
 const REPLACE = new Map([
-  [path('../src/renderer/src/icons.ts'), path('./src/icons.ts')],
+  [path('../src/renderer/src/lib/icons.ts'), path('./src/icons.ts')],
   [path('../src/renderer/src/components/embed.tsx'), path('./src/embed.tsx')]
 ])
 const SITE_FILES = new Set(REPLACE.values())

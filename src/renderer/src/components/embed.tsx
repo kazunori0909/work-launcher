@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm'
 import { resolveAsset } from '../../../core/markdown'
 import { FORBIDDEN_SCHEMES, hrefAllowed } from '../../../core/schemes'
 import { EmbedContext } from './embedContext'
-import { highlightMd } from './highlight'
+import { highlightMd } from '../lib/highlight'
 
 // 埋め込み（markdown・mdfile・html）とマニュアルの描画。
 // リンク・画像の相対パスは baseDir（launcherDir からの相対フォルダ）起点で解決する

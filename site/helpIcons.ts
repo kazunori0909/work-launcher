@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { icons } from 'lucide-react'
-import { iconKey, lookupIcon } from '../src/renderer/src/iconNames'
+import { iconKey, lookupIcon } from '../src/renderer/src/lib/iconNames'
 
 // Web サイトに入れるアイコンを、ヘルプと体験ページのソースから拾う（全部入れると JS が大きいため）。
 // 拾い漏れが無いかは helpIcons.test.ts で、見本のデータと突き合わせて確かめる
