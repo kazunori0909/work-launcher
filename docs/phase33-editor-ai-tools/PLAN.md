@@ -9,7 +9,7 @@ Info の組み込みのツールに、エディタと AI のツール（VS Code�
 
 - 10件を足す: アプリは `vscode`・`cursor`・`claude`（デスクトップ版）・`antigravity`・`antigravity-ide`、CLI は `claude-code`・`codex-cli`・`gemini-cli`・`copilot-cli`・`antigravity-cli`
 - アプリ（`claude-code` 以外）は、アプリの「バージョン情報」に出る値を出す
-  - Mac は `/Applications/<名前>.app` の Info.plist（`CFBundleShortVersionString`）を読む（Epic と同じ）。
+  - Mac はアプリの Info.plist（`CFBundleShortVersionString`）を読む。アプリの探し方は決定事項ログの「Mac のアプリは置き場所を固定しない」。
     `code` や `antigravity-ide` は PATH に無いことが多く、`antigravity-ide --version` は元にした VS Code のバージョンを返すため
   - Windows はアンインストール情報（HKCU・HKLM・WOW6432Node）を表示名で探し、`DisplayVersion` を読む
   - Linux は取れない（steam・epic と同じ）
@@ -36,3 +36,12 @@ Info の組み込みのツールに、エディタと AI のツール（VS Code�
 - 足すもの: `cursor`・`codex-cli`・`gemini-cli`・`copilot-cli`・`antigravity-cli`
 - CLI の名前は製品名に合わせて `-cli` を付ける（`gemini` だけだとアプリと紛れる）。`claude-code` は製品名のまま
 - JetBrains の IDE は製品が多く入れ方で置き場所も変わるので、足さない
+
+### 2026-11-23: Mac のアプリは置き場所を固定しない
+
+- アプリは好きな場所に置けるので、`/Applications` だけを見ると「未インストール」と出てしまう（ユーザーの指摘）
+- `/Applications`・`~/Applications` の順に名前で見て、無ければ Spotlight（`mdfind`）でバンドル ID から探す。Epic も同じにする
+  - よくある置き場所を先に見るのは、Spotlight を切っている人でも取れるようにするため
+  - バンドル ID で探すので、アプリの名前を変えても取れる
+- 採らなかった案: Spotlight だけで探す（索引を切っていると、`/Applications` のアプリも取れない）
+- Windows はアンインストール情報、CLI は PATH で探しているので、もとから置き場所に依らない

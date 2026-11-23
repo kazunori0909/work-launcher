@@ -49,6 +49,8 @@ const { toolInfo } = await load('src/main/toolVersion.ts')
 /** コマンドがどこに見つかったか（判定の手がかりに出す） */
 function resolved(command) {
   const first = command.split(/\s+/)[0]
+  // Mac のアプリのように、先頭がコマンド名でないもの（シェルの関数など）は出さない
+  if (!/^[\w.\\/:-]+$/.test(first)) return undefined
   try {
     const out =
       process.platform === 'win32'

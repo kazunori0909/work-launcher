@@ -11,6 +11,7 @@
 - [x] cursor・codex-cli・gemini-cli・copilot-cli・antigravity-cli を足す
 - [x] Mac で5件を入れて消し、取得を確かめる（`/check-tools`）
 - [ ] Windows で5件を確かめる（`/handoff`）
+- [x] Mac のアプリを、置き場所を固定せずに探す（`/Applications`・`~/Applications`・Spotlight）
 
 ## 共通
 

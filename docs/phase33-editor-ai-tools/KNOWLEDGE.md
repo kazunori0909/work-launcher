@@ -15,6 +15,9 @@
   - `copilot --version` → `GitHub Copilot CLI 1.0.112.` と次の行に案内（cask `copilot-cli`。バージョンの後ろにピリオド）
   - `agy --version` → `1.5.9`（cask `antigravity-cli`）
   - Cursor（cask `cursor`）は Info.plist と `cursor --version` の1行目が同じ
+- Cursor のバンドル ID は `com.todesktop.230313mzl4w4u92`（配布の仕組みの ToDesktop の形。会社名が入らない）
+- `mdfind "kMDItemCFBundleIdentifier == '<バンドル ID>'"` は 0.1 秒ほどで返る。
+  アプリを `~/Applications` やホームの別のフォルダに動かしても、数秒で新しい場所を返した
 
 ## Windows（2026-11、Windows 11。winget で入れて確かめた）
 

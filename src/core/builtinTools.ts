@@ -56,9 +56,15 @@ const winUninstallVersion = (match: string): string =>
     `Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match '${match}' } | Select-Object -First 1 -ExpandProperty DisplayVersion`
   )
 
-/** Mac のアプリの Info.plist のバージョン（アプリの「バージョン情報」と同じ） */
-const macAppVersion = (app: string): string =>
-  `defaults read "/Applications/${app}.app/Contents/Info" CFBundleShortVersionString`
+/**
+ * Mac のアプリの Info.plist のバージョン（アプリの「バージョン情報」と同じ）。
+ * アプリは好きな場所に置けるので、/Applications・~/Applications を見て、無ければ Spotlight でバンドル ID から探す。
+ * 見つからない段のエラーをバージョンと取り違えないよう、エラー出力は捨てる
+ */
+export const macAppVersion = (app: string, bundleId: string): string =>
+  `v() { [ -d "$1" ] && defaults read "$1/Contents/Info" CFBundleShortVersionString 2>/dev/null; }; ` +
+  `v "/Applications/${app}.app" || v "$HOME/Applications/${app}.app" || ` +
+  `v "$(mdfind "kMDItemCFBundleIdentifier == '${bundleId}'" 2>/dev/null | head -n 1)"`
 
 /** git・python3 のスタブの本体はコマンドライン・デベロッパツール */
 const XCODE_CHECK: [string, ...string[]] = ['xcode-select', '-p']
@@ -128,7 +134,7 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     help: 'Epic Games Launcher',
     command: {
       win: powershell(WIN_EPIC_SCRIPT),
-      mac: macAppVersion('Epic Games Launcher')
+      mac: macAppVersion('Epic Games Launcher', 'com.epicgames.eglv2')
     }
   },
   {
@@ -137,14 +143,17 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     help: 'Visual Studio Code',
     command: {
       win: winUninstallVersion('^Microsoft Visual Studio Code( \\(User\\))?$'),
-      mac: macAppVersion('Visual Studio Code')
+      mac: macAppVersion('Visual Studio Code', 'com.microsoft.VSCode')
     }
   },
   {
     name: 'claude',
     label: 'Claude',
     help: { ja: 'Claude（デスクトップ版）', en: 'Claude (desktop app)' },
-    command: { win: winUninstallVersion('^Claude$'), mac: macAppVersion('Claude') }
+    command: {
+      win: winUninstallVersion('^Claude$'),
+      mac: macAppVersion('Claude', 'com.anthropic.claudefordesktop')
+    }
   },
   // claude --version は「2.1.330 (Claude Code)」と出す
   {
@@ -161,7 +170,7 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     command: {
       // Windows の表示名は「Antigravity 2.34.0」のようにバージョンが付く
       win: winUninstallVersion('^Antigravity( \\(User\\)| \\d+(\\.\\d+)+)?$'),
-      mac: macAppVersion('Antigravity')
+      mac: macAppVersion('Antigravity', 'com.google.antigravity')
     }
   },
   // antigravity-ide --version は元にした VS Code のバージョンを出すので、アプリのバージョンを読む
@@ -171,7 +180,7 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     help: 'Antigravity IDE',
     command: {
       win: winUninstallVersion('^Antigravity IDE( \\(User\\))?$'),
-      mac: macAppVersion('Antigravity IDE')
+      mac: macAppVersion('Antigravity IDE', 'com.google.antigravity-ide')
     }
   },
   {
@@ -186,7 +195,7 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     help: 'Cursor',
     command: {
       win: winUninstallVersion('^Cursor( \\(User\\))?$'),
-      mac: macAppVersion('Cursor')
+      mac: macAppVersion('Cursor', 'com.todesktop.230313mzl4w4u92')
     }
   },
   // codex --version は「codex-cli 0.169.0」と出す

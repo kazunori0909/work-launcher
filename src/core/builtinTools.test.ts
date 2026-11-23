@@ -1,9 +1,14 @@
+import { execSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   BUILTIN_TOOLS,
   builtinTool,
   builtinToolCommand,
   isUnsupportedTool,
+  macAppVersion,
   toolCommand
 } from './builtinTools'
 import { extractVersion } from './info'
@@ -102,14 +107,37 @@ describe('エディタと AI のツール', () => {
       ['cursor', 'Cursor', 'Cursor']
     ]
     for (const [name, app, display] of cases) {
-      expect(builtinToolCommand(name, 'darwin')!.command).toBe(
-        `defaults read "/Applications/${app}.app/Contents/Info" CFBundleShortVersionString`
-      )
+      const mac = builtinToolCommand(name, 'darwin')!.command
+      expect(mac).toContain(`"/Applications/${app}.app"`)
+      expect(mac).toContain(`"$HOME/Applications/${app}.app"`)
+      expect(mac).toMatch(/kMDItemCFBundleIdentifier == '[\w.-]+'/)
       const win = builtinToolCommand(name, 'win32')!.command
       expect(win).toContain('DisplayVersion')
       expect(win).not.toMatch(/".*".*"/) // cmd.exe の二重引用符は外側の1組だけ
       const match = /-match '([^']+)'/.exec(win)![1]
       expect(new RegExp(match).test(display)).toBe(true)
+    }
+  })
+
+  // 仮の HOME に仮のアプリを置き、Mac のコマンドを実際に動かす
+  it.skipIf(process.platform !== 'darwin')('Mac は ~/Applications のアプリも見る', () => {
+    const home = mkdtempSync(join(tmpdir(), 'wl-home-'))
+    // 実在しないアプリ名とバンドル ID にして、開発者の Mac に入っているものを拾わない
+    const cmd = macAppVersion('WorkLauncher Test App', 'invalid.worklauncher.test')
+    const sh = (): string =>
+      execSync(`${cmd}; echo "exit=$?"`, { env: { ...process.env, HOME: home }, encoding: 'utf8' })
+    try {
+      expect(sh().trim()).toMatch(/^exit=[1-9]/) // 無ければ失敗し、何も出さない
+      const contents = join(home, 'Applications', 'WorkLauncher Test App.app', 'Contents')
+      mkdirSync(contents, { recursive: true })
+      writeFileSync(
+        join(contents, 'Info.plist'),
+        '<?xml version="1.0" encoding="UTF-8"?><plist version="1.0"><dict>' +
+          '<key>CFBundleShortVersionString</key><string>9.8.7</string></dict></plist>'
+      )
+      expect(sh().trim()).toBe('9.8.7\nexit=0')
+    } finally {
+      rmSync(home, { recursive: true, force: true })
     }
   })
 

@@ -530,13 +530,13 @@ info:
 - `tools`: 名前だけなら組み込みの取り方を使う。組み込みに無い名前は `command` が必須
   - 組み込み（初期）: `git`・`java`・`dotnet`・`go`・`rust`（`rustc` のバージョン）・`node`・`npm`・`python`（Mac は `python3`、Windows は `py` を先に試す）・`ruby`・`php`・`docker`
   - Windows と Mac だけの組み込み: `steam`（「Steam について」に出るクライアントのバージョン）・`epic`（Epic Games Launcher のバージョン）。
-    Windows はインストール先をレジストリから探す。Mac は `/Applications` の Epic Games Launcher と、
+    Windows はインストール先をレジストリから探す。Mac は Epic Games Launcher のアプリ（探し方は下のアプリと同じ）と、
     Steam が初回起動で入れるクライアントを見る（一度も起動していなければ「未インストール」）。
     ほかの OS では「この OS では取れません」と出す。
     表示名は製品名（Steam・Epic Games Launcher）
   - Windows と Mac だけの組み込み（アプリ）: `vscode`（Visual Studio Code）・`claude`（Claude のデスクトップ版）・
     `antigravity`（Antigravity）・`antigravity-ide`（Antigravity IDE）・`cursor`（Cursor）。アプリの「バージョン情報」と同じ値を出す。
-    Windows はアンインストール情報を表示名で探す。Mac は `/Applications` のアプリの Info.plist を読む。
+    Windows はアンインストール情報を表示名で探す。Mac はアプリの Info.plist を読む。アプリは `/Applications`・`~/Applications` の順に見て、無ければ Spotlight でバンドル ID から探す（好きな場所に置いたアプリも取れる。Spotlight の索引から外した場所は見つからない）。
     表示名は製品名
   - AI の CLI: `claude-code`（`claude`）・`codex-cli`（`codex`）・`gemini-cli`（`gemini`）・`copilot-cli`（GitHub Copilot CLI、`copilot`）・`antigravity-cli`（`agy`）。`--version` の出力から取る。全 OS で取れる
   - 組み込みの名前に `command`・`pattern` を書くと、取り方を上書きする（ツール側の取り方が変わり、アプリを更新できないとき）。
