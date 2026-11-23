@@ -43,6 +43,11 @@ export function Info(): React.JSX.Element {
         did not match&quot;. Steam shows &quot;Not installed&quot; if it has never been started.
       </p>
       <p>
+        Press &quot;Look up vulnerabilities (Zero Wire)&quot; under the tools box to open
+        Cloudflare&apos;s vulnerability site in your default browser. Enter a product name there to
+        find its vulnerabilities. The app sends nothing.
+      </p>
+      <p>
         If a tool changes and the built-in way stops working, write <code>command</code> or{' '}
         <code>pattern</code> under the same name to override it. Writing <code>command</code>{' '}
         replaces it together with <code>pattern</code> and uses that command on every OS. Writing

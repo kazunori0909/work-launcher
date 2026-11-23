@@ -70,6 +70,16 @@
   color: var(--muted);
 }
 
+.info-link {
+  margin: 8px 0 0;
+}
+
+.info-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .info-table {
   border-collapse: collapse;
 }

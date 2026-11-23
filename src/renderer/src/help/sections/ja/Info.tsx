@@ -40,6 +40,10 @@ export function Info(): React.JSX.Element {
         は、一度も起動していなければ「未インストール」と出ます。
       </p>
       <p>
+        ツールの枠の下の「脆弱性を調べる（Zero Wire）」を押すと、Cloudflare
+        の脆弱性の情報のサイトを既定のブラウザで開きます。製品名を入れると、その製品の脆弱性を探せます。アプリからは何も送りません。
+      </p>
+      <p>
         ツール側の取り方が変わって組み込みで取れなくなったときは、同じ名前で <code>command</code> や{' '}
         <code>pattern</code> を書くと上書きできます。<code>command</code> を書くと{' '}
         <code>pattern</code> とまとめて置き換わり、どの OS でもそのコマンドを使います。

@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import {
   driveLabel,
   infoSections,
   infoText,
   sectionText,
   systemGroups,
-  toolVersionLabel
+  toolVersionLabel,
+  VULN_INFO_URL
 } from '../../../core/info'
 import type { InfoSection, InfoSectionKey, SystemInfo } from '../../../core/info'
+import { EmbedContext } from './embedContext'
 import { Icon } from './Icon'
 import { t } from '../../../core/i18n'
 
@@ -108,6 +110,7 @@ function InfoView({ info }: { info: SystemInfo }): React.JSX.Element {
               missing={(i) => toolVersionLabel(info.tools[i])}
             />
           )}
+          <VulnLink />
         </section>
 
         {info.drives.length > 0 && (
@@ -164,6 +167,25 @@ function InfoView({ info }: { info: SystemInfo }): React.JSX.Element {
         )}
       </div>
     </>
+  )
+}
+
+/** 脆弱性の情報のサイトへのリンク。開き方は md のリンクと同じ（openSchemes を確かめて既定のブラウザ） */
+function VulnLink(): React.JSX.Element {
+  const { onLink } = useContext(EmbedContext)
+  return (
+    <p className="info-link">
+      <a
+        href={VULN_INFO_URL}
+        onClick={(e) => {
+          e.preventDefault()
+          onLink(VULN_INFO_URL, '')
+        }}
+      >
+        <Icon name="external-link" size={14} />
+        {t().info.vulnLink}
+      </a>
+    </p>
   )
 }
 

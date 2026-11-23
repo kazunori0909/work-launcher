@@ -24,6 +24,9 @@ export interface GpuInfo {
   vendorDriver?: string
 }
 
+/** ツールの枠の下に置く、脆弱性の情報のサイト（Cloudflare Radar の Zero Wire） */
+export const VULN_INFO_URL = 'https://radar.cloudflare.com/zero-wire'
+
 export interface ToolInfo {
   name: string
   /** 見つからない・失敗したときは undefined */

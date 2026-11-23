@@ -539,6 +539,8 @@ info:
     （同じ名前を上書きするので `command` は要らない）
   - 見つからない・失敗したときは「未インストール」と表示する。
     コマンドは成功して出力もあるのに `pattern` に当たらないときは「pattern が一致しません」と表示する
+  - ツールの枠の下に、脆弱性の情報のサイト（Cloudflare Radar の Zero Wire、https://radar.cloudflare.com/zero-wire ）への
+    リンクを常に出す。既定のブラウザで開く（`openSchemes` に `https` が無ければ開かない）。アプリからは問い合わせない
 - `registry`: 表示するレジストリの値。Windows だけ表示し、ほかの OS では無視する
   - `ハイブ\キー\値の名前` で書く。ハイブは `HKLM`・`HKCU`・`HKCR`・`HKU`・`HKCC`（`HKEY_LOCAL_MACHINE` なども可）
   - `\` で終えるとキーの既定値を読む
