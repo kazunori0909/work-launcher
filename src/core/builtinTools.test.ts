@@ -117,7 +117,12 @@ describe('エディタと AI のツール', () => {
       new RegExp(/-match '([^']+)'/.exec(builtinToolCommand(name, 'win32')!.command)![1])
     expect(match('vscode').test('Microsoft Visual Studio Code (User)')).toBe(true)
     expect(match('vscode').test('Microsoft Visual Studio Code - Insiders')).toBe(false)
+    expect(match('antigravity').test('Antigravity 2.34.0')).toBe(true)
     expect(match('antigravity').test('Antigravity IDE')).toBe(false)
+    expect(match('antigravity').test('Antigravity IDE (User)')).toBe(false)
+    expect(match('antigravity').test('Antigravity CLI')).toBe(false)
+    expect(match('antigravity-ide').test('Antigravity IDE (User)')).toBe(true)
+    expect(match('claude').test('Claude')).toBe(true)
     expect(match('claude').test('Claude Code')).toBe(false)
   })
 

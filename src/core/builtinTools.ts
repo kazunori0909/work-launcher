@@ -159,7 +159,8 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     label: 'Antigravity',
     help: 'Antigravity',
     command: {
-      win: winUninstallVersion('^Antigravity( \\(User\\))?$'),
+      // Windows の表示名は「Antigravity 2.34.0」のようにバージョンが付く
+      win: winUninstallVersion('^Antigravity( \\(User\\)| \\d+(\\.\\d+)+)?$'),
       mac: macAppVersion('Antigravity')
     }
   },

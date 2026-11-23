@@ -22,3 +22,10 @@ Info の組み込みのツールに、エディタと AI のツール（VS Code�
 - Claude はデスクトップ版（Claude.app）と Claude Code の CLI を別のツールにする
 - Antigravity は Antigravity.app と Antigravity IDE.app を別のツールにする（Mac に両方あり、バージョンが違う）
 - ユーザーが選んだ
+
+### 2026-11-23: Antigravity の Windows の表示名は末尾のバージョンも受ける
+
+- Windows の表示名が `Antigravity 2.34.0` だったため（→ HANDOFF.md）。`Antigravity IDE`・`Antigravity CLI` には当たらない
+- 表示名にバージョンが入るので、更新で古いキーと新しいキーが並ぶかもしれない（未確認）。
+  いまは最初に見つかったものを出す。並ぶのを見たら、DisplayVersion の大きい方を取るようにする
+- `Google.AntigravityCLI` は今回は足さない

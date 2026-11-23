@@ -5,9 +5,10 @@
 - [x] docs/config.md の組み込みの一覧を直す
 - [x] changelog の unreleased に足す
 - [x] Mac の実機で、5件のバージョンが出るか確かめる
-- [ ] Windows の実機で、表示名とバージョンが合うか確かめる（`/handoff`）
+- [x] Windows の実機で、表示名とバージョンが合うか確かめる（`/handoff`）
+- [x] Windows の antigravity の表示名（末尾にバージョン）に合わせて正規表現を直す
 
 ## 共通
 
-- [ ] 実機調査で判明した挙動・制約を KNOWLEDGE.md に記録
+- [x] 実機調査で判明した挙動・制約を KNOWLEDGE.md に記録
 - [ ] 個人情報チェック（追跡ファイルに実値が混入していないか）
