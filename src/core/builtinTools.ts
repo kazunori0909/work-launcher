@@ -147,30 +147,12 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     }
   },
   {
-    name: 'claude',
-    label: 'Claude',
-    help: { ja: 'Claude（デスクトップ版）', en: 'Claude (desktop app)' },
+    name: 'cursor',
+    label: 'Cursor',
+    help: 'Cursor',
     command: {
-      win: winUninstallVersion('^Claude$'),
-      mac: macAppVersion('Claude', 'com.anthropic.claudefordesktop')
-    }
-  },
-  // claude --version は「2.1.330 (Claude Code)」と出す
-  {
-    name: 'claude-code',
-    label: 'Claude Code',
-    help: { ja: 'Claude Code（CLI）', en: 'Claude Code (CLI)' },
-    command: 'claude --version',
-    pattern: '(\\d+\\.\\S+)'
-  },
-  {
-    name: 'antigravity',
-    label: 'Antigravity',
-    help: 'Antigravity',
-    command: {
-      // Windows の表示名は「Antigravity 2.34.0」のようにバージョンが付く
-      win: winUninstallVersion('^Antigravity( \\(User\\)| \\d+(\\.\\d+)+)?$'),
-      mac: macAppVersion('Antigravity', 'com.google.antigravity')
+      win: winUninstallVersion('^Cursor( \\(User\\))?$'),
+      mac: macAppVersion('Cursor', 'com.todesktop.230313mzl4w4u92')
     }
   },
   // antigravity-ide --version は元にした VS Code のバージョンを出すので、アプリのバージョンを読む
@@ -184,19 +166,31 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     }
   },
   {
-    name: 'antigravity-cli',
-    label: 'Antigravity CLI',
-    help: 'Antigravity CLI',
-    command: 'agy --version'
+    name: 'claude',
+    label: 'Claude',
+    help: { ja: 'Claude（デスクトップ版）', en: 'Claude (desktop app)' },
+    command: {
+      win: winUninstallVersion('^Claude$'),
+      mac: macAppVersion('Claude', 'com.anthropic.claudefordesktop')
+    }
   },
   {
-    name: 'cursor',
-    label: 'Cursor',
-    help: 'Cursor',
+    name: 'antigravity',
+    label: 'Antigravity',
+    help: 'Antigravity',
     command: {
-      win: winUninstallVersion('^Cursor( \\(User\\))?$'),
-      mac: macAppVersion('Cursor', 'com.todesktop.230313mzl4w4u92')
+      // Windows の表示名は「Antigravity 2.34.0」のようにバージョンが付く
+      win: winUninstallVersion('^Antigravity( \\(User\\)| \\d+(\\.\\d+)+)?$'),
+      mac: macAppVersion('Antigravity', 'com.google.antigravity')
     }
+  },
+  // claude --version は「2.1.330 (Claude Code)」と出す
+  {
+    name: 'claude-code',
+    label: 'Claude Code',
+    help: { ja: 'Claude Code（CLI）', en: 'Claude Code (CLI)' },
+    command: 'claude --version',
+    pattern: '(\\d+\\.\\S+)'
   },
   // codex --version は「codex-cli 0.169.0」と出す
   {
@@ -220,6 +214,12 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
     help: 'GitHub Copilot CLI',
     command: 'copilot --version',
     pattern: 'Copilot CLI (\\d+(?:\\.\\d+)+)'
+  },
+  {
+    name: 'antigravity-cli',
+    label: 'Antigravity CLI',
+    help: 'Antigravity CLI',
+    command: 'agy --version'
   }
 ]
 

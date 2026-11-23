@@ -59,7 +59,7 @@
 | 30  | 脆弱性の情報 ✅     | Info のツールに Zero Wire へのリンク   |
 | 31  | 絞り込みの修正 ✅   | コンソールの絞り込みを全行に効かせる   |
 | 32  | 体験ページ ✅       | サイトで画面を触り、挙動を吹き出しで   |
-| 33  | エディタと AI 🚧    | VS Code・Claude・Antigravity のツール  |
+| 33  | エディタと AI ✅    | エディタと生成 AI のアプリ・CLI        |
 
 ## 次に扱う候補
 
@@ -74,4 +74,5 @@
 - 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
 - Steam の入っていない Windows で、Info の steam が「pattern が一致しません」ではなく「未インストール」と出るか確かめる（→ phase21）
 - 組み込みのツールに pnpm・yarn（corepack の確認ダイアログに注意）・bun・deno・uv・gh・Unity Hub・Visual Studio を足す（→ phase28）
+- Windows の antigravity で、更新のあとアンインストール情報に古いキーと新しいキーが並ぶか確かめる。並べば DisplayVersion の大きい方を取る（→ phase33）
 - Windows で Info の「更新」のときにレジストリの PATH を読み直す（いまはアプリを起動し直すまで、入れたツールが見えない）（→ phase28）

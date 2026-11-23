@@ -16,6 +16,8 @@
   `/usr/bin/ruby` が先に見つかる（ターミナルの `ruby --version` と同じ値）（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
 - `rustup self uninstall -y` は、自分で作った `~/.zshenv`・`~/.profile` を空のまま残す。
   `~/.cargo/bin` がいまのシェルの PATH に無いと `rustup` が見つからないので、フルパスで呼ぶ（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- Cursor のバンドル ID は会社名の入らない形（`com.todesktop.…`）。Spotlight で探すときは実物の Info.plist で確かめる（由来: [Phase 33](archive/phase33-editor-ai-tools/KNOWLEDGE.md)）
+- Homebrew の `gemini-cli` は Homebrew の node に依存し、入れると node が上がる（消しても戻らない）（由来: [Phase 33](archive/phase33-editor-ai-tools/KNOWLEDGE.md)）
 
 ## Windows
 
@@ -23,6 +25,9 @@
   （インストールより前に開いたシェルから起動すると見えない）（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
 - winget のポータブルな php（`PHP.PHP.*`）は、アンインストール後も User PATH に winget が足した行が残る（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
 - winget は rust のバージョンとして rustup 自身のバージョンを出す。rustc のバージョンは `Rustlang.Rust.MSVC` の行（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- Claude のデスクトップ版は MSIX ではなく Squirrel のインストーラで、アンインストール情報（HKCU）に載る（由来: [Phase 33](archive/phase33-editor-ai-tools/KNOWLEDGE.md)）
+- Antigravity のアンインストール情報の表示名は、末尾にバージョンが付く（`Antigravity 2.34.0`）。ほかのアプリは製品名か、` (User)` 付き（由来: [Phase 33](archive/phase33-editor-ai-tools/KNOWLEDGE.md)）
+- Gemini CLI は winget に無い。npm の `@google/gemini-cli` で入れる（由来: [Phase 33](archive/phase33-editor-ai-tools/KNOWLEDGE.md)）
 - PowerShell 5.1 のパイプで日本語を渡すと `???` に化ける。Git Bash から子プロセスに PATH を渡すと、変換で崩れる（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
 
 ## electron-builder と配布
