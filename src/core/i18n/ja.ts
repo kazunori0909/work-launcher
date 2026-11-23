@@ -196,6 +196,7 @@ export const ja = {
     copySection: (title: string) => `${title}をコピー`,
     /** 空の枠のヒント（コードの前と後ろ） */
     toolsHint: ['設定の', 'に名前（git・node など）を並べると、バージョンを表示します'],
+    vulnLink: '脆弱性を調べる（Zero Wire）',
     envHint: ['設定の', 'に名前を並べると表示します'],
     registryHint: ['設定の', 'に値のパスを並べると表示します']
   },

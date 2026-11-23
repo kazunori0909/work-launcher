@@ -193,6 +193,7 @@ export const en: Messages = {
     copyText: 'Copy as text',
     copySection: (title) => `Copy ${title}`,
     toolsHint: ['List names (git, node, etc.) in', 'to show their versions'],
+    vulnLink: 'Look up vulnerabilities (Zero Wire)',
     envHint: ['List names in', 'to show them'],
     registryHint: ['List value paths in', 'to show them']
   },

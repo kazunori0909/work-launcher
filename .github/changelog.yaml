@@ -6,6 +6,11 @@
 # - breaking には、直し方まで書く
 # - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
 
+- version: unreleased
+  added:
+    - ja: Info のツールの枠に、脆弱性の情報のサイト（Cloudflare Radar の Zero Wire）へのリンクを置きました。
+      en: Added a link to a vulnerability site (Zero Wire on Cloudflare Radar) under the tools box of the Info page.
+
 - version: 0.3.1
   date: 2026-11-22
   summary:
