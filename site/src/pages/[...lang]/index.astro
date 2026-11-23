@@ -69,6 +69,7 @@ const tree = `my-project/
           <div class="s-how-sample">
             <LiveSample client:visible lang={lang} example="select" />
             <p class="s-note" set:html={phrase(m.how.tryIt, lang)} />
+            <p class="s-note"><a href={href(lang, 'try/')}>{m.how.tryPage} →</a></p>
           </div>
         </div>
       </div>

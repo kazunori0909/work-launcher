@@ -134,10 +134,10 @@ img {
   white-space: nowrap;
 }
 
-/* 狭い画面では、ドキュメント・リリースノート・言語の切り替えだけを残す */
+/* 狭い画面では、ドキュメント・体験・リリースノート・言語の切り替えだけを残す */
 @media (max-width: 560px) {
-  .s-nav a:nth-child(3),
-  .s-nav a:nth-child(4) {
+  .s-nav a:nth-child(4),
+  .s-nav a:nth-child(5) {
     display: none;
   }
   .s-brand span {
@@ -1036,4 +1036,254 @@ body {
 
 .s-release[hidden] {
   display: none;
+}
+
+/* 体験ページ（左にランチャーの画面、右にチャット） */
+
+.s-try-wrap {
+  width: min(1320px, 100%);
+  padding-block: 48px 80px;
+}
+
+.s-try-head {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.s-try-head h1 {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 4vw, 40px);
+  letter-spacing: -0.02em;
+}
+
+.s-try-head h1,
+.s-try-head .s-section-lead {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.s-try {
+  /* 画面とチャットの高さ。PC では揃え、スマホ（縦に並ぶ）では画面のボタンが全部見える高さにする */
+  --s-try-h: 600px;
+  --s-try-chat-h: var(--s-try-h);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 24px;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .s-try {
+    --s-try-h: 760px;
+    --s-try-chat-h: 380px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.s-try-os {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-bottom: 8px;
+  color: var(--s-muted);
+  font-size: 12px;
+}
+
+.s-try-os span {
+  margin-right: 6px;
+}
+
+.s-try-os button {
+  padding: 3px 10px;
+  border: 1px solid var(--s-border);
+  border-radius: 999px;
+  background: var(--s-surface);
+  color: var(--s-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.s-try-os button.active {
+  border-color: var(--s-accent);
+  color: var(--s-accent);
+  font-weight: 600;
+}
+
+/* アプリの画面の枠。中はアプリの CSS（base・items・info）で描き、文字の大きさもアプリに合わせる */
+.s-try-window {
+  display: flex;
+  flex-direction: column;
+  height: var(--s-try-h);
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-radius);
+  background: var(--bg);
+  box-shadow: var(--s-shadow);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.s-try-window .header {
+  padding-block: 6px;
+}
+
+/* アプリのコンソール（console.css は高さを 40vh にしている）。枠の下に固定の高さで開く */
+.s-try-window .console {
+  flex: none;
+  height: 180px;
+  min-height: 0;
+}
+
+.s-try-page {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  overflow: auto;
+}
+
+.s-try-chat {
+  display: flex;
+  flex-direction: column;
+  height: var(--s-try-chat-h);
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-radius);
+  background: var(--s-bg-alt);
+  box-shadow: var(--s-shadow);
+  overflow: hidden;
+}
+
+.s-try-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--s-border);
+  background: var(--s-surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.s-try-chat-head button {
+  padding: 3px 10px;
+  border: 1px solid var(--s-border);
+  border-radius: 999px;
+  background: none;
+  color: var(--s-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.s-try-chat-log {
+  /* 吹き出しの offsetTop をこの枠から数える */
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.s-try-bubble {
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.65;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  animation: s-try-pop 0.22s ease-out;
+}
+
+.s-try-bubble p {
+  margin: 0;
+}
+
+.s-try-bubble p + p,
+.s-try-bubble > * + * {
+  margin-top: 8px;
+}
+
+/* 押した操作（自分の発言）は右から */
+.s-try-user {
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+  background: var(--s-accent);
+  /* ライトは白、ダークは濃い色（ダークの --s-accent は明るい青のため） */
+  color: var(--s-bg);
+}
+
+/* 起こることの説明は左から */
+.s-try-app {
+  align-self: flex-start;
+  border: 1px solid var(--s-border);
+  border-bottom-left-radius: 4px;
+  background: var(--s-surface);
+}
+
+.s-try-value {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--s-bg-alt);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.s-try-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.s-try-typing {
+  display: flex;
+  gap: 4px;
+  padding-block: 14px;
+}
+
+.s-try-typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--s-muted);
+  animation: s-try-dot 1s infinite ease-in-out;
+}
+
+.s-try-typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.s-try-typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes s-try-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes s-try-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s-try-bubble,
+  .s-try-typing i {
+    animation: none;
+  }
 }

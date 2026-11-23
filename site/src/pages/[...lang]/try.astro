@@ -1,0 +1,26 @@
+---
+import '../../../../src/renderer/src/assets/styles/info.css'
+import '../../../../src/renderer/src/assets/styles/console.css'
+import Base from '../../layouts/Base.astro'
+import { TryLauncher } from '../../components/TryLauncher'
+import { LANG_PARAMS, SITE } from '../../i18n'
+import { phrase } from '../../phrase'
+
+// 体験ページ。アプリの画面を触ると、何が起こるかをチャット風に出す（→ docs/archive/phase32-try-page/PLAN.md）
+export function getStaticPaths() {
+  return LANG_PARAMS.map(({ lang, param }) => ({ params: { lang: param }, props: { lang } }))
+}
+
+const { lang } = Astro.props
+const m = SITE[lang].try
+---
+
+<Base lang={lang} title={SITE[lang].nav.try} path="try/">
+  <main class="s-container s-try-wrap">
+    <header class="s-try-head">
+      <h1 set:html={phrase(m.title, lang)} />
+      <p class="s-section-lead" set:html={phrase(m.lead, lang)} />
+    </header>
+    <TryLauncher client:load lang={lang} />
+  </main>
+</Base>

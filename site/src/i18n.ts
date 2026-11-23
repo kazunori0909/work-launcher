@@ -9,6 +9,7 @@ const ja = {
     '案件でよく使うコマンド・資料・URL をボタンにまとめる、Windows / macOS のデスクトップアプリ',
   nav: {
     docs: 'ドキュメント',
+    try: '体験',
     releases: 'リリースノート',
     download: 'ダウンロード',
     github: 'GitHub'
@@ -59,7 +60,8 @@ const ja = {
   how: {
     title: 'しくみ',
     lead: '案件のフォルダに、空の work.launcher と launcher/config.yaml を置きます。書いた設定は、下のようなボタンになります。',
-    tryIt: '見本のボタンは押せます。実行する内容が下に出ます。'
+    tryIt: '見本のボタンは押せます。実行する内容が下に出ます。',
+    tryPage: 'アプリの画面をまるごと触る'
   },
   shots: {
     title: '画面',
@@ -93,6 +95,48 @@ const ja = {
     platform: '見本の OS',
     edit: 'ヘルプの原稿を GitHub で見る'
   },
+  try: {
+    title: 'ブラウザで触ってみる',
+    lead: 'ランチャーの画面のボタンを押すと、アプリで押したときに何が起こるかを吹き出しで説明します。ここでは実際には実行しません。',
+    project: 'デモ案件',
+    mainTab: 'メイン',
+    os: 'OS',
+    chat: '何が起こるか',
+    restart: 'はじめから',
+    typing: '入力中',
+    welcome: 'ボタンを押してみてください。アプリで押したときに何が起こるかを、ここで説明します。',
+    clicked: (label: string) => `「${label}」を押した`,
+    openedTab: (name: string) => `${name} タブを開いた`,
+    switched: (os: string) => `OS を ${os} にした`,
+    url: '既定のブラウザで、この URL を開きます。params の値は、アプリがエンコードして付けます。',
+    tryOpen: 'このブラウザで開いてみる',
+    example: 'この URL は例の場所（example.com）なので、ここでは開けません。',
+    folder: (app: string) =>
+      `${app}で、このフォルダを開きます。相対パスは作業フォルダから数えます。`,
+    file: '既定のアプリで、このファイルを開きます。相対パスは作業フォルダから数えます。',
+    officeRead: (app: string) => `${app}で、このファイルを読み取り専用で開きます。`,
+    officeEdit: (app: string) => `${app}で、このファイルを編集できる形で開きます。`,
+    officeOpen: (app: string) => `${app}で、このファイルを開きます。`,
+    officeMac:
+      'Office が入っていなければ、既定のアプリ（Numbers・Pages など）で開きます。readonly（読み取り専用）は Windows だけで効きます。',
+    explorer: 'エクスプローラー',
+    finder: 'Finder',
+    exec: (shell: string) => `コンソールを開き、指定されたコマンドを ${shell} で実行します。`,
+    confirmed: 'confirm に書いた確認を出し、OK を押したときだけ実行します。',
+    stoppable: (stop: string) => `実行中は、コンソールの「${stop}」で止められます。`,
+    stopped: '実行中のスクリプトを止めます。コンソールに「停止しました」と出ます。',
+    expanded: (names: string) =>
+      `${names} は、実行する前に値に置き換えます。置き換えたあとのコマンドは次のとおりです。`,
+    failed:
+      '終了コードが 0 以外なので、失敗として赤く出ます。行の色分けは console.yaml の rules で決めます（ここでは WARN と ERROR の行）。',
+    console: '出力と終了コードは、下のコンソールに出ます。',
+    info: 'PC の情報を取って並べます（ここに出ているのは仮の値です）。設定の info に書いた環境変数・ツール・レジストリ（Windows だけ）も出ます。',
+    infoCopy: (copy: string) =>
+      `「${copy}」を押すと、全部をテキストで写せます。問い合わせのときに貼れます。`,
+    platform:
+      'OS によって、動くボタンが変わります。bat は Windows だけで、ほかの OS では押せません。sh は Windows では Git Bash で動きます。',
+    link: '既定のブラウザで、このリンクを開きます。'
+  },
   releases: {
     title: 'リリースノート',
     lead: 'バージョンごとの変更です。上げる前に、使っているバージョンより新しい破壊的変更が無いかを確かめてください。',
@@ -111,7 +155,13 @@ const en: SiteMessages = {
   htmlLang: 'en',
   siteDescription:
     'A desktop app for Windows and macOS that puts your project’s commands, documents and URLs on buttons',
-  nav: { docs: 'Docs', releases: 'Releases', download: 'Download', github: 'GitHub' },
+  nav: {
+    docs: 'Docs',
+    try: 'Try it',
+    releases: 'Releases',
+    download: 'Download',
+    github: 'GitHub'
+  },
   langSwitch: '日本語',
   hero: {
     badge: 'Windows / macOS · MIT License',
@@ -158,7 +208,8 @@ const en: SiteMessages = {
   how: {
     title: 'How it works',
     lead: 'Put an empty work.launcher and launcher/config.yaml in your project folder. The config turns into buttons like these.',
-    tryIt: 'The sample buttons can be clicked. What they would run is shown below them.'
+    tryIt: 'The sample buttons can be clicked. What they would run is shown below them.',
+    tryPage: 'Try the whole app screen'
   },
   shots: {
     title: 'Screens',
@@ -191,6 +242,48 @@ const en: SiteMessages = {
     next: 'Next',
     platform: 'Sample OS',
     edit: 'See the help source on GitHub'
+  },
+  try: {
+    title: 'Try it in your browser',
+    lead: 'Click the buttons on the launcher screen, and a chat explains what the app would do. Nothing actually runs here.',
+    project: 'Demo project',
+    mainTab: 'Main',
+    os: 'OS',
+    chat: 'What happens',
+    restart: 'Start over',
+    typing: 'Typing',
+    welcome: 'Click a button. I’ll explain here what the app does when you click it.',
+    clicked: (label: string) => `Clicked “${label}”`,
+    openedTab: (name: string) => `Opened the ${name} tab`,
+    switched: (os: string) => `Switched the OS to ${os}`,
+    url: 'Opens this URL in the default browser. The app URL-encodes the params values and appends them.',
+    tryOpen: 'Open it in this browser',
+    example: 'This URL points to an example address (example.com), so it can’t be opened here.',
+    folder: (app: string) =>
+      `Opens this folder in ${app}. Relative paths start from the work folder.`,
+    file: 'Opens this file in its default app. Relative paths start from the work folder.',
+    officeRead: (app: string) => `Opens this file read-only in ${app}.`,
+    officeEdit: (app: string) => `Opens this file for editing in ${app}.`,
+    officeOpen: (app: string) => `Opens this file in ${app}.`,
+    officeMac:
+      'Without Office, it opens in the default app (Numbers, Pages and so on). readonly works only on Windows.',
+    explorer: 'File Explorer',
+    finder: 'Finder',
+    exec: (shell: string) => `Opens the console and runs the given command with ${shell}.`,
+    confirmed: 'Shows the confirm message first, and runs only when you click OK.',
+    stoppable: (stop: string) => `While it runs, you can stop it with “${stop}” in the console.`,
+    stopped: 'Stops the running script. The console shows that it was stopped.',
+    expanded: (names: string) =>
+      `${names} is replaced with its value before running. The command after replacing is:`,
+    failed:
+      'The exit code isn’t 0, so it shows as failed in red. Line colors come from the rules in console.yaml (here, the WARN and ERROR lines).',
+    console: 'The output and exit code appear in the console below.',
+    info: 'Collects and lists your PC’s details (the values here are made up). The environment variables, tools and registry values (Windows only) listed under info in the config appear too.',
+    infoCopy: (copy: string) =>
+      `Click “${copy}” to copy everything as text, ready to paste into a support request.`,
+    platform:
+      'Which buttons work depends on the OS. bat runs only on Windows and can’t be clicked elsewhere. On Windows, sh runs with Git Bash.',
+    link: 'Opens this link in the default browser.'
   },
   releases: {
     title: 'Release notes',
