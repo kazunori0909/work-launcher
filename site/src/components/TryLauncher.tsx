@@ -301,7 +301,14 @@ function Demo({ lang }: { lang: Lang }): React.JSX.Element {
             <SelectContext.Provider value={selections}>
               <main className="s-try-page">
                 {tab === 'info' ? (
-                  <InfoPage key={`${platform}-${lang}`} />
+                  <>
+                    {/* 画面だけを見た人が、自分の PC の情報を読まれたと思わないように */}
+                    <p className="s-try-notice">
+                      <Icon name="info" size={14} />
+                      {m.infoNotice}
+                    </p>
+                    <InfoPage key={`${platform}-${lang}`} />
+                  </>
                 ) : (
                   <ItemList
                     items={items}

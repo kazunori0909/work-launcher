@@ -130,6 +130,7 @@ const ja = {
     failed:
       '終了コードが 0 以外なので、失敗として赤く出ます。行の色分けは console.yaml の rules で決めます（ここでは WARN と ERROR の行）。',
     console: '出力と終了コードは、下のコンソールに出ます。',
+    infoNotice: 'デモの値です。この PC の情報は読んでいません。',
     info: 'PC の情報を取って並べます（ここに出ているのは仮の値です）。設定の info に書いた環境変数・ツール・レジストリ（Windows だけ）も出ます。',
     infoCopy: (copy: string) =>
       `「${copy}」を押すと、全部をテキストで写せます。問い合わせのときに貼れます。`,
@@ -278,6 +279,7 @@ const en: SiteMessages = {
     failed:
       'The exit code isn’t 0, so it shows as failed in red. Line colors come from the rules in console.yaml (here, the WARN and ERROR lines).',
     console: 'The output and exit code appear in the console below.',
+    infoNotice: 'These are demo values. Nothing is read from your PC.',
     info: 'Collects and lists your PC’s details (the values here are made up). The environment variables, tools and registry values (Windows only) listed under info in the config appear too.',
     infoCopy: (copy: string) =>
       `Click “${copy}” to copy everything as text, ready to paste into a support request.`,
