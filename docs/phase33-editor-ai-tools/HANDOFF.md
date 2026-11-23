@@ -4,7 +4,7 @@
 
 ## 2026-11-23 21:55 mac → win: エディタと AI の5件のツールの取得を確かめる
 
-- 状態: 依頼中
+- 状態: 回答済み
 - 関連: PLAN.md「方針」、ブランチ `phase33-editor-ai-tools`
 
 ### 依頼
@@ -35,4 +35,45 @@
 
 ### 回答
 
-（受けた側が書く）
+2026-11-23 win（Windows 11 Home）。VS Code は元から入っていた。残り4件は winget で入れて確かめ、消した（`/check-tools`）。
+
+| ツール          | 未インストール時 | インストール（winget）  | インストール後                      | アンインストール後 |
+| --------------- | ---------------- | ----------------------- | ----------------------------------- | ------------------ |
+| vscode          | （元から）       | —                       | 1.108.2                             | —                  |
+| claude          | 未インストール   | `Anthropic.Claude`      | 6.28899.6                           | 未インストール     |
+| claude-code     | 未インストール   | `Anthropic.ClaudeCode`  | 2.1.330                             | 未インストール     |
+| antigravity     | 未インストール   | `Google.Antigravity`    | **未インストール**（2.34.0 のはず） | 未インストール     |
+| antigravity-ide | 未インストール   | `Google.AntigravityIDE` | 2.8.0                               | 未インストール     |
+
+実際の表示名とバージョン（アンインストール情報。「バージョン情報」の値は exe の ProductVersion で見た）
+
+| ツール          | DisplayName                           | DisplayVersion | ハイブ・キー                       | exe・ほか                 |
+| --------------- | ------------------------------------- | -------------- | ---------------------------------- | ------------------------- |
+| vscode          | `Microsoft Visual Studio Code (User)` | 1.108.2        | HKCU `{771FD6B0-…}_is1`            | `code --version` 1.108.2  |
+| claude          | `Claude`                              | 6.28899.6      | HKCU `AnthropicClaude`（Squirrel） | claude.exe 6.28899.6      |
+| claude-code     | `Claude Code`                         | 2.1.330        | HKCU（winget のポータブル）        | `2.1.330 (Claude Code)`   |
+| antigravity     | **`Antigravity 2.34.0`**              | 2.34.0         | HKCU `121a0be4-…`                  | Antigravity.exe 2.34.0    |
+| antigravity-ide | `Antigravity IDE (User)`              | 2.8.0          | HKCU `{AA73B3E3-…}_is1`            | Antigravity IDE.exe 2.8.0 |
+
+- winget list のバージョンとも、5件すべて一致（antigravity は取れれば一致する値）
+- Claude のデスクトップ版は MSIX ではなく Squirrel のインストーラで、アンインストール情報に載る（`Get-AppxPackage *Claude*` は空）
+- claude-code は winget が `%LOCALAPPDATA%\Microsoft\WinGet\Links\claude.exe` にエイリアスを作る。判定もそこで見つけた
+- Antigravity IDE の `resources\app\product.json` は `version` が 1.107.0（元にした VS Code）、`ideVersion` が 2.8.0。
+  Mac と同じで、アンインストール情報の値（2.8.0）を読む方針で合っている
+- アンインストール後、`%LOCALAPPDATA%\AnthropicClaude` に Squirrel の残り（`.dead`・`Update.exe`）が残る。
+  アンインストール情報は消えるので判定には響かない
+
+直す案（コードは直していない）
+
+- antigravity の正規表現を、表示名の末尾のバージョンも受けるようにする（`src/core/builtinTools.ts:162`）
+
+  ```ts
+  win: winUninstallVersion('^Antigravity( \\(User\\)| \\d+(\\.\\d+)+)?$'),
+  ```
+
+  node で当てた結果: `Antigravity 2.34.0`・`Antigravity`・`Antigravity (User)` に合い、
+  `Antigravity IDE (User)`・`Antigravity IDE`・`Antigravity CLI`・`Antigravity Tools 5.0.4` には合わない
+
+- 表示名にバージョンが入るので、アップデートの仕方によっては古いキーと新しいキーが並ぶかもしれない（未確認）。
+  その場合に備えるなら、合うキーが複数あったときに DisplayVersion の大きい方を取ると安全
+- winget には別に `Google.AntigravityCLI`（1.5.14）もある。いまの5件には入っていない
