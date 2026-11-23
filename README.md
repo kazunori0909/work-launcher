@@ -10,6 +10,8 @@
 
 WorkLauncher は、案件でよく使うコマンド・資料・URL をボタンにまとめておくデスクトップアプリです。Windows と macOS で動きます。
 
+インストールする前に、[体験ページ](https://kazunori0909.github.io/work-launcher/try/)でブラウザから画面を触って試せます。ボタンを押すと、アプリで何が起こるかを説明します。
+
 - 案件のリポジトリに YAML を置くだけで、ページとボタンが並ぶ
 - bat / sh / PowerShell / Python のスクリプトを、ボタン1つで実行して結果を見られる
 - 検索やチケット起票の URL を、日本語のパラメータのまま書ける
@@ -251,6 +253,8 @@ gh attestation verify work-launcher-0.1.0-win-x64-setup.exe -R kazunori0909/work
 ## English
 
 WorkLauncher is a desktop app that puts the commands, documents and URLs you use for a project behind buttons. It runs on Windows and macOS.
+
+Before installing, you can try the app screen in your browser on the [try-it page](https://kazunori0909.github.io/work-launcher/en/try/). Click a button, and it explains what the app would do.
 
 - Put a YAML file in your project's repository, and its pages and buttons appear
 - Run bat / sh / PowerShell / Python scripts with one click and see the output
