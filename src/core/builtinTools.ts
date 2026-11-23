@@ -173,6 +173,44 @@ export const BUILTIN_TOOLS: BuiltinTool[] = [
       win: winUninstallVersion('^Antigravity IDE( \\(User\\))?$'),
       mac: macAppVersion('Antigravity IDE')
     }
+  },
+  {
+    name: 'antigravity-cli',
+    label: 'Antigravity CLI',
+    help: 'Antigravity CLI',
+    command: 'agy --version'
+  },
+  {
+    name: 'cursor',
+    label: 'Cursor',
+    help: 'Cursor',
+    command: {
+      win: winUninstallVersion('^Cursor( \\(User\\))?$'),
+      mac: macAppVersion('Cursor')
+    }
+  },
+  // codex --version は「codex-cli 0.169.0」と出す
+  {
+    name: 'codex-cli',
+    label: 'Codex CLI',
+    help: 'Codex CLI',
+    command: 'codex --version',
+    pattern: 'codex-cli (\\S+)'
+  },
+  {
+    name: 'gemini-cli',
+    label: 'Gemini CLI',
+    help: 'Gemini CLI',
+    command: 'gemini --version',
+    pattern: '(\\d+\\.\\S+)'
+  },
+  // copilot --version は「GitHub Copilot CLI 1.0.112.」と、末尾にピリオドを付けて出す
+  {
+    name: 'copilot-cli',
+    label: 'GitHub Copilot CLI',
+    help: 'GitHub Copilot CLI',
+    command: 'copilot --version',
+    pattern: 'Copilot CLI (\\d+(?:\\.\\d+)+)'
   }
 ]
 

@@ -8,6 +8,10 @@
 - [x] Windows の実機で、表示名とバージョンが合うか確かめる（`/handoff`）
 - [x] Windows の antigravity の表示名（末尾にバージョン）に合わせて正規表現を直す
 
+- [x] cursor・codex-cli・gemini-cli・copilot-cli・antigravity-cli を足す
+- [x] Mac で5件を入れて消し、取得を確かめる（`/check-tools`）
+- [ ] Windows で5件を確かめる（`/handoff`）
+
 ## 共通
 
 - [x] 実機調査で判明した挙動・制約を KNOWLEDGE.md に記録

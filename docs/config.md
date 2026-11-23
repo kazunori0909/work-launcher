@@ -535,10 +535,10 @@ info:
     ほかの OS では「この OS では取れません」と出す。
     表示名は製品名（Steam・Epic Games Launcher）
   - Windows と Mac だけの組み込み（アプリ）: `vscode`（Visual Studio Code）・`claude`（Claude のデスクトップ版）・
-    `antigravity`（Antigravity）・`antigravity-ide`（Antigravity IDE）。アプリの「バージョン情報」と同じ値を出す。
+    `antigravity`（Antigravity）・`antigravity-ide`（Antigravity IDE）・`cursor`（Cursor）。アプリの「バージョン情報」と同じ値を出す。
     Windows はアンインストール情報を表示名で探す。Mac は `/Applications` のアプリの Info.plist を読む。
     表示名は製品名
-  - `claude-code`: Claude Code の CLI（`claude --version`）。全 OS で取れる
+  - AI の CLI: `claude-code`（`claude`）・`codex-cli`（`codex`）・`gemini-cli`（`gemini`）・`copilot-cli`（GitHub Copilot CLI、`copilot`）・`antigravity-cli`（`agy`）。`--version` の出力から取る。全 OS で取れる
   - 組み込みの名前に `command`・`pattern` を書くと、取り方を上書きする（ツール側の取り方が変わり、アプリを更新できないとき）。
     `command` を書けば `command` と `pattern` をまとめて置き換え、全 OS でそのコマンドを使う。
     `pattern` だけなら組み込みのコマンドの出力から抜き出す。どちらでも表示名は組み込みのまま

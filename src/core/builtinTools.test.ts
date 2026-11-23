@@ -14,8 +14,8 @@ describe('組み込みのツールの表', () => {
     expect(new Set(names).size).toBe(names.length)
   })
 
-  it('アプリ（steam・epic・vscode・claude・antigravity・antigravity-ide）以外は全 OS で取れる', () => {
-    const apps = ['steam', 'epic', 'vscode', 'claude', 'antigravity', 'antigravity-ide']
+  it('アプリ（steam・epic と、エディタ・AI のアプリ）以外は全 OS で取れる', () => {
+    const apps = ['steam', 'epic', 'vscode', 'claude', 'antigravity', 'antigravity-ide', 'cursor']
     for (const { name } of BUILTIN_TOOLS) {
       for (const platform of ['win32', 'darwin', 'linux']) {
         const only = apps.includes(name)
@@ -98,7 +98,8 @@ describe('エディタと AI のツール', () => {
       ['vscode', 'Visual Studio Code', 'Microsoft Visual Studio Code'],
       ['claude', 'Claude', 'Claude'],
       ['antigravity', 'Antigravity', 'Antigravity'],
-      ['antigravity-ide', 'Antigravity IDE', 'Antigravity IDE']
+      ['antigravity-ide', 'Antigravity IDE', 'Antigravity IDE'],
+      ['cursor', 'Cursor', 'Cursor']
     ]
     for (const [name, app, display] of cases) {
       expect(builtinToolCommand(name, 'darwin')!.command).toBe(
@@ -126,9 +127,23 @@ describe('エディタと AI のツール', () => {
     expect(match('claude').test('Claude Code')).toBe(false)
   })
 
-  it('claude-code は claude --version の先頭のバージョン', () => {
-    const cmd = builtinToolCommand('claude-code', 'linux')!
-    expect(cmd.command).toBe('claude --version')
-    expect(extractVersion('2.1.330 (Claude Code)\n', cmd.pattern)).toBe('2.1.330')
+  it('CLI は --version の出力からバージョンを抜き出す', () => {
+    const cases = [
+      ['claude-code', 'claude --version', '2.1.330 (Claude Code)\n', '2.1.330'],
+      ['antigravity-cli', 'agy --version', '1.5.9\n', '1.5.9'],
+      ['codex-cli', 'codex --version', 'codex-cli 0.169.0\n', '0.169.0'],
+      ['gemini-cli', 'gemini --version', '0.68.0\n', '0.68.0'],
+      [
+        'copilot-cli',
+        'copilot --version',
+        "GitHub Copilot CLI 1.0.112.\nRun 'copilot update' to check for updates.\n",
+        '1.0.112'
+      ]
+    ]
+    for (const [name, command, output, version] of cases) {
+      const cmd = builtinToolCommand(name, 'linux')!
+      expect(cmd.command).toBe(command)
+      expect(extractVersion(output, cmd.pattern)).toBe(version)
+    }
   })
 })
