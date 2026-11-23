@@ -30,3 +30,9 @@
 - winget の Claude Code は `%LOCALAPPDATA%\Microsoft\WinGet\Links\claude.exe` にエイリアスを作る。`claude --version` は Mac と同じ形
 - Antigravity IDE の `resources\app\product.json` は `version` が元にした VS Code のバージョン、`ideVersion` がアプリのバージョン（Mac と同じ）
 - Claude をアンインストールしたあと、`%LOCALAPPDATA%\AnthropicClaude` に Squirrel の残りがある。アンインストール情報は消えるので判定には響かない
+- Cursor・生成 AI の CLI（2回目の依頼）
+  - Cursor の表示名は `Cursor (User)`（HKCU）。winget の ID は `Anysphere.Cursor`
+  - `--version` の出力は Mac と同じ形。winget の ID は `OpenAI.Codex`・`GitHub.Copilot`・`Google.AntigravityCLI`
+  - Gemini CLI は winget に無い（`Google.GeminiDesktop`・`Google.GeminiAPICLI` は別物）。npm の `@google/gemini-cli` で入れる
+  - codex・agy は winget のエイリアス（`%LOCALAPPDATA%\Microsoft\WinGet\Links\`）、copilot は `%LOCALAPPDATA%\GitHubCopilotCLI\`、gemini は `%APPDATA%\npm\` に入る
+  - Microsoft の `Copilot` アプリもアンインストール情報にあるが、どの正規表現にも当たらない
