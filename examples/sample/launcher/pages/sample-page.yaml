@@ -5,6 +5,9 @@ id: sample
 title: { ja: サンプル, en: Sample }
 icon: flask-conical
 items:
+  #--------------------------------------
+  # コマンド（bat・sh・powershell・python）
+  #--------------------------------------
   # 枠で囲むグループ。中にボタングループや select も置ける
   - group: コマンド
     icon: terminal
@@ -37,10 +40,7 @@ items:
           @echo off
           echo cwd: %CD%
         label: 作業フォルダを表示
-      - sh: ls
-        bat: dir /b
-        cwd: launcher
-        label: 設定フォルダの中身（cwd 指定）
+      - { sh: ls, bat: dir /b, cwd: launcher, label: 設定フォルダの中身（cwd 指定） }
       - sh: |
           echo "入力待ちの前"
           read -p "続けるには Enter: " answer
@@ -75,26 +75,31 @@ items:
         label: 長い処理（停止の確認用）
         confirm: 30 秒かかります。実行しますか？
 
+  #--------------------------------------
+  # 資料（ファイルを開く・ボタングループ）
+  #--------------------------------------
   - group: 資料
     icon: folder
     items:
       # ボタングループ: ファイル名のボタンの横に操作ボタンを添える
       - buttons:
-          - excel: docs/サンプル 仕様書.xlsx
-            readonly: true
+          - { excel: docs/サンプル 仕様書.xlsx, readonly: true }
           - excel: docs/サンプル 仕様書.xlsx
             label: ''
             icon: pencil-line
             tooltip: 編集モードで開く
       - buttons:
-          - word: docs/サンプル 手順書.docx
-            readonly: true
+          - { word: docs/サンプル 手順書.docx, readonly: true }
           - word: docs/サンプル 手順書.docx
             label: ''
             icon: pencil-line
             tooltip: 編集モードで開く
   - break
-  # select・radio・checkbox: 選んだ値を ${select:ID} や ctx.select.ID で使う
+
+  #--------------------------------------
+  # 選択（select・radio・checkbox）
+  #--------------------------------------
+  # 選んだ値を ${select:ID} や ctx.select.ID で使う
   - group: { ja: 選択（select・radio・checkbox）, en: 'Select, radio and checkbox' }
     icon: list
     items:
@@ -113,7 +118,6 @@ items:
         label: { ja: モード, en: Mode }
         options: [debug, release]
         # remember を書かないので、開くたびに debug に戻る
-        change: onModeChange # release にすると、デバッグ用のグループを押せなくする
       - checkbox: dry
         label: { ja: 試しに実行, en: Dry run }
         on: --dry-run # オンのときの値
@@ -131,23 +135,35 @@ items:
         confirm:
           ja: ${select:target} の値で関数を呼びますか？
           en: Call the function with ${select:target}?
-  # JS（sample-scripts.js）から、項目を押せなくする（ctx.disable・ctx.enable）・値を初期値に戻す（ctx.reset）
-  # 押せない状態は開き直すと戻るので、既定値は「全部押せる」状態に合わせている
+      - function: releasePreset # JS から値を変える（ctx.set）
+        label: { ja: 本番向けにする, en: Set for release }
+        icon: rocket
+
+  #--------------------------------------
+  # デバッグ用（押せる・押せないの条件・リセット）
+  #--------------------------------------
+  # YAML だけで、押せる・押せないを切り替える（disabledWhen・enabledWhen）・初期値に戻す（reset）
   - group: { ja: デバッグ用, en: Debug }
-    id: debug-tools # ctx.disable('debug-tools') で、中の項目をまとめて押せなくする
+    id: debug-tools
     icon: bug
+    disabledWhen: { mode: release } # モードが release の間は、中の項目ごと押せない
     items:
       - select: log-level
         label: { ja: ログ出力レベル, en: Log level }
         options: [low, middle, high]
         default: middle
-      - checkbox: log-file
-        label: { ja: ファイルにも書く, en: Also to a file }
-      - function: resetDebug # グループの値を初期値に戻す（ctx.reset）
-        label: ''
-        icon: rotate-ccw
-        tooltip: { ja: リセット, en: Reset }
+      - { checkbox: log-file, label: { ja: ファイルにも書く, en: Also to a file } }
+      - sh: echo "log-level=${select:log-level}"
+        bat: '@echo log-level=${select:log-level}'
+        label: { ja: ログに書く, en: Write log }
+        enabledWhen: { log-file: true } # チェックを入れたときだけ押せる
+      # グループの中の値を初期値に戻す（label・icon は既定のもの）
+      - { reset: debug-tools, label: '' }
   - break
+
+  #--------------------------------------
+  # md のコード
+  #--------------------------------------
   # md のコードブロック: 言語を書くと色が付く（yaml・json・sh・powershell・bat など）
   - group: md のコード
     icon: code

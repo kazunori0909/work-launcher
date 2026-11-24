@@ -23,19 +23,13 @@ module.exports = {
     ctx.log(`${id}: ${previous} → ${value}`)
   },
 
-  // モードを release にすると、デバッグ用のグループ（id: debug-tools）を中の項目ごと押せなくする
-  async onModeChange(ctx) {
-    if (ctx.changed.value === 'release') await ctx.disable('debug-tools')
-    else await ctx.enable('debug-tools')
-  },
-
-  // デバッグ用のグループ（id: debug-tools）の中の select・checkbox を初期値に戻す
-  // 初期値は YAML の default（無ければ最初の選択肢、checkbox はオフ）
-  async resetDebug(ctx) {
-    await ctx.reset('debug-tools')
-    // 1つずつ戻す・初期値と違う値にするなら、ctx.set で値を書く
-    // await ctx.set('log-level', 'middle')
-    // await ctx.set('log-file', false) // checkbox は true / false でも書ける
+  // 値を JS から変える（ctx.set）。checkbox は true / false でも書ける
+  // 変えた値で、YAML の disabledWhen・enabledWhen もそのまま切り替わる
+  async releasePreset(ctx) {
+    await ctx.set('target', 'prod')
+    await ctx.set('mode', 'release')
+    await ctx.set('dry', true)
+    ctx.log(`select: ${JSON.stringify(ctx.select)}`)
   },
 
   // ボタンと同じ動作を呼ぶ。実行系は終わるまで待ち、終了コードと出力を返す

@@ -76,11 +76,16 @@ interface ItemProps {
 /** 押せない枠（group・buttons）の中は、全部を押せなくする */
 const ALL_DISABLED = { all: true, ids: [] }
 
+/** ctx.disable と enabledWhen・disabledWhen を合わせて、その項目を押せないか */
+function useDisabled(item: Item): boolean {
+  return isDisabled(useContext(DisabledContext), useContext(SelectContext).values, item)
+}
+
 export function ItemView(props: ItemProps): React.JSX.Element {
-  const disabled = useContext(DisabledContext)
-  const view = <ItemViewInner {...props} />
   const { item } = props
-  if ((item.kind === 'group' || item.kind === 'buttons') && isDisabled(disabled, item)) {
+  const disabled = useDisabled(item)
+  const view = <ItemViewInner {...props} />
+  if ((item.kind === 'group' || item.kind === 'buttons') && disabled) {
     return <DisabledContext.Provider value={ALL_DISABLED}>{view}</DisabledContext.Provider>
   }
   return view
@@ -144,6 +149,7 @@ function ItemViewInner(props: ItemProps): React.JSX.Element {
     case 'open':
     case 'exec':
     case 'url':
+    case 'reset':
       return <ButtonView {...props} />
     default:
       return assertNever(item)
@@ -152,7 +158,7 @@ function ItemViewInner(props: ItemProps): React.JSX.Element {
 
 function ButtonView({ item, platform, path, running, onActivate }: ItemProps): React.JSX.Element {
   const select = useContext(SelectContext)
-  const disabled = isDisabled(useContext(DisabledContext), item)
+  const disabled = useDisabled(item)
   const unavailable =
     item.kind === 'exec' && !execKindFor(item.scripts, platform)
       ? t().run.notOnThisOsOnly(Object.keys(item.scripts))
@@ -182,7 +188,7 @@ function ButtonView({ item, platform, path, running, onActivate }: ItemProps): R
 
 function SelectView({ item }: { item: Extract<Item, { kind: 'select' }> }): React.JSX.Element {
   const { values, onChange } = useContext(SelectContext)
-  const disabled = isDisabled(useContext(DisabledContext), item)
+  const disabled = useDisabled(item)
   // 同じ ID の radio を2か所に置いても、ブラウザが互いのチェックを外さないように名前を分ける
   const radioName = useId()
   const value = values[item.name] ?? selectDefault(item)

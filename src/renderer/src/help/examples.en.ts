@@ -259,6 +259,108 @@ export const EXAMPLES_EN = {
       },
       { kind: 'exec', scripts: { sh: './deploy.sh ${select:dry}' }, label: 'Deploy' }
     ]
+  },
+  when: {
+    yaml: `- radio: mode
+  label: Mode
+  options: [debug, release]
+- group: Debug
+  disabledWhen: { mode: release }
+  items:
+    - checkbox: log
+      label: Keep a log
+    - sh: ./debug.sh
+      label: Debug run
+      enabledWhen: { log: true }`,
+    items: [
+      {
+        kind: 'select',
+        id: 'mode',
+        name: 'mode',
+        control: 'radio',
+        label: 'Mode',
+        options: [
+          { label: 'debug', value: 'debug' },
+          { label: 'release', value: 'release' }
+        ],
+        remember: false
+      },
+      {
+        kind: 'group',
+        title: 'Debug',
+        when: { enabled: false, values: { mode: ['release'] } },
+        items: [
+          {
+            kind: 'select',
+            id: 'log',
+            name: 'log',
+            control: 'checkbox',
+            label: 'Keep a log',
+            options: [
+              { label: 'on', value: 'true' },
+              { label: 'off', value: 'false' }
+            ],
+            default: 'false',
+            remember: false
+          },
+          {
+            kind: 'exec',
+            scripts: { sh: './debug.sh' },
+            label: 'Debug run',
+            when: { enabled: true, values: { log: ['true'] } }
+          }
+        ]
+      }
+    ]
+  },
+  reset: {
+    yaml: `- group: Debug
+  id: debug-tools
+  items:
+    - select: log-level
+      label: Log level
+      options: [low, middle, high]
+      default: middle
+    - checkbox: log-file
+      label: Also to a file
+    - reset: debug-tools`,
+    items: [
+      {
+        kind: 'group',
+        id: 'debug-tools',
+        title: 'Debug',
+        items: [
+          {
+            kind: 'select',
+            id: 'log-level',
+            name: 'log-level',
+            control: 'select',
+            label: 'Log level',
+            options: [
+              { label: 'low', value: 'low' },
+              { label: 'middle', value: 'middle' },
+              { label: 'high', value: 'high' }
+            ],
+            default: 'middle',
+            remember: false
+          },
+          {
+            kind: 'select',
+            id: 'log-file',
+            name: 'log-file',
+            control: 'checkbox',
+            label: 'Also to a file',
+            options: [
+              { label: 'on', value: 'true' },
+              { label: 'off', value: 'false' }
+            ],
+            default: 'false',
+            remember: false
+          },
+          { kind: 'reset', ids: ['debug-tools'] }
+        ]
+      }
+    ]
   }
 } satisfies Record<keyof typeof EXAMPLES, Example>
 

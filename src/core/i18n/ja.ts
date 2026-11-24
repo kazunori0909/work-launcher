@@ -33,6 +33,10 @@ export const ja = {
     badControlId: (control: string, name: string) =>
       `${control} の ID が正しくありません: ${name}（英数字と - _）`,
     nestedGroup: 'グループの中にグループは置けません',
+    resetIds: 'reset には戻す項目の ID か、ID の並びを書いてください',
+    bothWhen: 'enabledWhen と disabledWhen は、どちらか一方だけ書いてください',
+    whenNotMap: (key: string) => `${key} は「select の ID: 値」の組で書いてください`,
+    whenValue: (key: string, id: string) => `${key} の ${id} には値か、値の並びを書いてください`,
     groupTitle: 'group には見出しの文字を書いてください（省略可）',
     groupNoItems: 'group には items で中の項目を並べてください',
     buttonsNotList: 'buttons にはボタンを「- 」で並べてください',
@@ -80,6 +84,7 @@ export const ja = {
     noCommand: (kind: string) => `実行するコマンドが見つかりません（${kind}）`,
     itemNotFound: '項目が見つかりません（設定が変わった可能性があります）',
     notYet: 'この項目はまだ動かせません',
+    resetLabel: 'リセット',
     errorLabel: 'エラー'
   },
 

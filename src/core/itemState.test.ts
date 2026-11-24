@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { changeDisabled, isDisabled, NO_DISABLED, resetValues, selectValue } from './itemState'
-import { loadFiles, itemsConfig } from './load/testing'
+import { defaultIcon, itemLabel } from './items'
+import { errorMessage, itemsConfig, loadFiles, loadItems } from './load/testing'
 import { CONFIG_FILE } from './load'
 import type { Project } from './types'
 
@@ -133,8 +134,110 @@ describe('resetValues', () => {
 describe('isDisabled', () => {
   it('all か、項目の id が並びにあれば押せない', () => {
     const item = { kind: 'open', id: 'logs', path: 'logs' } as const
-    expect(isDisabled(NO_DISABLED, item)).toBe(false)
-    expect(isDisabled({ all: false, ids: ['logs'] }, item)).toBe(true)
-    expect(isDisabled({ all: true, ids: [] }, { kind: 'open', path: 'x' })).toBe(true)
+    expect(isDisabled(NO_DISABLED, {}, item)).toBe(false)
+    expect(isDisabled({ all: false, ids: ['logs'] }, {}, item)).toBe(true)
+    expect(isDisabled({ all: true, ids: [] }, {}, { kind: 'open', path: 'x' })).toBe(true)
+  })
+})
+
+describe('reset の項目', () => {
+  it('ID か ID の並びを読み、label と icon は既定のもの', async () => {
+    const { items, diagnostics } = await loadItems(`
+      - select: a
+        options: [x, y]
+      - reset: a
+      - reset: [a, a]
+        label: 戻す
+    `)
+    expect(diagnostics).toEqual([])
+    expect(items[1]).toEqual({ kind: 'reset', ids: ['a'] })
+    expect(items[2]).toEqual({ kind: 'reset', ids: ['a'], label: '戻す' })
+    expect(itemLabel(items[1], 'darwin')).toBe('リセット')
+    expect(defaultIcon(items[1])).toBe('list-restart')
+  })
+
+  it('無い ID・中に select の無い枠・ID でない値はエラーにする', async () => {
+    const { items } = await loadItems(`
+      - reset: nope
+      - group: 枠
+        id: g
+        items:
+          - open: a
+      - reset: g
+      - reset: []
+    `)
+    expect(errorMessage(items[0])).toBe('reset: ID が nope の項目がありません')
+    expect(errorMessage(items[2])).toContain('reset: g は')
+    expect(errorMessage(items[3])).toContain('reset には戻す項目の ID')
+  })
+})
+
+describe('enabledWhen・disabledWhen', () => {
+  const yaml = `
+    - radio: mode
+      options: [debug, release]
+    - checkbox: log
+      on: --log
+      off: ''
+    - open: a
+      enabledWhen: { mode: debug, log: true }
+    - group: 枠
+      disabledWhen: { mode: [release] }
+      items:
+        - open: b
+  `
+
+  it('checkbox の true / false は on・off の値にする', async () => {
+    const { items, diagnostics } = await loadItems(yaml)
+    expect(diagnostics).toEqual([])
+    expect(items[2]).toMatchObject({
+      when: { enabled: true, values: { mode: ['debug'], log: ['--log'] } }
+    })
+    expect(items[3]).toMatchObject({ when: { enabled: false, values: { mode: ['release'] } } })
+  })
+
+  it('enabledWhen はすべて合うときだけ押せ、disabledWhen は合うと押せない', async () => {
+    const { items } = await loadItems(yaml)
+    const on = { mode: 'debug', log: '--log' }
+    expect(isDisabled(NO_DISABLED, on, items[2])).toBe(false)
+    expect(isDisabled(NO_DISABLED, { ...on, log: '' }, items[2])).toBe(true)
+    expect(isDisabled(NO_DISABLED, on, items[3])).toBe(false)
+    expect(isDisabled(NO_DISABLED, { ...on, mode: 'release' }, items[3])).toBe(true)
+    // ctx.disable で押せなくした分は、条件が合っても押せない
+    expect(isDisabled({ all: true, ids: [] }, on, items[2])).toBe(true)
+  })
+
+  it('無い select・選択肢に無い値・両方の指定はエラーにする', async () => {
+    const { items } = await loadItems(`
+      - radio: mode
+        options: [debug, release]
+      - open: a
+        enabledWhen: { nope: x }
+      - open: b
+        enabledWhen: { mode: test }
+      - open: c
+        enabledWhen: { mode: debug }
+        disabledWhen: { mode: release }
+      - open: d
+        enabledWhen: mode
+    `)
+    expect(errorMessage(items[1])).toBe(
+      'enabledWhen: ID が nope の select・radio・checkbox がありません'
+    )
+    expect(errorMessage(items[2])).toContain('test は mode の選択肢にありません')
+    expect(errorMessage(items[3])).toContain('どちらか一方だけ')
+    expect(errorMessage(items[4])).toContain('enabledWhen は「select の ID: 値」')
+  })
+
+  it('見出しなど押せない項目には書けない（未知のキー）', async () => {
+    const { diagnostics } = await loadItems(`
+      - radio: mode
+        options: [debug, release]
+      - heading: 見出し
+        enabledWhen: { mode: debug }
+    `)
+    expect(diagnostics.map((d) => d.message)).toEqual([
+      expect.stringContaining('未知のキー enabledWhen')
+    ])
   })
 })

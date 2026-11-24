@@ -14,6 +14,12 @@
 - [x] ヘルプに「要素を変更する」のグループ（要素の無効化・値を変更する）を作り、関数からだけ変えられることを書く
 - [x] changelog.yaml の unreleased に足す
 - [x] 実機で確かめる（`/run-app`）
+- [x] YAML の `reset:` の項目（main で ctx.reset と同じ処理を呼ぶ。ヘルプの見本でも戻せる）
+- [x] YAML の `enabledWhen`・`disabledWhen`（読み込みで ID・値を確かめ、画面がいまの値から決める）
+- [x] サンプルを YAML の指定で書き直し、JS の例は `ctx.set`（本番向けにする）にする
+- [x] ヘルプの「要素の無効化」「値を変更する」を、YAML の書き方 → 関数からの書き方の順に書き直す（ja / en）
+- [x] docs/config.md（3.1・3.7・3.8・3.9・3.10）と changelog.yaml
+- [x] 実機で確かめる（条件で押せない・リセット・ctx.set で条件が切り替わる）
 
 ## 共通
 

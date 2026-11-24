@@ -517,7 +517,6 @@ echo done
                 "tooltip": undefined,
               },
               {
-                "change": "onModeChange",
                 "control": "radio",
                 "default": undefined,
                 "id": "mode",
@@ -588,6 +587,15 @@ echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mo
                 "label": undefined,
                 "tooltip": undefined,
               },
+              {
+                "confirm": undefined,
+                "fn": "releasePreset",
+                "icon": "rocket",
+                "id": undefined,
+                "kind": "function",
+                "label": "本番向けにする",
+                "tooltip": undefined,
+              },
             ],
             "kind": "group",
             "title": "選択（select・radio・checkbox）",
@@ -642,16 +650,49 @@ echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mo
               },
               {
                 "confirm": undefined,
-                "fn": "resetDebug",
-                "icon": "rotate-ccw",
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
                 "id": undefined,
-                "kind": "function",
+                "kind": "exec",
+                "label": "ログに書く",
+                "scripts": {
+                  "bat": "@echo log-level=\${select:log-level}",
+                  "sh": "echo "log-level=\${select:log-level}"",
+                },
+                "tooltip": undefined,
+                "when": {
+                  "enabled": true,
+                  "values": {
+                    "log-file": [
+                      "true",
+                    ],
+                  },
+                },
+              },
+              {
+                "confirm": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "ids": [
+                  "debug-tools",
+                ],
+                "kind": "reset",
                 "label": "",
-                "tooltip": "リセット",
+                "tooltip": undefined,
               },
             ],
             "kind": "group",
             "title": "デバッグ用",
+            "when": {
+              "enabled": false,
+              "values": {
+                "mode": [
+                  "release",
+                ],
+              },
+            },
           },
           {
             "kind": "break",

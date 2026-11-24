@@ -36,6 +36,10 @@ export const en: Messages = {
     unknownKey: (where, key) => `${where}: unknown key ${key}`,
     badControlId: (control, name) => `Invalid ${control} ID: ${name} (letters, digits, - and _)`,
     nestedGroup: 'A group cannot contain another group',
+    resetIds: 'reset takes the ID of the items to reset, or a list of IDs',
+    bothWhen: 'Write only one of enabledWhen and disabledWhen',
+    whenNotMap: (key) => `${key} must be pairs of "select ID: value"`,
+    whenValue: (key, id) => `${key}: ${id} takes a value or a list of values`,
     groupTitle: 'Write the heading text in group (optional)',
     groupNoItems: 'List the contents of group under items',
     buttonsNotList: 'List the buttons in buttons with "- "',
@@ -80,6 +84,7 @@ export const en: Messages = {
     noCommand: (kind) => `Command to run was not found (${kind})`,
     itemNotFound: 'Item not found (the settings may have changed)',
     notYet: 'This item cannot be used yet',
+    resetLabel: 'Reset',
     errorLabel: 'Error'
   },
 
