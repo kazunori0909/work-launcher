@@ -5,6 +5,9 @@ id: sample
 title: { ja: サンプル, en: Sample }
 icon: flask-conical
 items:
+  #--------------------------------------
+  # コマンド（bat・sh・powershell・python）
+  #--------------------------------------
   # 枠で囲むグループ。中にボタングループや select も置ける
   - group: コマンド
     icon: terminal
@@ -37,10 +40,7 @@ items:
           @echo off
           echo cwd: %CD%
         label: 作業フォルダを表示
-      - sh: ls
-        bat: dir /b
-        cwd: launcher
-        label: 設定フォルダの中身（cwd 指定）
+      - { sh: ls, bat: dir /b, cwd: launcher, label: 設定フォルダの中身（cwd 指定） }
       - sh: |
           echo "入力待ちの前"
           read -p "続けるには Enter: " answer
@@ -75,69 +75,106 @@ items:
         label: 長い処理（停止の確認用）
         confirm: 30 秒かかります。実行しますか？
 
+  #--------------------------------------
+  # 資料（ファイルを開く・ボタングループ）
+  #--------------------------------------
   - group: 資料
     icon: folder
     items:
       # ボタングループ: ファイル名のボタンの横に操作ボタンを添える
       - buttons:
-          - excel: docs/サンプル 仕様書.xlsx
-            readonly: true
+          - { excel: docs/サンプル 仕様書.xlsx, readonly: true }
           - excel: docs/サンプル 仕様書.xlsx
             label: ''
             icon: pencil-line
             tooltip: 編集モードで開く
       - buttons:
-          - word: docs/サンプル 手順書.docx
-            readonly: true
+          - { word: docs/サンプル 手順書.docx, readonly: true }
           - word: docs/サンプル 手順書.docx
             label: ''
             icon: pencil-line
             tooltip: 編集モードで開く
   - break
-  # select・radio・checkbox: 選んだ値を ${select:ID} や ctx.select.ID で使う
-  # 値はページの中のどこからでも参照できるので、種類ごとにグループを分けて置ける
-  - group: { ja: 選択（select）, en: Select }
-    icon: list
+
+  #--------------------------------------
+  # デプロイ（select・radio・checkbox）
+  #--------------------------------------
+  # 選んだ値は、コマンドでは ${select:ID}、JS では ctx.select.ID で使う
+  - group: { ja: デプロイ, en: Deploy }
+    icon: upload
     items:
+      # 地域を先に選ぶ。変えると、接続先を初期値に戻す（sample-scripts.js の onRegionChange）
+      - select: region
+        label: { ja: 地域, en: Region }
+        options: # 表示と値を分ける
+          - { label: { ja: 東京, en: Tokyo }, value: tokyo }
+          - { label: { ja: 大阪, en: Osaka }, value: osaka }
+        remember: true # 開き直しても前の選択を使う
+        change: onRegionChange
+      - sh: echo "./deploy.sh --region=${select:region} --target=${select:target} --mode=${select:mode} ${select:dry}"
+        bat: |
+          @echo off
+          echo deploy.bat --region=${select:region} --target=${select:target} --mode=${select:mode} ${select:dry}
+        label: { ja: デプロイ, en: Deploy }
+        icon: upload
+        confirm:
+          ja: ${select:region} の ${select:target} にデプロイしますか？
+          en: Deploy to ${select:target} in ${select:region}?
+      - break
       - select: target
         label: { ja: 接続先, en: Target }
-        options:
-          - dev
-          - stg
-          - { label: { ja: 本番, en: Production }, value: prod }
-        tooltip: { ja: 選択肢は記憶します, en: The choice is remembered }
-        remember: true # 開き直しても前の選択を使う
-        change: onTargetChange # 値を変えたときに呼ぶ関数（sample-scripts.js）
-  - group: { ja: ラジオボタン（radio）, en: Radio buttons }
-    icon: circle-dot
-    items:
+        options: [dev, stg, prod] # 値だけ書く（表示も同じ）
       - radio: mode
         label: { ja: モード, en: Mode }
         options: [debug, release]
-        # remember を書かないので、開くたびに debug に戻る
-  - group: { ja: チェックボックス（checkbox）, en: Checkbox }
-    icon: square-check
-    items:
       - checkbox: dry
         label: { ja: 試しに実行, en: Dry run }
         on: --dry-run # オンのときの値
         off: '' # オフのときの値（空）
-        remember: true
-  - group: { ja: 選んだ値を使う, en: Use the chosen values }
-    icon: server
+      # 接続先・モード・試しに実行を、まとめて変える・戻す
+      - buttons:
+          - function: releasePreset # JS から値を変える（ctx.set）
+            label: { ja: 本番向けにする, en: Set for release }
+            icon: rocket
+            tooltip: { ja: prod・release・試しに実行オン, en: 'prod, release, dry run on' }
+          - reset: [target, mode, dry] # YAML だけで初期値に戻す
+            label: ''
+            tooltip: { ja: 初期値に戻す, en: Reset }
+
+  #--------------------------------------
+  # デバッグ（押せる・押せないの条件・リセット）
+  #--------------------------------------
+  # モードが debug のときだけ使う設定。YAML の disabledWhen・enabledWhen・reset だけで書く
+  - group: { ja: デバッグ, en: Debug }
+    id: debug-tools
+    icon: bug
+    disabledWhen: { mode: release } # モードが release の間は、中の項目ごと押せない
     items:
-      - sh: echo "接続先=${select:target} モード=${select:mode} ${select:dry}"
+      - select: log-level
+        label: { ja: ログ出力レベル, en: Log level }
+        options: [low, middle, high]
+        default: middle
+      - checkbox: log-file
+        label: { ja: ファイルにも書く, en: Also to a file }
+        on: debug.log # オンのときは、ログを debug.log にも書く
+        off: ''
+      - sh: echo "$(date '+%H:%M:%S') log-level=${select:log-level}" | tee -a ${select:log-file}
         bat: |
           @echo off
-          echo 接続先=${select:target} モード=${select:mode} ${select:dry}
-        label: { ja: 値を表示, en: Show values }
-        env:
-          TARGET_ENV: ${select:target}
-      - function: showSelect
-        confirm:
-          ja: ${select:target} の値で関数を呼びますか？
-          en: Call the function with ${select:target}?
+          echo %TIME% log-level=${select:log-level}
+          if not "${select:log-file}"=="" echo %TIME% log-level=${select:log-level}>> ${select:log-file}
+        label: { ja: デバッグ起動, en: Start debug }
+        icon: play
+      - open: debug.log
+        label: { ja: ログを開く, en: Open log }
+        enabledWhen: { log-file: true } # ファイルに書くときだけ押せる
+      # グループの中の値を初期値に戻す（label・icon は既定のもの）
+      - { reset: debug-tools, label: '' }
   - break
+
+  #--------------------------------------
+  # md のコード
+  #--------------------------------------
   # md のコードブロック: 言語を書くと色が付く（yaml・json・sh・powershell・bat など）
   - group: md のコード
     icon: code

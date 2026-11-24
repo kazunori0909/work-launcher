@@ -8,11 +8,17 @@
 
 - version: unreleased
   summary:
-    ja: Info の組み込みのツールに、エディタと AI のツールを足しました。
-    en: Added editor and AI tools to the built-in tools of the Info page.
+    ja: 要素の無効化とリセットボタンを足し、関数からも項目を変えられるようにしました。Info の組み込みのツールに、エディタと AI のツールも足しました。
+    en: Added disabling items and a reset button, and functions can now change items. Editor and AI tools were also added to the built-in tools of the Info page.
   added:
     - ja: Info の組み込みのツールに、エディタ（vscode・cursor・antigravity-ide）と AI のツール（claude・claude-code・codex-cli・gemini-cli・copilot-cli・antigravity・antigravity-cli）を足しました。`tools` に名前を書くだけで、バージョンが出ます。
       en: Added editors (vscode, cursor, antigravity-ide) and AI tools (claude, claude-code, codex-cli, gemini-cli, copilot-cli, antigravity, antigravity-cli) to the built-in tools of the Info page. Write the name in `tools` to show the version.
+    - ja: 要素の無効化。`enabledWhen`・`disabledWhen` を書くと、select・radio・checkbox の値に合わせて、ボタンなどを押せなくできます。
+      en: 'Disabling items: with `enabledWhen` and `disabledWhen`, buttons and other items cannot be pressed depending on the value of a select, radio or checkbox.'
+    - ja: リセットボタン。`reset` に ID を書くと、select・radio・checkbox を初期値に戻すボタンになります。
+      en: 'Reset button: write IDs in `reset` to make a button that brings selects, radios and checkboxes back to their initial values.'
+    - ja: 関数からの制御。JS（`scripts`）の関数から、`ctx.set`・`ctx.reset` で値を変え、`ctx.disable`・`ctx.enable` で押せる・押せないを切り替えられます。
+      en: 'Control from functions: JS (`scripts`) functions can change values with `ctx.set` and `ctx.reset`, and switch whether items can be pressed with `ctx.disable` and `ctx.enable`.'
 
 - version: 0.3.2
   date: 2026-11-23

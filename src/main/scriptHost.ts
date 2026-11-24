@@ -1,6 +1,6 @@
 // utilityProcess で動かす。scripts に並べた JS を読み、指定の関数を ctx を渡して呼ぶ
 import path from 'node:path'
-import { CTX_ACTIONS, ctxCall } from '../core/ctxCalls'
+import { CTX_ACTIONS, STATE_ACTIONS, ctxCall, stateCall } from '../core/ctxCalls'
 import type { CtxCall, CtxResult, ExecResult } from '../core/ctxCalls'
 import { setLang, t } from '../core/i18n'
 import type { Lang } from '../core/i18n'
@@ -53,7 +53,7 @@ const failures = new WeakSet<Error>()
 let nextId = 1
 
 /** 動作を頼む。失敗したら reject する。終わりを待った実行系は終了コードと出力を返す */
-function request(call: CtxCall): Promise<ExecResult | void> {
+function request(call: CtxCall, select: Record<string, string>): Promise<ExecResult | void> {
   return new Promise((resolve, reject) => {
     const id = nextId++
     waiting.set(id, (r) => {
@@ -62,6 +62,10 @@ function request(call: CtxCall): Promise<ExecResult | void> {
         const err = new Error(r.error)
         failures.add(err)
         reject(err)
+      } else if (call.action === 'set' || call.action === 'reset') {
+        // 関数の ctx.select にも入れる（await したあとに読めば新しい値）
+        Object.assign(select, r.select)
+        resolve()
       } else if (call.action === 'exec' && call.wait) {
         resolve({
           code: r.code ?? null,
@@ -111,11 +115,12 @@ process.parentPort.once('message', async (e) => {
     if (found.length > 1) {
       throw new Error(t().script.manyFunctions(fn, names(found.map((f) => f.file))))
     }
+    const current = { ...select }
     await found[0].target({
       launcherDir,
       workDir,
       env: process.env,
-      select,
+      select: current,
       /** 表示の言語（ja / en） */
       lang,
       ...(changed ? { changed } : {}),
@@ -123,7 +128,13 @@ process.parentPort.once('message', async (e) => {
       ...Object.fromEntries(
         CTX_ACTIONS.map((name) => [
           name,
-          (value: unknown, options?: unknown) => request(ctxCall(name, value, options))
+          (value: unknown, options?: unknown) => request(ctxCall(name, value, options), current)
+        ])
+      ),
+      ...Object.fromEntries(
+        STATE_ACTIONS.map((name) => [
+          name,
+          (first?: unknown, second?: unknown) => request(stateCall(name, first, second), current)
         ])
       )
     })

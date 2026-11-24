@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ctxCall, dedent } from './ctxCalls'
+import { ctxCall, dedent, stateCall } from './ctxCalls'
 
 describe('ctxCall', () => {
   it('種類ごとに頼む内容を作る', () => {
@@ -43,6 +43,30 @@ describe('ctxCall', () => {
     expect(() => ctxCall('sh', 'x', { cwd: 1 })).toThrow('cwd は文字列')
     expect(() => ctxCall('sh', 'x', { env: [] })).toThrow('env は { 名前: 値 }')
     expect(() => ctxCall('sh', 'x', 'tools')).toThrow('2つ目の引数')
+  })
+})
+
+describe('stateCall', () => {
+  it('set・enable・disable・reset の頼む内容を作る', () => {
+    expect(stateCall('set', 'target', 'prod')).toEqual({
+      action: 'set',
+      id: 'target',
+      value: 'prod'
+    })
+    expect(stateCall('set', 'dry', true)).toEqual({ action: 'set', id: 'dry', value: true })
+    expect(stateCall('disable')).toEqual({ action: 'disable' })
+    expect(stateCall('disable', 'a')).toEqual({ action: 'disable', ids: ['a'] })
+    expect(stateCall('enable', ['a', 'b'])).toEqual({ action: 'enable', ids: ['a', 'b'] })
+    expect(stateCall('reset')).toEqual({ action: 'reset' })
+    expect(stateCall('reset', 'debug')).toEqual({ action: 'reset', ids: ['debug'] })
+  })
+
+  it('誤った引数は例外にする', () => {
+    expect(() => stateCall('set', '', 'x')).toThrow('ctx.set: 1つ目の引数は文字列')
+    expect(() => stateCall('set', 'a')).toThrow('ctx.set: 2つ目の引数は文字列か true / false')
+    expect(() => stateCall('set', 'a', 1)).toThrow('2つ目の引数')
+    expect(() => stateCall('disable', 1)).toThrow('ctx.disable: 引数は ID の文字列か、その配列')
+    expect(() => stateCall('enable', ['a', 2])).toThrow('ctx.enable: 引数は ID')
   })
 })
 

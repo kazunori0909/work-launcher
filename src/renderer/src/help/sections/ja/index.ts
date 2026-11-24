@@ -1,5 +1,6 @@
 import type { HelpGroup } from '../book'
 import { ConsoleColors } from './ConsoleColors'
+import { Disable } from './Disable'
 import { Display } from './Display'
 import { Edit } from './Edit'
 import { Elements } from './Elements'
@@ -10,6 +11,7 @@ import { Info } from './Info'
 import { Items } from './Items'
 import { LicensesSection } from './LicensesSection'
 import { Look } from './Look'
+import { SetValues } from './SetValues'
 import { Start } from './Start'
 import { Variables } from './Variables'
 
@@ -32,6 +34,13 @@ export const HELP_JA: readonly HelpGroup[] = [
       { id: 'elements', title: 'ボタン以外の要素', Body: Elements },
       { id: 'display', title: 'レイアウトと装飾', Body: Display },
       { id: 'functions', title: '関数から呼び出す', Body: Functions }
+    ]
+  },
+  {
+    label: '要素を変更する',
+    sections: [
+      { id: 'disable', title: '要素の無効化', Body: Disable },
+      { id: 'set-values', title: '値を変更する', Body: SetValues }
     ]
   },
   {

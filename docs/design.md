@@ -9,7 +9,15 @@
 
 ## 設定ファイル
 
+- よく使う「初期値に戻す」「値で押せなくする」は、YAML でも書けるようにする（`reset`・`enabledWhen`・`disabledWhen`）。
+  関数を書くのは利用者に手間なため。はじめは JS だけにしていた（由来: [Phase 35](archive/phase35-ctx-item-state/PLAN.md)）
+- 押せる・押せないの条件は「select の ID: 値」の表だけにし、式は書けない。読み違いを避けるためで、複雑な条件は関数の `ctx.disable` で書く。
+  隠す機能（`hiddenWhen`）は入れない。ボタンそのものを隠すのは、管理者モードのような別の仕組みで考える（由来: [Phase 35](archive/phase35-ctx-item-state/PLAN.md)）
+
 ## 実行とスクリプト
+
+- 初期値に戻すのは `ctx.reset` にした。`ctx.set(id, null)` のように初期値を表す値を渡す案は、
+  読んで意味が分かりにくく、選択肢の値とも紛れるので採らなかった（由来: [Phase 35](archive/phase35-ctx-item-state/PLAN.md)）
 
 ## 画面とヘルプ
 

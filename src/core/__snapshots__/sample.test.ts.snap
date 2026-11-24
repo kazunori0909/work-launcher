@@ -468,11 +468,51 @@ echo done
             "kind": "break",
           },
           {
-            "icon": "list",
+            "icon": "upload",
             "id": undefined,
             "items": [
               {
-                "change": "onTargetChange",
+                "change": "onRegionChange",
+                "control": "select",
+                "default": undefined,
+                "id": "region",
+                "kind": "select",
+                "label": "地域",
+                "name": "region",
+                "options": [
+                  {
+                    "label": "東京",
+                    "value": "tokyo",
+                  },
+                  {
+                    "label": "大阪",
+                    "value": "osaka",
+                  },
+                ],
+                "remember": true,
+                "tooltip": undefined,
+              },
+              {
+                "confirm": "\${select:region} の \${select:target} にデプロイしますか？",
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": "upload",
+                "id": undefined,
+                "kind": "exec",
+                "label": "デプロイ",
+                "scripts": {
+                  "bat": "@echo off
+echo deploy.bat --region=\${select:region} --target=\${select:target} --mode=\${select:mode} \${select:dry}
+",
+                  "sh": "echo "./deploy.sh --region=\${select:region} --target=\${select:target} --mode=\${select:mode} \${select:dry}"",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "kind": "break",
+              },
+              {
                 "control": "select",
                 "default": undefined,
                 "id": "target",
@@ -489,21 +529,13 @@ echo done
                     "value": "stg",
                   },
                   {
-                    "label": "本番",
+                    "label": "prod",
                     "value": "prod",
                   },
                 ],
-                "remember": true,
-                "tooltip": "選択肢は記憶します",
+                "remember": false,
+                "tooltip": undefined,
               },
-            ],
-            "kind": "group",
-            "title": "選択（select）",
-          },
-          {
-            "icon": "circle-dot",
-            "id": undefined,
-            "items": [
               {
                 "control": "radio",
                 "default": undefined,
@@ -524,14 +556,6 @@ echo done
                 "remember": false,
                 "tooltip": undefined,
               },
-            ],
-            "kind": "group",
-            "title": "ラジオボタン（radio）",
-          },
-          {
-            "icon": "square-check",
-            "id": undefined,
-            "items": [
               {
                 "control": "checkbox",
                 "default": "",
@@ -549,48 +573,146 @@ echo done
                     "value": "",
                   },
                 ],
-                "remember": true,
+                "remember": false,
                 "tooltip": undefined,
+              },
+              {
+                "id": undefined,
+                "items": [
+                  {
+                    "confirm": undefined,
+                    "fn": "releasePreset",
+                    "icon": "rocket",
+                    "id": undefined,
+                    "kind": "function",
+                    "label": "本番向けにする",
+                    "tooltip": "prod・release・試しに実行オン",
+                  },
+                  {
+                    "confirm": undefined,
+                    "icon": undefined,
+                    "id": undefined,
+                    "ids": [
+                      "target",
+                      "mode",
+                      "dry",
+                    ],
+                    "kind": "reset",
+                    "label": "",
+                    "tooltip": "初期値に戻す",
+                  },
+                ],
+                "kind": "buttons",
               },
             ],
             "kind": "group",
-            "title": "チェックボックス（checkbox）",
+            "title": "デプロイ",
           },
           {
-            "icon": "server",
-            "id": undefined,
+            "icon": "bug",
+            "id": "debug-tools",
             "items": [
+              {
+                "control": "select",
+                "default": "middle",
+                "id": "log-level",
+                "kind": "select",
+                "label": "ログ出力レベル",
+                "name": "log-level",
+                "options": [
+                  {
+                    "label": "low",
+                    "value": "low",
+                  },
+                  {
+                    "label": "middle",
+                    "value": "middle",
+                  },
+                  {
+                    "label": "high",
+                    "value": "high",
+                  },
+                ],
+                "remember": false,
+                "tooltip": undefined,
+              },
+              {
+                "control": "checkbox",
+                "default": "",
+                "id": "log-file",
+                "kind": "select",
+                "label": "ファイルにも書く",
+                "name": "log-file",
+                "options": [
+                  {
+                    "label": "on",
+                    "value": "debug.log",
+                  },
+                  {
+                    "label": "off",
+                    "value": "",
+                  },
+                ],
+                "remember": false,
+                "tooltip": undefined,
+              },
               {
                 "confirm": undefined,
                 "cwd": undefined,
                 "encoding": undefined,
-                "env": {
-                  "TARGET_ENV": "\${select:target}",
-                },
-                "icon": undefined,
+                "env": undefined,
+                "icon": "play",
                 "id": undefined,
                 "kind": "exec",
-                "label": "値を表示",
+                "label": "デバッグ起動",
                 "scripts": {
                   "bat": "@echo off
-echo 接続先=\${select:target} モード=\${select:mode} \${select:dry}
+echo %TIME% log-level=\${select:log-level}
+if not "\${select:log-file}"=="" echo %TIME% log-level=\${select:log-level}>> \${select:log-file}
 ",
-                  "sh": "echo "接続先=\${select:target} モード=\${select:mode} \${select:dry}"",
+                  "sh": "echo "$(date '+%H:%M:%S') log-level=\${select:log-level}" | tee -a \${select:log-file}",
                 },
                 "tooltip": undefined,
               },
               {
-                "confirm": "\${select:target} の値で関数を呼びますか？",
-                "fn": "showSelect",
+                "confirm": undefined,
                 "icon": undefined,
                 "id": undefined,
-                "kind": "function",
-                "label": undefined,
+                "kind": "open",
+                "label": "ログを開く",
+                "path": "debug.log",
+                "tooltip": undefined,
+                "when": {
+                  "enabled": true,
+                  "values": {
+                    "log-file": [
+                      "debug.log",
+                    ],
+                  },
+                },
+              },
+              {
+                "confirm": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "ids": [
+                  "debug-tools",
+                ],
+                "kind": "reset",
+                "label": "",
                 "tooltip": undefined,
               },
             ],
             "kind": "group",
-            "title": "選んだ値を使う",
+            "title": "デバッグ",
+            "when": {
+              "enabled": false,
+              "values": {
+                "mode": [
+                  "release",
+                ],
+              },
+            },
           },
           {
             "kind": "break",

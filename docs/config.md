@@ -115,16 +115,18 @@ info: # → 7章
 | `break` / `heading`                      | 並びの改行 / 見出し              |
 | `group` / `buttons`                      | 枠で囲む / ボタンを1つの塊にする |
 | `select` / `radio` / `checkbox`          | 選択肢。値をほかの項目で使う     |
+| `reset`                                  | select などを初期値に戻す        |
 
 ### 3.1 共通属性
 
-| 属性      | 内容                                                                                                                        |
-| --------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `label`   | ボタンの文字。省略時は種類キーの値から作る（ファイル名など。実行系はその OS で実行する方の1行目）。`""` で出さない          |
-| `icon`    | アイコン名（[Lucide](https://lucide.dev/icons/) の名前。例 `folder-open`）。省略時は種類ごとの既定（下表）、`""` で出さない |
-| `tooltip` | ホバー時の説明                                                                                                              |
-| `confirm` | 実行前に出す確認文。書いたときだけ確認する                                                                                  |
-| `id`      | 項目 ID（任意）。ローカル設定から置き換えるときに使う（→ 5章）                                                              |
+| 属性                           | 内容                                                                                                                        |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `label`                        | ボタンの文字。省略時は種類キーの値から作る（ファイル名など。実行系はその OS で実行する方の1行目）。`""` で出さない          |
+| `icon`                         | アイコン名（[Lucide](https://lucide.dev/icons/) の名前。例 `folder-open`）。省略時は種類ごとの既定（下表）、`""` で出さない |
+| `tooltip`                      | ホバー時の説明                                                                                                              |
+| `confirm`                      | 実行前に出す確認文。書いたときだけ確認する                                                                                  |
+| `id`                           | 項目 ID（任意）。ローカル設定から置き換えるときに使う（→ 5章）                                                              |
+| `enabledWhen` / `disabledWhen` | select などの値で押せる・押せないを変える（→ 3.10）                                                                         |
 
 埋め込み系（3.4）は `label`・`icon`・`tooltip`・`confirm` を使わない。
 
@@ -135,6 +137,7 @@ info: # → 7章
 | `open`                              | `file`（最後に拡張子があるとき）・`folder-open` |
 | `function`                          | `code`                                          |
 | `excel`・`powerpoint`・`word`       | `file-spreadsheet`・`presentation`・`file-text` |
+| `reset`                             | `list-restart`                                  |
 
 ### 3.2 function / ファイルを開く
 
@@ -171,15 +174,19 @@ info: # → 7章
   }
   ```
 
-  | `ctx` の中身      | 内容                                        |
-  | ----------------- | ------------------------------------------- |
-  | `launcherDir`     | work.launcher があるフォルダ                |
-  | `workDir`         | 作業フォルダ（関数もこのフォルダで動く）    |
-  | `env`             | 環境変数                                    |
-  | `log(text)`       | コンソールに1行書く（コンソールは開かない） |
-  | `open(path)` など | 項目と同じ動作を呼ぶ（下の表）              |
-  | `select`          | select・radio・checkbox の値（→ 3.8）       |
-  | `lang`            | 表示の言語（`ja` / `en`。→ 8章）            |
+  | `ctx` の中身      | 内容                                         |
+  | ----------------- | -------------------------------------------- |
+  | `launcherDir`     | work.launcher があるフォルダ                 |
+  | `workDir`         | 作業フォルダ（関数もこのフォルダで動く）     |
+  | `env`             | 環境変数                                     |
+  | `log(text)`       | コンソールに1行書く（コンソールは開かない）  |
+  | `open(path)` など | 項目と同じ動作を呼ぶ（下の表）               |
+  | `select`          | select・radio・checkbox の値（→ 3.8）        |
+  | `set(id, value)`  | select・radio・checkbox の値を変える（下）   |
+  | `reset(ids)`      | select・radio・checkbox を初期値に戻す（下） |
+  | `disable(ids)`    | 項目を押せなくする（下）                     |
+  | `enable(ids)`     | 項目を押せるようにする（下）                 |
+  | `lang`            | 表示の言語（`ja` / `en`。→ 8章）             |
   - 項目と同じ動作は、種類キーと同じ名前の関数で呼ぶ。2つ目の引数に書けるのは動作に関わるキーだけ
     （`label`・`icon` などは書けない。知らないキーは例外にする）
 
@@ -204,6 +211,34 @@ info: # → 7章
       関数は続ける。0 以外の終了コードは例外にしない
     - 関数は、頼んだ動作がすべて終わるまで終わらない（`wait: false` の実行は待たない）。
       関数から始めた実行は、関数が終わっても動き続け、ウィンドウを閉じたときに止める
+
+  - 項目の値と押せる・押せないは `ctx.set`・`ctx.reset`・`ctx.disable`・`ctx.enable` で変える（どれも Promise を返す）。
+    初期値に戻すだけなら `reset` の項目（→ 3.9）、値で決まる押せる・押せないなら `enabledWhen`・`disabledWhen`（→ 3.10）を YAML に書けばよい
+
+    ```js
+    ctx.set('target', 'prod') // select・radio は選択肢の値
+    ctx.set('dry', true) // checkbox は on・off の値か true / false
+    ctx.reset('debug') // 初期値に戻す。group の ID なら中の項目。引数なしなら全部
+    ctx.disable('reset-db') // 項目の id。['a', 'b'] のように並べてもよい
+    ctx.disable() // 引数なしなら全部の項目
+    ctx.enable() // 引数なしの disable() を戻す（ID で押せなくした分はそのまま）
+    ```
+
+    - `set` の `id` は select・radio・checkbox の ID。選択肢に無い値・無い ID は例外にする。
+      `remember: true` なら記憶する。`change` の関数は呼ばない（互いに書き換えて止まらなくなるのを避ける）
+    - `reset` の初期値は `default`（無ければ最初の選択肢。checkbox はオフ）。ID は select の ID か、
+      `group`・`buttons` の ID（中の select・radio・checkbox を戻す）。`remember`・`change` の扱いは `set` と同じ
+    - `set`・`reset` を `await` したあとは、同じ関数の `ctx.select` と、そのあとに頼む動作の `${select:ID}` に入る
+    - `disable`・`enable` の ID は、項目の `id`（ボタン・`group`・`buttons`）か select の ID。
+      `group`・`buttons` を指定すると中の項目も変わる。同じ ID の項目はページをまたいで全部変わる。
+      無い ID・押せる項目でない ID（見出し・md など）は例外にする
+    - 引数なしの `disable()`・`enable()` は「全部」だけを切り替え、ID で押せなくした分は保つ
+      （処理の間だけ全部を止めて、終わったら元の状態に戻せる）。
+      `disable()` の間は、ID を指定した `enable` では戻らない。戻すのは引数なしの `enable()`
+    - 押せない状態は設定の読み直しでは保ち、案件を開き直したら戻す。開いたときから押せなくするなら
+      `beforeOpen`・`afterOpen` で呼ぶ（→ 10章）
+    - 押せなくするのは画面の操作だけ。関数から `ctx.bat` などで呼ぶ動作は止めない
+    - `enabledWhen`・`disabledWhen` とは、どちらかが押せなくすれば押せない
 
   - それ以外は Node の機能（`child_process` など）を直接使える
   - 押すたびに別プロセスで JS を読み直して呼ぶ（編集はすぐ反映される）
@@ -355,10 +390,10 @@ openSchemes: [http, https, mailto, file] # config.yaml の最上位
 
 - `group` は `items` に並べた項目を枠で囲む。枠は中身に合わせた幅で、ほかの項目と同じく横に並ぶ
   - 中には `group` 以外の項目を置ける（グループの中にグループは置けない）
-  - 書けるキーは `group`・`items`・`icon`・`id`
+  - 書けるキーは `group`・`items`・`icon`・`id`・`enabledWhen`・`disabledWhen`
 - `buttons` は並べたボタンの枠をつなげて、1つの塊に見せる。2つ目以降は操作ボタンとして少し詰めて出す
-  - 中に置けるのはボタンになる項目（`function`・ファイルを開く・実行系・`url`）だけ。それ以外はその位置にエラーを出す
-  - 書けるキーは `buttons`・`id`。中のボタンは普通の項目と同じ書き方
+  - 中に置けるのはボタンになる項目（`function`・ファイルを開く・実行系・`url`・`reset`）だけ。それ以外はその位置にエラーを出す
+  - 書けるキーは `buttons`・`id`・`enabledWhen`・`disabledWhen`。中のボタンは普通の項目と同じ書き方
 - グループ・ボタングループの中の項目も、`id` を付ければローカル設定から置き換えられる（→ 5章）
 
 ### 3.8 選択（select）
@@ -378,13 +413,13 @@ openSchemes: [http, https, mailto, file] # config.yaml の最上位
   confirm: ${select:target} にデプロイしますか？
 ```
 
-- 選んだ値は `${select:ID}` で参照する（→ 4章）。function では `ctx.select.ID`（→ 3.2）
+- 選んだ値は `${select:ID}` で参照する（→ 4章）。function では `ctx.select.ID`、変えるときは `ctx.set`（→ 3.2）
 - `remember: true` なら、選んだ値を案件フォルダごとに記憶し、開き直したときもその値を使う。
   記憶はアプリのユーザーデータに置き、案件リポジトリには書かない
 - 記憶しないときは、開くたび（設定を読み直したときは除く）に既定値に戻る
 - 記憶した値が選択肢から消えていれば、既定値に戻る
 - 同じ ID の select を複数置くと、同じ値を共有する（ページをまたいで同じ選択を出せる）
-- 書けるキーは `select`・`label`・`tooltip`・`options`・`default`・`remember`・`change`。
+- 書けるキーは `select`・`label`・`tooltip`・`options`・`default`・`remember`・`change`・`enabledWhen`・`disabledWhen`。
   `id` は `select` の値と同じになる（ローカル設定から同じ ID で置き換えられる）
 - `buttons` の中には置けない
 
@@ -413,13 +448,54 @@ openSchemes: [http, https, mailto, file] # config.yaml の最上位
 ```
 
 - 値の参照・記憶・共有は select と同じ（`${select:ID}`・`ctx.select.ID`・`remember`）
-- 書けるキーは `checkbox`・`label`・`tooltip`・`on`・`off`・`default`・`remember`・`change`。
+- 書けるキーは `checkbox`・`label`・`tooltip`・`on`・`off`・`default`・`remember`・`change`・`enabledWhen`・`disabledWhen`。
   `on` と `off` は違う値にする
 - `buttons` の中には置けない
 
 #### select・radio・checkbox の ID
 
 - ID は3つで共通。種類が違っても、同じ ID は同じ値を指す（別の種類で同じ ID は使わない）
+
+### 3.9 初期値に戻す（reset）
+
+```yaml
+- group: デバッグ用
+  id: debug-tools
+  items:
+    - select: log-level
+      options: [low, middle, high]
+      default: middle
+    - checkbox: log-file
+    - reset: debug-tools # 押すと、グループの中の select・checkbox を初期値に戻す
+      label: '' # 省略時は「リセット」
+```
+
+- 値は戻す項目の ID か、`[log-level, log-file]` のような ID の並び。select・radio・checkbox の ID か、
+  `group`・`buttons` の ID（中の select・radio・checkbox をまとめて戻す）
+- 初期値・記憶・`change` の扱いは JS の `ctx.reset` と同じ（→ 3.2）
+- 書けるキーはボタンと同じ（`label`・`icon`・`tooltip`・`confirm`・`id`・`enabledWhen`・`disabledWhen`）。
+  `buttons` の中にも置ける
+- 無い ID・中に select の無い枠の ID は、その項目をエラーにする
+
+### 3.10 押せる・押せないの条件（enabledWhen / disabledWhen）
+
+```yaml
+- radio: mode
+  options: [debug, release]
+- checkbox: log
+- group: デバッグ用
+  disabledWhen: { mode: release } # release の間は、中の項目ごと押せない
+  items:
+    - sh: ./debug.sh
+      enabledWhen: { log: true } # チェックを入れたときだけ押せる
+```
+
+- `enabledWhen` は条件に合うときだけ押せる。`disabledWhen` は条件に合うと押せない。1つの項目にはどちらか一方だけ
+- 条件は「select・radio・checkbox の ID: 値」の組。値を並べる（`[dev, stg]`）とどれか、ID を並べるとすべてに合うときに合う。
+  checkbox は `on`・`off` の値か `true` / `false`。式は書けない
+- 書けるのはボタン（`reset` も）・`group`・`buttons`・select・radio・checkbox。`group`・`buttons` に書くと中の項目も変わる
+- 値が変わるとすぐに切り替える。JS の `ctx.disable` とは、どちらかが押せなくすれば押せない
+- 無い ID・選択肢に無い値は、その項目をエラーにする
 
 ## 4. 変数
 
@@ -685,7 +761,8 @@ module.exports = {
 ```
 
 - select・radio・checkbox に `change: 関数名` と書くと、その項目の値を画面で変えたときに呼ぶ
-- 開いたときの値の復元・設定の読み直しでは呼ばない（開いたときの処理は `beforeOpen`・`afterOpen` に書く）
+- 開いたときの値の復元・設定の読み直し・JS の `ctx.set`・`ctx.reset`（→ 3.2）では呼ばない
+  （開いたときの処理は `beforeOpen`・`afterOpen` に書く）
 - `ctx.changed` は `{ id, value, previous }`（ID・変えたあとの値・前の値）。`ctx.select` は変えたあとの値
 - 続けて変えたときは、前の関数が終わってから順に呼ぶ
 - 同じ ID の項目を複数置いたときは、画面で操作した項目の `change` を呼ぶ

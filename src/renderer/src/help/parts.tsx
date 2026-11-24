@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { buildUrl, execKindFor, expandSelect, itemAt, resolveSelections } from '../../../core/items'
+import { resetValues } from '../../../core/itemState'
 import type { Project } from '../../../core/types'
 import { highlight } from '../lib/highlight'
 import type { CodeLang } from '../lib/highlight'
@@ -86,10 +87,12 @@ export function Table(props: {
 const NOT_RUNNING = new Set<string>()
 const NO_ACTION = (): void => {}
 
-/** 見本の select は案件の値と混ぜず、見本ごとに値を持つ */
-function useSampleSelections(items: Example['items']): SelectContextValue {
+/** 見本の select は案件の値と混ぜず、見本ごとに値を持つ。reset は reset の項目を押したとき */
+function useSampleSelections(
+  items: Example['items']
+): SelectContextValue & { reset(ids: string[]): void } {
   const [chosen, setChosen] = useState<Record<string, string>>({})
-  return useMemo<SelectContextValue>(() => {
+  return useMemo(() => {
     const project: Project = {
       styles: [],
       scripts: [],
@@ -98,7 +101,11 @@ function useSampleSelections(items: Example['items']): SelectContextValue {
     }
     return {
       values: resolveSelections(project, chosen),
-      onChange: (item, value) => setChosen((c) => ({ ...c, [item.name]: value }))
+      onChange: (item, value) => setChosen((c) => ({ ...c, [item.name]: value })),
+      reset: (ids) => {
+        const r = resetValues(project, ids)
+        if (!('error' in r)) setChosen((c) => ({ ...c, ...r.select }))
+      }
     }
   }, [items, chosen])
 }
@@ -196,6 +203,10 @@ export function SampleView({
   const activate = (path: number[]): void => {
     const item = itemAt(example.items, path)
     const expand = (v: string): string => expandSelect(v, selections.values).value
+    if (item?.kind === 'reset') {
+      selections.reset(item.ids)
+      return
+    }
     if (item?.kind === 'url') {
       const params = Object.entries(item.params ?? {}).map(([k, v]) => [k, expand(v)])
       try {

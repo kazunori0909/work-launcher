@@ -263,6 +263,108 @@ export const EXAMPLES = {
       },
       { kind: 'exec', scripts: { sh: './deploy.sh ${select:dry}' }, label: 'デプロイ' }
     ]
+  },
+  when: {
+    yaml: `- radio: mode
+  label: モード
+  options: [debug, release]
+- group: デバッグ用
+  disabledWhen: { mode: release }
+  items:
+    - checkbox: log
+      label: ログを残す
+    - sh: ./debug.sh
+      label: デバッグ実行
+      enabledWhen: { log: true }`,
+    items: [
+      {
+        kind: 'select',
+        id: 'mode',
+        name: 'mode',
+        control: 'radio',
+        label: 'モード',
+        options: [
+          { label: 'debug', value: 'debug' },
+          { label: 'release', value: 'release' }
+        ],
+        remember: false
+      },
+      {
+        kind: 'group',
+        title: 'デバッグ用',
+        when: { enabled: false, values: { mode: ['release'] } },
+        items: [
+          {
+            kind: 'select',
+            id: 'log',
+            name: 'log',
+            control: 'checkbox',
+            label: 'ログを残す',
+            options: [
+              { label: 'on', value: 'true' },
+              { label: 'off', value: 'false' }
+            ],
+            default: 'false',
+            remember: false
+          },
+          {
+            kind: 'exec',
+            scripts: { sh: './debug.sh' },
+            label: 'デバッグ実行',
+            when: { enabled: true, values: { log: ['true'] } }
+          }
+        ]
+      }
+    ]
+  },
+  reset: {
+    yaml: `- group: デバッグ用
+  id: debug-tools
+  items:
+    - select: log-level
+      label: ログ出力レベル
+      options: [low, middle, high]
+      default: middle
+    - checkbox: log-file
+      label: ファイルにも書く
+    - reset: debug-tools`,
+    items: [
+      {
+        kind: 'group',
+        id: 'debug-tools',
+        title: 'デバッグ用',
+        items: [
+          {
+            kind: 'select',
+            id: 'log-level',
+            name: 'log-level',
+            control: 'select',
+            label: 'ログ出力レベル',
+            options: [
+              { label: 'low', value: 'low' },
+              { label: 'middle', value: 'middle' },
+              { label: 'high', value: 'high' }
+            ],
+            default: 'middle',
+            remember: false
+          },
+          {
+            kind: 'select',
+            id: 'log-file',
+            name: 'log-file',
+            control: 'checkbox',
+            label: 'ファイルにも書く',
+            options: [
+              { label: 'on', value: 'true' },
+              { label: 'off', value: 'false' }
+            ],
+            default: 'false',
+            remember: false
+          },
+          { kind: 'reset', ids: ['debug-tools'] }
+        ]
+      }
+    ]
   }
 } satisfies Record<string, Example>
 

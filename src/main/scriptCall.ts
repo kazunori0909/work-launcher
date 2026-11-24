@@ -6,6 +6,7 @@ import { DEFAULT_SCRIPTS } from '../core/load'
 import { listScriptFiles } from '../core/scripts'
 import type { VariableContext } from '../core/variables'
 import type { CtxCall, CtxResult } from '../core/ctxCalls'
+import { changeItemState } from './itemState'
 import { openOffice, openPath, openUrl, resolvePath } from './open'
 import { runFromFunction } from './runs'
 import type { CallRequest, HostMessage, HostReply, SelectChange } from './scriptHost'
@@ -34,7 +35,9 @@ export async function callFunction(
   session: WindowSession,
   { event = false, changed }: CallOptions = {}
 ): Promise<Result> {
-  const { launcherDir, workDir = launcherDir, select = {} } = ctx
+  const { launcherDir, workDir = launcherDir } = ctx
+  /** select の値。関数が ctx.set・ctx.reset で変えたら、そのあとに頼む動作でも使う */
+  let select = ctx.select ?? {}
   const listed = listScriptFiles(scripts.map((s) => resolvePath(s, ctx)))
   if ('missing' in listed) {
     // 省略時の launcher/scripts が無いだけなら、イベントは黙って呼ばない
@@ -63,6 +66,15 @@ export async function callFunction(
         return openUrl(call.url, call.params, vars, session.view?.project?.openSchemes)
       case 'exec':
         return runFromFunction(session, call, vars)
+      case 'set':
+      case 'reset': {
+        const result = changeItemState(session, call)
+        if (result.select) select = { ...select, ...result.select }
+        return result
+      }
+      case 'enable':
+      case 'disable':
+        return changeItemState(session, call)
       default:
         return openOffice(call.action, call.path, call.readonly, vars)
     }

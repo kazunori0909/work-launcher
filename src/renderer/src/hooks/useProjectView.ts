@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { ProjectView } from '../../../core/types'
 import { setLang } from '../../../core/i18n'
 
-/** 開いている案件。設定ファイルが変わって読み直したら差し替わる。読み込み中は undefined */
+/** 開いている案件。設定ファイルが変わって読み直したら、JS が項目の状態を変えたら差し替わる。読み込み中は undefined */
 export function useProjectView(): ProjectView | undefined {
   const [view, setView] = useState<ProjectView>()
   useEffect(() => {
@@ -16,7 +16,13 @@ export function useProjectView(): ProjectView | undefined {
       setView(v)
     }
     window.launcher.loadProject().then(apply)
-    return window.launcher.onProjectChanged(apply)
+    const offChanged = window.launcher.onProjectChanged(apply)
+    // JS が変えた select の値・押せない項目
+    const offState = window.launcher.onStateChanged((state) => setView((v) => v && { ...v, state }))
+    return () => {
+      offChanged()
+      offState()
+    }
   }, [])
   return view
 }

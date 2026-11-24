@@ -1,5 +1,6 @@
 import type { HelpGroup } from '../book'
 import { ConsoleColors } from './ConsoleColors'
+import { Disable } from './Disable'
 import { Display } from './Display'
 import { Edit } from './Edit'
 import { Elements } from './Elements'
@@ -10,6 +11,7 @@ import { Info } from './Info'
 import { Items } from './Items'
 import { LicensesSection } from './LicensesSection'
 import { Look } from './Look'
+import { SetValues } from './SetValues'
 import { Start } from './Start'
 import { Variables } from './Variables'
 
@@ -32,6 +34,13 @@ export const HELP_EN: readonly HelpGroup[] = [
       { id: 'elements', title: 'Other elements', Body: Elements },
       { id: 'display', title: 'Layout and decoration', Body: Display },
       { id: 'functions', title: 'Calling from functions', Body: Functions }
+    ]
+  },
+  {
+    label: 'Changing elements',
+    sections: [
+      { id: 'disable', title: 'Disabling elements', Body: Disable },
+      { id: 'set-values', title: 'Changing values', Body: SetValues }
     ]
   },
   {

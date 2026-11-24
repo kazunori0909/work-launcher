@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { expect, it } from 'vitest'
+import { walkItems } from './items'
 import { loadConsoleRules, loadProject } from './load'
 import type { ReadFile } from './load'
 
@@ -21,6 +22,11 @@ it('サンプル案件の読み込み結果', async () => {
   const project = await loadProject(DIR, read)
   const console = await loadConsoleRules(DIR, read)
   expect(project.diagnostics).toEqual([])
+  // 項目の書き誤りは diagnostics でなく、その位置の error の項目になる
+  const errors = (project.project?.pages ?? [])
+    .flatMap((page) => walkItems(page.items))
+    .filter((item) => item.kind === 'error')
+  expect(errors).toEqual([])
   expect(console.diagnostics).toEqual([])
   expect({ project: project.project, consoleRules: console.rules }).toMatchSnapshot()
 })

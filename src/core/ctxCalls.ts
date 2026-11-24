@@ -21,10 +21,16 @@ export type CtxCall =
       /** false なら、コンソールに出さない */
       console: boolean
     }
+  /** select・radio・checkbox の値を変える */
+  | { action: 'set'; id: string; value: string | boolean }
+  /** 項目を押せる・押せなくする・値を初期値に戻す。ids が無ければ全部の項目 */
+  | { action: 'enable' | 'disable' | 'reset'; ids?: string[] }
 
 /** 動作の結果。失敗したら error。終わりを待った実行系は終了コードと出力が入る */
 export interface CtxResult extends Partial<ExecResult> {
   error?: string
+  /** set・reset で変えた select の値（ID → 値。checkbox の true / false は on・off の値にする） */
+  select?: Record<string, string>
 }
 
 /** 終わりを待った実行系が返すもの。止めたときは code が null */
@@ -41,6 +47,28 @@ const OFFICE_KINDS = ['excel', 'powerpoint', 'word'] as const
 /** ctx に並べる動作の名前（YAML の種類キーと同じ） */
 export const CTX_ACTIONS = ['open', 'url', ...OFFICE_KINDS, ...EXEC_KINDS] as const
 export type CtxAction = (typeof CTX_ACTIONS)[number]
+
+/** ctx に並べる、項目の状態を変える関数の名前 */
+export const STATE_ACTIONS = ['set', 'enable', 'disable', 'reset'] as const
+export type StateAction = (typeof STATE_ACTIONS)[number]
+
+/** `ctx.set(id, value)`・`ctx.enable(ids)`・`ctx.disable(ids)`・`ctx.reset(ids)` の引数を確かめ、頼む内容にする */
+export function stateCall(name: StateAction, first?: unknown, second?: unknown): CtxCall {
+  const fail = (message: string): never => {
+    throw new Error(`ctx.${name}: ${message}`)
+  }
+  if (name === 'set') {
+    if (typeof first !== 'string' || first === '') fail(t().ctx.firstArg)
+    if (typeof second !== 'string' && typeof second !== 'boolean') fail(t().ctx.setValue)
+    return { action: 'set', id: first as string, value: second as string | boolean }
+  }
+  if (first === undefined) return { action: name }
+  const ids = typeof first === 'string' ? [first] : first
+  if (!Array.isArray(ids) || ids.some((id) => typeof id !== 'string' || id === '')) {
+    fail(t().ctx.ids)
+  }
+  return { action: name, ids: ids as string[] }
+}
 
 const EXEC_OPTIONS = ['cwd', 'env', 'encoding', 'wait', 'console']
 const OPTION_KEYS: Record<CtxAction, readonly string[]> = {

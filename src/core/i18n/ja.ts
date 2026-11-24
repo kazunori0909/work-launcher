@@ -33,6 +33,10 @@ export const ja = {
     badControlId: (control: string, name: string) =>
       `${control} の ID が正しくありません: ${name}（英数字と - _）`,
     nestedGroup: 'グループの中にグループは置けません',
+    resetIds: 'reset には戻す項目の ID か、ID の並びを書いてください',
+    bothWhen: 'enabledWhen と disabledWhen は、どちらか一方だけ書いてください',
+    whenNotMap: (key: string) => `${key} は「select の ID: 値」の組で書いてください`,
+    whenValue: (key: string, id: string) => `${key} の ${id} には値か、値の並びを書いてください`,
     groupTitle: 'group には見出しの文字を書いてください（省略可）',
     groupNoItems: 'group には items で中の項目を並べてください',
     buttonsNotList: 'buttons にはボタンを「- 」で並べてください',
@@ -80,6 +84,7 @@ export const ja = {
     noCommand: (kind: string) => `実行するコマンドが見つかりません（${kind}）`,
     itemNotFound: '項目が見つかりません（設定が変わった可能性があります）',
     notYet: 'この項目はまだ動かせません',
+    resetLabel: 'リセット',
     errorLabel: 'エラー'
   },
 
@@ -91,7 +96,18 @@ export const ja = {
       (keys.length > 0 ? `（書けるのは ${keys.join(' / ')}）` : ''),
     notString: (key: string) => `${key} は文字列で書いてください`,
     notBoolean: (key: string) => `${key} は true / false で書いてください`,
-    notMap: (key: string) => `${key} は { 名前: 値 } で書いてください`
+    notMap: (key: string) => `${key} は { 名前: 値 } で書いてください`,
+    setValue: '2つ目の引数は文字列か true / false で書いてください',
+    ids: '引数は ID の文字列か、その配列で書いてください',
+    unknownId: (id: string) => `ID が ${id} の項目がありません`,
+    notOperable: (id: string) =>
+      `${id} は押せる項目ではありません（ボタン・group・buttons・select・radio・checkbox を指定してください）`,
+    noSelect: (id: string) => `ID が ${id} の select・radio・checkbox がありません`,
+    noSelectIn: (id: string) =>
+      `${id} は select・radio・checkbox でなく、中にも select・radio・checkbox がありません`,
+    booleanForCheckbox: 'true / false で書けるのは checkbox だけです',
+    notOption: (id: string, value: string, values: string[]) =>
+      `${value} は ${id} の選択肢にありません（選べるのは ${values.join(' / ')}）`
   },
 
   script: {

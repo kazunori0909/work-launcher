@@ -11,6 +11,16 @@ export interface ItemCommon {
   icon?: string
   tooltip?: string
   confirm?: string
+  when?: ItemWhen
+}
+
+/**
+ * enabledWhen・disabledWhen（select の ID → 値の並び）。値の並びは「どれか」、ID を並べると「すべて」。
+ * checkbox は true / false でも書ける。enabled なら合うときだけ押せる、そうでなければ合うときに押せない
+ */
+export interface ItemWhen {
+  enabled: boolean
+  values: Record<string, Array<string | boolean>>
 }
 
 export type Item =
@@ -27,8 +37,10 @@ export type Item =
   | (ItemCommon & { kind: 'html' | 'markdown'; content: string })
   | (ItemCommon & { kind: 'mdfile'; path: string })
   | (ItemCommon & { kind: 'url'; url: string; params?: Record<string, string> })
-  | { kind: 'group'; id?: string; icon?: string; title?: string; items: Item[] }
-  | { kind: 'buttons'; id?: string; items: Item[] }
+  /** 押すと ids の select・radio・checkbox を初期値に戻す（ctx.reset と同じ） */
+  | (ItemCommon & { kind: 'reset'; ids: string[] })
+  | { kind: 'group'; id?: string; icon?: string; title?: string; when?: ItemWhen; items: Item[] }
+  | { kind: 'buttons'; id?: string; when?: ItemWhen; items: Item[] }
   | (ItemCommon & {
       kind: 'select'
       /** select の ID。`${select:ID}` で参照する（id と同じ値） */
@@ -70,7 +82,8 @@ export const BUTTON_KINDS = [
   'word',
   'open',
   'exec',
-  'url'
+  'url',
+  'reset'
 ] as const
 
 export interface Page {
@@ -153,6 +166,21 @@ export interface ProjectView {
   /** mdfile に書いたパス（未展開）ごとの中身 */
   mdfiles: Record<string, MarkdownFile>
   diagnostics: Diagnostic[]
+  /** メインが持つ項目の状態（beforeOpen で JS が変えた分も入る） */
+  state?: ItemState
+}
+
+/** 画面で押せない項目。all なら全部、そうでなければ ids（項目の id・select の ID）に当たるもの */
+export interface DisabledItems {
+  all: boolean
+  ids: string[]
+}
+
+/** ウィンドウごとの項目の状態（JS の ctx.set・ctx.enable・ctx.disable で変わる） */
+export interface ItemState {
+  /** select の値（ID → 値） */
+  select: Record<string, string>
+  disabled: DisabledItems
 }
 
 /** アプリに入っているサードパーティのライブラリ（scripts/licenses.mjs がビルド時に集める） */

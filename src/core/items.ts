@@ -34,6 +34,8 @@ export function itemLabel(item: Item, platform: string): string {
   switch (item.kind) {
     case 'function':
       return item.fn
+    case 'reset':
+      return t().run.resetLabel
     case 'exec':
       return (
         (item.scripts[execKindFor(item.scripts, platform)!] ?? Object.values(item.scripts)[0])
@@ -70,6 +72,8 @@ export function defaultIcon(item: Item): string | undefined {
       return looksLikeFile(item.path) ? 'file' : 'folder-open'
     case 'function':
       return 'code'
+    case 'reset':
+      return 'list-restart'
     case 'excel':
       return 'file-spreadsheet'
     case 'powerpoint':

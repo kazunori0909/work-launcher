@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { checkItemRefs } from '../itemState'
 import { mergeProject } from '../merge'
 import { FORBIDDEN_SCHEMES, normalizeScheme } from '../schemes'
 import type { Diagnostic, Page, Project } from '../types'
@@ -45,7 +46,7 @@ export async function loadProject(launcherDir: string, readFile: ReadFile): Prom
     const localText = await readFile(path.join(launcherDir, LOCAL_FILE))
     const local =
       localText === undefined ? undefined : await readProject(r, localText, LOCAL_FILE, false)
-    return { project: mergeProject(base, local), diagnostics }
+    return { project: checkItemRefs(mergeProject(base, local)), diagnostics }
   } catch (e) {
     if (e instanceof FatalError) return { diagnostics: [...diagnostics, e.diagnostic] }
     throw e

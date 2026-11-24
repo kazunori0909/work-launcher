@@ -1,6 +1,6 @@
 import { isMdFilePath } from '../items'
 import { BUTTON_KINDS, EXEC_KINDS } from '../types'
-import type { ExecKind, Item, ItemCommon, SelectControl, SelectOption } from '../types'
+import type { ExecKind, Item, ItemCommon, ItemWhen, SelectControl, SelectOption } from '../types'
 import { isObj, scalar } from './reader'
 import type { Obj, Reader } from './reader'
 import { t } from '../i18n'
@@ -12,6 +12,9 @@ export const PAGE_ID = /^[A-Za-z0-9_-]+$/
 
 const COMMON_KEYS = ['id', 'label', 'icon', 'tooltip', 'confirm']
 const SELECT_KEYS = ['label', 'tooltip', 'options', 'default', 'remember', 'change']
+/** 押せる項目（ボタン・枠・select 系）に書ける、押せる・押せないの条件 */
+const WHEN_KEYS = ['enabledWhen', 'disabledWhen']
+const BUTTON_KEYS = [...COMMON_KEYS, ...WHEN_KEYS]
 
 /** 項目の中身を読むときに使う道具。誤りは problem に積み、最後にまとめてその項目のエラーにする */
 interface ItemFields {
@@ -43,7 +46,7 @@ interface KindSpec {
 }
 
 const office = (kind: 'excel' | 'powerpoint' | 'word'): KindSpec => ({
-  keys: [...COMMON_KEYS, 'readonly'],
+  keys: [...BUTTON_KEYS, 'readonly'],
   read: (f) => {
     const readonly = f.raw.readonly ?? false
     if (typeof readonly !== 'boolean') f.problem(t().load.notBoolean('readonly'))
@@ -54,8 +57,8 @@ const office = (kind: 'excel' | 'powerpoint' | 'word'): KindSpec => ({
 const select = (control: SelectControl): KindSpec => ({
   keys:
     control === 'checkbox'
-      ? ['label', 'tooltip', 'on', 'off', 'default', 'remember', 'change']
-      : SELECT_KEYS,
+      ? ['label', 'tooltip', 'on', 'off', 'default', 'remember', 'change', ...WHEN_KEYS]
+      : [...SELECT_KEYS, ...WHEN_KEYS],
   read: (f) => {
     const name = f.req(control)
     if (name && !PAGE_ID.test(name)) {
@@ -89,15 +92,15 @@ const select = (control: SelectControl): KindSpec => ({
  */
 const KINDS = {
   function: {
-    keys: COMMON_KEYS,
+    keys: BUTTON_KEYS,
     read: (f) => ({ ...f.common, kind: 'function', fn: f.req('function') })
   },
   excel: office('excel'),
   powerpoint: office('powerpoint'),
   word: office('word'),
-  open: { keys: COMMON_KEYS, read: (f) => ({ ...f.common, kind: 'open', path: f.req('open') }) },
+  open: { keys: BUTTON_KEYS, read: (f) => ({ ...f.common, kind: 'open', path: f.req('open') }) },
   exec: {
-    keys: [...COMMON_KEYS, 'cwd', 'env', 'encoding'],
+    keys: [...BUTTON_KEYS, 'cwd', 'env', 'encoding'],
     read: (f) => ({
       ...f.common,
       kind: 'exec',
@@ -122,8 +125,20 @@ const KINDS = {
     }
   },
   url: {
-    keys: [...COMMON_KEYS, 'params'],
+    keys: [...BUTTON_KEYS, 'params'],
     read: (f) => ({ ...f.common, kind: 'url', url: f.req('url'), params: f.dict('params') })
+  },
+  reset: {
+    keys: BUTTON_KEYS,
+    read: (f) => {
+      const v = f.raw.reset
+      const ids = typeof v === 'string' ? [v] : Array.isArray(v) ? v : undefined
+      if (!ids || ids.length === 0 || !ids.every((id) => typeof id === 'string' && id !== '')) {
+        f.problem(t().load.resetIds)
+        return { ...f.common, kind: 'reset', ids: [] }
+      }
+      return { ...f.common, kind: 'reset', ids: [...new Set(ids as string[])] }
+    }
   },
   break: { keys: COMMON_KEYS, read: (f) => ({ kind: 'break', id: f.common.id }) },
   heading: {
@@ -131,7 +146,7 @@ const KINDS = {
     read: (f) => ({ kind: 'heading', id: f.common.id, text: f.reqText('heading') })
   },
   group: {
-    keys: ['id', 'icon', 'items'],
+    keys: ['id', 'icon', 'items', ...WHEN_KEYS],
     read: (f) => {
       if (f.parent === 'group') return t().load.nestedGroup
       const title = f.raw.group === null ? undefined : pickText(f.raw.group)
@@ -148,7 +163,7 @@ const KINDS = {
     }
   },
   buttons: {
-    keys: ['id'],
+    keys: ['id', ...WHEN_KEYS],
     read: (f) => {
       if (!Array.isArray(f.raw.buttons)) {
         f.problem(t().load.buttonsNotList)
@@ -261,9 +276,11 @@ export function readItem(
   }
 
   const spec: KindSpec = KINDS[kind]
-  const item = spec.read(fields)
-  if (typeof item === 'string') return fail(item)
+  const when = spec.keys.includes('enabledWhen') ? readWhen(raw, problem) : undefined
+  const read = spec.read(fields)
+  if (typeof read === 'string') return fail(read)
   if (problems.length > 0) return fail(problems.join(' / '))
+  const item = when ? ({ ...read, when } as Item) : read
   r.warnUnknown(
     raw,
     [...spec.keys, ...types],
@@ -271,6 +288,33 @@ export function readItem(
     t().load.item(String(fields.common.label ?? types[0]))
   )
   return item
+}
+
+/** enabledWhen・disabledWhen。select の ID → 値（並びも書ける）。どちらか一方だけ */
+function readWhen(raw: Obj, problem: (message: string) => void): ItemWhen | undefined {
+  const keys = WHEN_KEYS.filter((k) => raw[k] !== undefined)
+  if (keys.length === 0) return undefined
+  if (keys.length > 1) {
+    problem(t().load.bothWhen)
+    return undefined
+  }
+  const key = keys[0]
+  const v = raw[key]
+  if (!isObj(v) || Object.keys(v).length === 0) {
+    problem(t().load.whenNotMap(key))
+    return undefined
+  }
+  const values: ItemWhen['values'] = {}
+  for (const [id, x] of Object.entries(v)) {
+    const list = Array.isArray(x) ? x : [x]
+    const ok = list.map((y) => (typeof y === 'boolean' ? y : scalar(y)))
+    if (ok.length === 0 || ok.some((y) => y === undefined)) {
+      problem(t().load.whenValue(key, id))
+      return undefined
+    }
+    values[id] = ok as Array<string | boolean>
+  }
+  return { enabled: key === 'enabledWhen', values }
 }
 
 /** ページ・グループの items を読む */

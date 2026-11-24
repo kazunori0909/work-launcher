@@ -9,6 +9,7 @@ import { asItemRef } from '../core/ipcArgs'
 import { assertNever } from '../core/types'
 import { variableContext } from '../core/variables'
 import { handle } from './ipc'
+import { changeItemState } from './itemState'
 import { openOffice, openPath, openUrl } from './open'
 import { findItem } from './project'
 import { callFunction } from './scriptCall'
@@ -72,6 +73,10 @@ export function registerActionHandlers(sessionOf: SessionOf): void {
         return openUrl(item.url, item.params, ctx, project.openSchemes)
       case 'function':
         return callFunction(item.fn, project.scripts, ctx, session)
+      case 'reset': {
+        const { error } = changeItemState(session, { action: 'reset', ids: item.ids })
+        return error ? { error } : {}
+      }
       case 'excel':
       case 'powerpoint':
       case 'word':

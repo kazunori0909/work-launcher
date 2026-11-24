@@ -36,6 +36,10 @@ export const en: Messages = {
     unknownKey: (where, key) => `${where}: unknown key ${key}`,
     badControlId: (control, name) => `Invalid ${control} ID: ${name} (letters, digits, - and _)`,
     nestedGroup: 'A group cannot contain another group',
+    resetIds: 'reset takes the ID of the items to reset, or a list of IDs',
+    bothWhen: 'Write only one of enabledWhen and disabledWhen',
+    whenNotMap: (key) => `${key} must be pairs of "select ID: value"`,
+    whenValue: (key, id) => `${key}: ${id} takes a value or a list of values`,
     groupTitle: 'Write the heading text in group (optional)',
     groupNoItems: 'List the contents of group under items',
     buttonsNotList: 'List the buttons in buttons with "- "',
@@ -80,6 +84,7 @@ export const en: Messages = {
     noCommand: (kind) => `Command to run was not found (${kind})`,
     itemNotFound: 'Item not found (the settings may have changed)',
     notYet: 'This item cannot be used yet',
+    resetLabel: 'Reset',
     errorLabel: 'Error'
   },
 
@@ -91,7 +96,17 @@ export const en: Messages = {
       (keys.length > 0 ? ` (allowed: ${keys.join(' / ')})` : ''),
     notString: (key) => `${key} must be a string`,
     notBoolean: (key) => `${key} must be true or false`,
-    notMap: (key) => `${key} must be { name: value }`
+    notMap: (key) => `${key} must be { name: value }`,
+    setValue: 'The second argument must be a string or true / false',
+    ids: 'The argument must be an ID string or an array of them',
+    unknownId: (id) => `No item has the ID ${id}`,
+    notOperable: (id) =>
+      `${id} is not an item you can press (use a button, group, buttons, select, radio or checkbox)`,
+    noSelect: (id) => `No select, radio or checkbox has the ID ${id}`,
+    noSelectIn: (id) => `${id} is not a select, radio or checkbox, and has none inside`,
+    booleanForCheckbox: 'Only a checkbox takes true / false',
+    notOption: (id, value, values) =>
+      `${value} is not an option of ${id} (choose from ${values.join(' / ')})`
   },
 
   script: {

@@ -103,6 +103,13 @@ ctx.log(\`ブランチ: \${r.stdout}\`)`}</Code>
       <p>
         <code>console: false</code> の実行は、実行中の一覧に出ないので画面からは止められません。
       </p>
+      <h3>項目の値と押せる・押せないを変える</h3>
+      <p>
+        <code>ctx.set</code>・<code>ctx.reset</code> で select などの値を、<code>ctx.disable</code>
+        ・<code>ctx.enable</code>{' '}
+        で項目の押せる・押せないを変えられます。書き方は「要素を変更する」の章を見てください。
+      </p>
+
       <h3>失敗したとき</h3>
       <p>
         ファイルが無い、コマンドを始められない、といったときは例外になります。<code>await</code>{' '}
