@@ -1068,7 +1068,8 @@ body {
   --s-try-h: 600px;
   --s-try-chat-h: var(--s-try-h);
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  /* チャットは幅を抑え、画面の Info が2列に並ぶ幅（info.css の minmax の2つ分）を画面側に残す */
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
   gap: 24px;
   align-items: end;
 }
