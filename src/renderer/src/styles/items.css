@@ -136,6 +136,11 @@
   color: var(--muted);
 }
 
+/* select・radio・checkbox が続くときは間を広げる（ラベルが左の項目に付いて見えないように） */
+.item-select + .item-select {
+  margin-left: 12px;
+}
+
 .item-select select {
   padding: 9px 8px;
   border: 1px solid var(--border);

@@ -97,53 +97,55 @@ items:
   - break
 
   #--------------------------------------
-  # 選択（select・radio・checkbox）
+  # デプロイ（select・radio・checkbox）
   #--------------------------------------
-  # 選んだ値を ${select:ID} や ctx.select.ID で使う
-  - group: { ja: 選択（select・radio・checkbox）, en: 'Select, radio and checkbox' }
-    icon: list
+  # 選んだ値は、コマンドでは ${select:ID}、JS では ctx.select.ID で使う
+  - group: { ja: デプロイ, en: Deploy }
+    icon: upload
     items:
-      - select: target
-        label: { ja: 接続先, en: Target }
-        options: [dev, stg, prod] # 値だけ書く（表示も同じ）
-        tooltip: { ja: 選択肢は記憶します, en: The choice is remembered }
-        remember: true # 開き直しても前の選択を使う
-        change: onTargetChange # 値を変えたときに呼ぶ関数（sample-scripts.js）
+      # 地域を先に選ぶ。変えると、接続先を初期値に戻す（sample-scripts.js の onRegionChange）
       - select: region
         label: { ja: 地域, en: Region }
         options: # 表示と値を分ける
           - { label: { ja: 東京, en: Tokyo }, value: tokyo }
           - { label: { ja: 大阪, en: Osaka }, value: osaka }
+        remember: true # 開き直しても前の選択を使う
+        change: onRegionChange
+      - sh: echo "./deploy.sh --region=${select:region} --target=${select:target} --mode=${select:mode} ${select:dry}"
+        bat: |
+          @echo off
+          echo deploy.bat --region=${select:region} --target=${select:target} --mode=${select:mode} ${select:dry}
+        label: { ja: デプロイ, en: Deploy }
+        icon: upload
+        confirm:
+          ja: ${select:region} の ${select:target} にデプロイしますか？
+          en: Deploy to ${select:target} in ${select:region}?
+      - break
+      - select: target
+        label: { ja: 接続先, en: Target }
+        options: [dev, stg, prod] # 値だけ書く（表示も同じ）
       - radio: mode
         label: { ja: モード, en: Mode }
         options: [debug, release]
-        # remember を書かないので、開くたびに debug に戻る
       - checkbox: dry
         label: { ja: 試しに実行, en: Dry run }
         on: --dry-run # オンのときの値
         off: '' # オフのときの値（空）
-        remember: true
-      - break
-      - sh: echo "接続先=${select:target} 地域=${select:region} モード=${select:mode} ${select:dry}"
-        bat: |
-          @echo off
-          echo 接続先=${select:target} 地域=${select:region} モード=${select:mode} ${select:dry}
-        label: { ja: 値を表示, en: Show values }
-        env:
-          TARGET_ENV: ${select:target}
-      - function: showSelect # release のときは、デバッグ用の値を出さない
-        confirm:
-          ja: ${select:target} の値で関数を呼びますか？
-          en: Call the function with ${select:target}?
-      - function: releasePreset # JS から値を変える（ctx.set）
-        label: { ja: 本番向けにする, en: Set for release }
-        icon: rocket
+      # 接続先・モード・試しに実行を、まとめて変える・戻す
+      - buttons:
+          - function: releasePreset # JS から値を変える（ctx.set）
+            label: { ja: 本番向けにする, en: Set for release }
+            icon: rocket
+            tooltip: { ja: prod・release・試しに実行オン, en: 'prod, release, dry run on' }
+          - reset: [target, mode, dry] # YAML だけで初期値に戻す
+            label: ''
+            tooltip: { ja: 初期値に戻す, en: Reset }
 
   #--------------------------------------
-  # デバッグ用（押せる・押せないの条件・リセット）
+  # デバッグ（押せる・押せないの条件・リセット）
   #--------------------------------------
-  # YAML だけで、押せる・押せないを切り替える（disabledWhen・enabledWhen）・初期値に戻す（reset）
-  - group: { ja: デバッグ用, en: Debug }
+  # モードが debug のときだけ使う設定。YAML の disabledWhen・enabledWhen・reset だけで書く
+  - group: { ja: デバッグ, en: Debug }
     id: debug-tools
     icon: bug
     disabledWhen: { mode: release } # モードが release の間は、中の項目ごと押せない
@@ -152,11 +154,20 @@ items:
         label: { ja: ログ出力レベル, en: Log level }
         options: [low, middle, high]
         default: middle
-      - { checkbox: log-file, label: { ja: ファイルにも書く, en: Also to a file } }
-      - sh: echo "log-level=${select:log-level}"
-        bat: '@echo log-level=${select:log-level}'
-        label: { ja: ログに書く, en: Write log }
-        enabledWhen: { log-file: true } # チェックを入れたときだけ押せる
+      - checkbox: log-file
+        label: { ja: ファイルにも書く, en: Also to a file }
+        on: debug.log # オンのときは、ログを debug.log にも書く
+        off: ''
+      - sh: echo "$(date '+%H:%M:%S') log-level=${select:log-level}" | tee -a ${select:log-file}
+        bat: |
+          @echo off
+          echo %TIME% log-level=${select:log-level}
+          if not "${select:log-file}"=="" echo %TIME% log-level=${select:log-level}>> ${select:log-file}
+        label: { ja: デバッグ起動, en: Start debug }
+        icon: play
+      - open: debug.log
+        label: { ja: ログを開く, en: Open log }
+        enabledWhen: { log-file: true } # ファイルに書くときだけ押せる
       # グループの中の値を初期値に戻す（label・icon は既定のもの）
       - { reset: debug-tools, label: '' }
   - break

@@ -7,28 +7,21 @@ module.exports = {
     ctx.log(`workDir: ${ctx.workDir}`)
   },
 
-  // select の値は ctx.select で受け取る。release のときは、デバッグ用のグループの値を出さない
-  showSelect(ctx) {
-    const values = { ...ctx.select }
-    if (values.mode === 'release') {
-      delete values['log-level']
-      delete values['log-file']
-    }
-    ctx.log(`select: ${JSON.stringify(values)}`)
-  },
-
-  // select の change から呼ぶ。変えた項目は ctx.changed で受け取る
-  onTargetChange(ctx) {
+  // 地域の change から呼ぶ。変えた項目は ctx.changed で受け取る
+  // 地域ごとに接続先が違うので、接続先を初期値に戻す（ctx.reset）
+  async onRegionChange(ctx) {
     const { id, value, previous } = ctx.changed
     ctx.log(`${id}: ${previous} → ${value}`)
+    await ctx.reset('target')
   },
 
-  // 値を JS から変える（ctx.set）。checkbox は true / false でも書ける
-  // 変えた値で、YAML の disabledWhen・enabledWhen もそのまま切り替わる
+  // 接続先・モード・試しに実行を、本番向けの値にする（ctx.set）。checkbox は true / false でも書ける
+  // 変えた値で、YAML の disabledWhen もそのまま切り替わる（デバッグのグループが押せなくなる）
   async releasePreset(ctx) {
     await ctx.set('target', 'prod')
     await ctx.set('mode', 'release')
     await ctx.set('dry', true)
+    // await したあとは、ctx.select にも新しい値が入る
     ctx.log(`select: ${JSON.stringify(ctx.select)}`)
   },
 

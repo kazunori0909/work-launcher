@@ -468,11 +468,51 @@ echo done
             "kind": "break",
           },
           {
-            "icon": "list",
+            "icon": "upload",
             "id": undefined,
             "items": [
               {
-                "change": "onTargetChange",
+                "change": "onRegionChange",
+                "control": "select",
+                "default": undefined,
+                "id": "region",
+                "kind": "select",
+                "label": "地域",
+                "name": "region",
+                "options": [
+                  {
+                    "label": "東京",
+                    "value": "tokyo",
+                  },
+                  {
+                    "label": "大阪",
+                    "value": "osaka",
+                  },
+                ],
+                "remember": true,
+                "tooltip": undefined,
+              },
+              {
+                "confirm": "\${select:region} の \${select:target} にデプロイしますか？",
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": "upload",
+                "id": undefined,
+                "kind": "exec",
+                "label": "デプロイ",
+                "scripts": {
+                  "bat": "@echo off
+echo deploy.bat --region=\${select:region} --target=\${select:target} --mode=\${select:mode} \${select:dry}
+",
+                  "sh": "echo "./deploy.sh --region=\${select:region} --target=\${select:target} --mode=\${select:mode} \${select:dry}"",
+                },
+                "tooltip": undefined,
+              },
+              {
+                "kind": "break",
+              },
+              {
                 "control": "select",
                 "default": undefined,
                 "id": "target",
@@ -491,26 +531,6 @@ echo done
                   {
                     "label": "prod",
                     "value": "prod",
-                  },
-                ],
-                "remember": true,
-                "tooltip": "選択肢は記憶します",
-              },
-              {
-                "control": "select",
-                "default": undefined,
-                "id": "region",
-                "kind": "select",
-                "label": "地域",
-                "name": "region",
-                "options": [
-                  {
-                    "label": "東京",
-                    "value": "tokyo",
-                  },
-                  {
-                    "label": "大阪",
-                    "value": "osaka",
                   },
                 ],
                 "remember": false,
@@ -553,52 +573,40 @@ echo done
                     "value": "",
                   },
                 ],
-                "remember": true,
+                "remember": false,
                 "tooltip": undefined,
               },
               {
-                "kind": "break",
-              },
-              {
-                "confirm": undefined,
-                "cwd": undefined,
-                "encoding": undefined,
-                "env": {
-                  "TARGET_ENV": "\${select:target}",
-                },
-                "icon": undefined,
                 "id": undefined,
-                "kind": "exec",
-                "label": "値を表示",
-                "scripts": {
-                  "bat": "@echo off
-echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mode} \${select:dry}
-",
-                  "sh": "echo "接続先=\${select:target} 地域=\${select:region} モード=\${select:mode} \${select:dry}"",
-                },
-                "tooltip": undefined,
-              },
-              {
-                "confirm": "\${select:target} の値で関数を呼びますか？",
-                "fn": "showSelect",
-                "icon": undefined,
-                "id": undefined,
-                "kind": "function",
-                "label": undefined,
-                "tooltip": undefined,
-              },
-              {
-                "confirm": undefined,
-                "fn": "releasePreset",
-                "icon": "rocket",
-                "id": undefined,
-                "kind": "function",
-                "label": "本番向けにする",
-                "tooltip": undefined,
+                "items": [
+                  {
+                    "confirm": undefined,
+                    "fn": "releasePreset",
+                    "icon": "rocket",
+                    "id": undefined,
+                    "kind": "function",
+                    "label": "本番向けにする",
+                    "tooltip": "prod・release・試しに実行オン",
+                  },
+                  {
+                    "confirm": undefined,
+                    "icon": undefined,
+                    "id": undefined,
+                    "ids": [
+                      "target",
+                      "mode",
+                      "dry",
+                    ],
+                    "kind": "reset",
+                    "label": "",
+                    "tooltip": "初期値に戻す",
+                  },
+                ],
+                "kind": "buttons",
               },
             ],
             "kind": "group",
-            "title": "選択（select・radio・checkbox）",
+            "title": "デプロイ",
           },
           {
             "icon": "bug",
@@ -630,7 +638,7 @@ echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mo
               },
               {
                 "control": "checkbox",
-                "default": "false",
+                "default": "",
                 "id": "log-file",
                 "kind": "select",
                 "label": "ファイルにも書く",
@@ -638,11 +646,11 @@ echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mo
                 "options": [
                   {
                     "label": "on",
-                    "value": "true",
+                    "value": "debug.log",
                   },
                   {
                     "label": "off",
-                    "value": "false",
+                    "value": "",
                   },
                 ],
                 "remember": false,
@@ -653,20 +661,32 @@ echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mo
                 "cwd": undefined,
                 "encoding": undefined,
                 "env": undefined,
-                "icon": undefined,
+                "icon": "play",
                 "id": undefined,
                 "kind": "exec",
-                "label": "ログに書く",
+                "label": "デバッグ起動",
                 "scripts": {
-                  "bat": "@echo log-level=\${select:log-level}",
-                  "sh": "echo "log-level=\${select:log-level}"",
+                  "bat": "@echo off
+echo %TIME% log-level=\${select:log-level}
+if not "\${select:log-file}"=="" echo %TIME% log-level=\${select:log-level}>> \${select:log-file}
+",
+                  "sh": "echo "$(date '+%H:%M:%S') log-level=\${select:log-level}" | tee -a \${select:log-file}",
                 },
+                "tooltip": undefined,
+              },
+              {
+                "confirm": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "open",
+                "label": "ログを開く",
+                "path": "debug.log",
                 "tooltip": undefined,
                 "when": {
                   "enabled": true,
                   "values": {
                     "log-file": [
-                      "true",
+                      "debug.log",
                     ],
                   },
                 },
@@ -684,7 +704,7 @@ echo 接続先=\${select:target} 地域=\${select:region} モード=\${select:mo
               },
             ],
             "kind": "group",
-            "title": "デバッグ用",
+            "title": "デバッグ",
             "when": {
               "enabled": false,
               "values": {
