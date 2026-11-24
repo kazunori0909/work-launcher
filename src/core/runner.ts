@@ -6,6 +6,7 @@ import os from 'node:os'
 import path from 'node:path'
 import iconv from 'iconv-lite'
 import { execKindFor } from './items'
+import type { Stream } from './outputBatch'
 import type { ExecKind, Item, Page, Project } from './types'
 import { effectiveCwd, expandVariables, resolveWorkDir } from './variables'
 import { t } from './i18n'
@@ -21,7 +22,7 @@ export interface RunRequest {
   warnings: string[]
 }
 
-export type Stream = 'stdout' | 'stderr'
+export type { Stream }
 
 export interface RunResult {
   code: number | null
@@ -298,15 +299,43 @@ function pipeLines(
   const decoder = iconv.getDecoder(encoding)
   let rest = ''
   stream.on('data', (chunk: Buffer) => {
-    const lines = (rest + decoder.write(chunk)).split(/\r?\n/)
-    rest = lines.pop()!
-    if (lines.length > 0) emit(lines)
+    const r = splitOutput(rest + decoder.write(chunk))
+    rest = r.rest
+    if (r.lines.length > 0) emit(r.lines)
   })
   return () => {
-    const last = rest + (decoder.end() ?? '')
+    const last = overwrite(rest + (decoder.end() ?? ''))
     rest = ''
     if (last) emit([last])
   }
+}
+
+/** 改行の来ない出力をこの長さで区切って出す（溜め続けないため） */
+export const MAX_LINE_LENGTH = 100_000
+
+/**
+ * 出力を行に分け、改行の来ていない残りを返す。
+ * 行の途中の `\r` は、ターミナルと同じく行の頭に戻って上書きしたものとして、最後の分だけを残す
+ * （`\r` で書き直すプログレス表示が1行に溜まらないように）
+ */
+export function splitOutput(text: string): { lines: string[]; rest: string } {
+  const parts = text.split(/\r?\n/)
+  let rest = parts.pop()!
+  const lines = parts.map(overwrite)
+  // 末尾の \r は、次に来る \n と組の改行かもしれないので残す
+  const cr = /\r+$/.exec(rest)?.[0] ?? ''
+  rest = overwrite(rest) + cr
+  while (rest.length > MAX_LINE_LENGTH) {
+    lines.push(rest.slice(0, MAX_LINE_LENGTH))
+    rest = rest.slice(MAX_LINE_LENGTH)
+  }
+  return { lines, rest }
+}
+
+/** `\r` で上書きした後に見える文字（最後の `\r` より後ろ。末尾の `\r` は除く） */
+function overwrite(line: string): string {
+  const body = line.replace(/\r+$/, '')
+  return body.slice(body.lastIndexOf('\r') + 1)
 }
 
 function killTree(pid: number, platform: NodeJS.Platform): void {

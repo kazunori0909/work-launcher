@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { countLevel, filterEntries } from '../../../core/consoleEntries'
-import type { ConsoleFilter, NewEntry } from '../../../core/consoleEntries'
+import type { ConsoleFilter } from '../../../core/consoleEntries'
+import type { LineCounts } from '../../../core/consoleLog'
 import { t } from '../../../core/i18n'
-
-export type ConsoleEntry = NewEntry & { key: number }
+import type { ConsoleLines } from '../lib/consoleLines'
 
 export interface RunningRun {
   runId: number
@@ -11,31 +10,54 @@ export interface RunningRun {
 }
 
 interface Props {
-  entries: ConsoleEntry[]
+  lines: ConsoleLines
+  counts: LineCounts
   running: RunningRun[]
   onStop(runId: number): void
   onClear(): void
   onClose(): void
 }
 
-export function Console({ entries, running, onStop, onClear, onClose }: Props): React.JSX.Element {
+export function Console({
+  lines,
+  counts,
+  running,
+  onStop,
+  onClear,
+  onClose
+}: Props): React.JSX.Element {
   const [filter, setFilter] = useState<ConsoleFilter>('all')
   const body = useRef<HTMLDivElement>(null)
-  const stick = useRef(true)
+  /** 最後に末尾へ動かしたときの位置。追従をやめたら Infinity */
+  const autoTop = useRef(0)
+
+  // 行は React で描かず、持ち続けている要素をここに付ける
+  useEffect(() => {
+    const root = lines.root
+    body.current?.append(root)
+    return () => root.remove()
+  }, [lines])
+
+  useEffect(() => lines.setFilter(filter), [lines, filter])
 
   // 末尾を見ているときだけ、新しい行に追従する
   useEffect(() => {
-    if (stick.current && body.current) body.current.scrollTop = body.current.scrollHeight
-  }, [entries, filter])
-
-  const shown = filterEntries(entries, filter)
+    const el = body.current
+    if (!el) return
+    if (!following(el, autoTop.current)) {
+      autoTop.current = Infinity
+      return
+    }
+    el.scrollTop = el.scrollHeight
+    autoTop.current = el.scrollTop
+  }, [lines, counts, filter])
 
   return (
     <section className="console">
       <div className="console-bar">
         <span className="console-title">{t().console.title}</span>
-        <span className="count error">{t().console.errors(countLevel(entries, 'error'))}</span>
-        <span className="count warn">{t().console.warnings(countLevel(entries, 'warn'))}</span>
+        <span className="count error">{t().console.errors(counts.error)}</span>
+        <span className="count warn">{t().console.warnings(counts.warn)}</span>
         <select value={filter} onChange={(e) => setFilter(e.target.value as ConsoleFilter)}>
           <option value="all">{t().console.all}</option>
           <option value="warn">{t().console.warnUp}</option>
@@ -56,30 +78,17 @@ export function Console({ entries, running, onStop, onClear, onClose }: Props): 
         className="console-body"
         ref={body}
         onScroll={(e) => {
-          const el = e.currentTarget
-          stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 8
+          if (!following(e.currentTarget, autoTop.current)) autoTop.current = Infinity
         }}
-      >
-        {shown.map((e) =>
-          e.type === 'line' ? (
-            <div
-              key={e.key}
-              className={`line ${e.style.level}`}
-              style={e.style.color ? { color: e.style.color } : undefined}
-            >
-              {e.text || ' '}
-            </div>
-          ) : e.type === 'prompt' ? (
-            <div key={e.key} className="line prompt">
-              <span className="prompt-path">{e.text}</span> {e.command}
-            </div>
-          ) : (
-            <div key={e.key} className={`line ${e.type} ${e.level}`}>
-              {e.text}
-            </div>
-          )
-        )}
-      </div>
+      />
     </section>
   )
+}
+
+/**
+ * 末尾を見ているか。scroll の知らせは遅れて届き、その間に行が増えていることがあるので、
+ * 末尾にいなくても、最後に末尾へ動かした位置から上へ戻されていなければ見ているとみなす
+ */
+function following(el: HTMLElement, autoTop: number): boolean {
+  return el.scrollHeight - el.scrollTop - el.clientHeight < 8 || el.scrollTop >= autoTop - 1
 }

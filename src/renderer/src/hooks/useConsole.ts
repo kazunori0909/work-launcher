@@ -1,11 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { compileRule } from '../../../core/console'
 import type { ConsoleRule } from '../../../core/console'
 import { opensConsole, runEventEntries, systemEntry } from '../../../core/consoleEntries'
 import type { NewEntry } from '../../../core/consoleEntries'
-import type { ConsoleEntry, RunningRun } from '../components/Console'
+import type { LineCounts } from '../../../core/consoleLog'
+import type { RunningRun } from '../components/Console'
+import { ConsoleLines } from '../lib/consoleLines'
 
-const MAX_ENTRIES = 5000
+/** コンソールに残す行の数。超えたら古い方から捨てる */
+const MAX_LINES = 30_000
 
 export interface Run extends RunningRun {
   /** 押した項目の場所。function から始めた実行には無い */
@@ -14,7 +17,10 @@ export interface Run extends RunningRun {
 }
 
 export interface ConsoleState {
-  entries: ConsoleEntry[]
+  /** 行（DOM に直接足す） */
+  lines: ConsoleLines
+  /** 行の数と、エラー・警告の件数。行を足すたびに変わる */
+  counts: LineCounts
   /** 実行中の exec */
   runs: Run[]
   open: boolean
@@ -26,18 +32,21 @@ export interface ConsoleState {
 
 /** コンソールの行と実行中の一覧。実行の知らせを受けて行を足す */
 export function useConsole(consoleRules: ConsoleRule[] | undefined): ConsoleState {
-  const [entries, setEntries] = useState<ConsoleEntry[]>([])
+  const [lines] = useState(() => new ConsoleLines(MAX_LINES))
+  const [counts, setCounts] = useState(lines.counts)
   const [runs, setRuns] = useState<Run[]>([])
   const [open, setOpen] = useState(false)
-  const nextKey = useRef(0)
   const rules = useMemo(() => (consoleRules ?? []).map(compileRule), [consoleRules])
 
   // コンソールは実行の開始とエラーのときだけ開く
-  const append = useCallback((added: NewEntry[]) => {
-    if (added.some(opensConsole)) setOpen(true)
-    const keyed: ConsoleEntry[] = added.map((e) => ({ ...e, key: nextKey.current++ }))
-    setEntries((prev) => [...prev, ...keyed].slice(-MAX_ENTRIES))
-  }, [])
+  const append = useCallback(
+    (added: NewEntry[]) => {
+      if (added.some(opensConsole)) setOpen(true)
+      lines.append(added)
+      setCounts(lines.counts)
+    },
+    [lines]
+  )
 
   useEffect(
     () =>
@@ -57,7 +66,10 @@ export function useConsole(consoleRules: ConsoleRule[] | undefined): ConsoleStat
     (text: string) => append([systemEntry('system', text, 'error')]),
     [append]
   )
-  const clear = useCallback(() => setEntries([]), [])
+  const clear = useCallback(() => {
+    lines.clear()
+    setCounts(lines.counts)
+  }, [lines])
 
-  return { entries, runs, open, setOpen, clear, reportError }
+  return { lines, counts, runs, open, setOpen, clear, reportError }
 }

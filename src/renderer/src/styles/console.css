@@ -87,6 +87,14 @@
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-all;
+  /* 古い行を上から消したときに、ブラウザが見ている位置を保とうとして末尾から離れないように */
+  overflow-anchor: none;
+}
+
+/* 絞り込み。出す行の印は core/consoleLog.ts が付ける */
+.console-lines.filter-warn > :not(.in-warn),
+.console-lines.filter-error > :not(.in-error) {
+  display: none;
 }
 
 .line.error {

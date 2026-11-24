@@ -62,6 +62,7 @@
 | 33  | エディタと AI ✅    | エディタと生成 AI のアプリ・CLI        |
 | 34  | 置き場所の整理 ✅   | 紛らわしい名前と置き場所を直す         |
 | 35  | 項目の状態 ✅       | YAML・JS で値と押せる状態を変える      |
+| 36  | 大量の出力 🚧       | 行を DOM に直接足し、送信をまとめる    |
 
 ## 次に扱う候補
 
@@ -78,3 +79,4 @@
 - 組み込みのツールに pnpm・yarn（corepack の確認ダイアログに注意）・bun・deno・uv・gh・Unity Hub・Visual Studio を足す（→ phase28）
 - Windows の antigravity で、更新のあとアンインストール情報に古いキーと新しいキーが並ぶか確かめる。並べば DisplayVersion の大きい方を取る（→ phase33）
 - Windows で Info の「更新」のときにレジストリの PATH を読み直す（いまはアプリを起動し直すまで、入れたツールが見えない）（→ phase28）
+- `function` の `wait: true` で受け取る出力に上限が無い。大量に出すコマンドで困る例が出たら考える（→ phase36）

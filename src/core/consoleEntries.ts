@@ -15,12 +15,6 @@ export type NewEntry = { runId?: number } & (
 
 export type ConsoleFilter = 'all' | 'warn' | 'error'
 
-const SHOWN: Record<ConsoleFilter, readonly Level[]> = {
-  all: ['error', 'warn', 'info', 'success', 'debug'],
-  warn: ['error', 'warn'],
-  error: ['error']
-}
-
 const MAX_COMMAND_LINES = 10
 
 /** ターミナルのプロンプトの形で、実行を始める作業フォルダを表す */
@@ -61,29 +55,6 @@ export function opensConsole(entry: NewEntry): boolean {
 export function levelOf(entry: NewEntry): Level {
   if (entry.type === 'line') return entry.style.level
   return entry.type === 'prompt' ? 'debug' : entry.level
-}
-
-/** 絞り込み・件数で、そのレベルの行として扱うか。プロンプトの行は数えない */
-const isLevel = (entry: NewEntry, levels: readonly Level[]): boolean =>
-  entry.type !== 'prompt' && levels.includes(levelOf(entry))
-
-/** 件数の表示。絞り込みで当たる行と同じものを数える */
-export const countLevel = (entries: NewEntry[], level: Level): number =>
-  entries.filter((e) => isLevel(e, [level])).length
-
-/**
- * 絞り込んだ行。選んだレベルに当たる行を残し、その行を含む実行は開始・終了の行も残す
- * （どの実行のものか分かるように）。プロンプトの行は「すべて」のときだけ出す
- */
-export function filterEntries<T extends NewEntry>(entries: T[], filter: ConsoleFilter): T[] {
-  if (filter === 'all') return entries
-  const hit = (e: T): boolean => isLevel(e, SHOWN[filter])
-  const runs = new Set(entries.filter(hit).map((e) => e.runId))
-  return entries.filter(
-    (e) =>
-      hit(e) ||
-      ((e.type === 'start' || e.type === 'end') && e.runId !== undefined && runs.has(e.runId))
-  )
 }
 
 /** 実行の知らせから、コンソールに足す行 */
