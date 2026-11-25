@@ -162,10 +162,9 @@ export class ConsoleLog<N> {
     for (const row of gone) {
       if (row.counted) counts[row.counted]--
       if (row.markerOf === undefined) continue
+      // 実行の記録は消さない。開始の行を捨てた後に来る終了の行にも、当たる行が出たことを印にするため
       const run = this.runs.get(row.markerOf)
-      if (!run) continue
-      run.markers = run.markers.filter((n) => n !== row.node)
-      if (run.markers.length === 0) this.runs.delete(row.markerOf)
+      if (run) run.markers = run.markers.filter((n) => n !== row.node)
     }
     return gone.map((row) => row.node)
   }

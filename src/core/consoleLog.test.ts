@@ -130,6 +130,14 @@ describe('ConsoleLog の上限', () => {
     expect(c.texts('error')).toEqual(['■ ビルド 終了（コード 0）'])
   })
 
+  it('開始の行を捨てた後も、その実行で当たる行が出たことを覚えていて、終了の行に印を付ける', () => {
+    const c = makeLog(10)
+    c.append([...start(1, 'ビルド'), ...output(1, ['ERROR x'])])
+    c.append(lines(20))
+    c.append(end(1, 'ビルド', 0))
+    expect(c.texts('error')).toEqual(['■ ビルド 終了（コード 0）'])
+  })
+
   it('消すと件数も戻る', () => {
     const c = makeLog()
     c.append(lines(3, 'ERROR'))
