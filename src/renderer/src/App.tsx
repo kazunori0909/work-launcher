@@ -46,7 +46,7 @@ function App(): React.JSX.Element {
   const [pageId, setPageId] = useState<string>()
   const [helpSection, setHelpSection] = useState<string>()
   const consoleState = useConsole(view?.consoleRules)
-  const { entries, runs, reportError } = consoleState
+  const { counts, runs, reportError } = consoleState
   const selections = useSelections(view, reportError)
   const disabled = view?.state?.disabled ?? NO_DISABLED
 
@@ -139,7 +139,7 @@ function App(): React.JSX.Element {
           <Icon name="circle-question-mark" />
           {userHelp?.title ?? t().ui.help}
         </button>
-        {!consoleState.open && entries.length > 0 && (
+        {!consoleState.open && counts.size > 0 && (
           <button className="console-toggle" onClick={() => consoleState.setOpen(true)}>
             {t().console.title}
             {runs.length > 0 && t().console.running(runs.length)}
@@ -203,7 +203,8 @@ function App(): React.JSX.Element {
       )}
       {consoleState.open && (
         <Console
-          entries={entries}
+          lines={consoleState.lines}
+          counts={counts}
           running={runs}
           onStop={(runId) => window.launcher.stop(runId)}
           onClear={consoleState.clear}

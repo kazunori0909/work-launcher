@@ -9,6 +9,11 @@
 
 ## Electron
 
+- コンテナの直下に何万もの要素を並べると、行を足す・消すたびに全体の配置を計算し直して止まる。数百個ずつの入れ物に分けると収まる（由来: [Phase 36](archive/phase36-console-bulk-output/KNOWLEDGE.md)）
+- 末尾へ動かしながら行を足し続ける使い方では、`content-visibility: auto` はかえって止まりが長くなる（由来: [Phase 36](archive/phase36-console-bulk-output/KNOWLEDGE.md)）
+- scroll イベントは、scrollTop を変えた後に遅れて届く。その間に行が増えたり消えたりすると、「末尾にいるか」の判定を誤る。
+  上の行を消すと、ブラウザのスクロールアンカーが位置を保とうとする（`overflow-anchor: none` で止まる）（由来: [Phase 36](archive/phase36-console-bulk-output/KNOWLEDGE.md)）
+
 ## macOS
 
 - `/usr/bin/ruby` はスタブではなく本物（2.6 系）。Mac では ruby の「未インストール」は出ない（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
@@ -29,6 +34,8 @@
 - Antigravity のアンインストール情報の表示名は、末尾にバージョンが付く（`Antigravity 2.34.0`）。ほかのアプリは製品名か、` (User)` 付き（由来: [Phase 33](archive/phase33-editor-ai-tools/KNOWLEDGE.md)）
 - Gemini CLI は winget に無い。npm の `@google/gemini-cli` で入れる（由来: [Phase 33](archive/phase33-editor-ai-tools/KNOWLEDGE.md)）
 - PowerShell 5.1 のパイプで日本語を渡すと `???` に化ける。Git Bash から子プロセスに PATH を渡すと、変換で崩れる（由来: [Phase 28](archive/phase28-more-builtin-tools/KNOWLEDGE.md)）
+- `taskkill /F` で止めたプロセスは、シグナルではなく終了コード 1 で終わる（由来: [Phase 36](archive/phase36-console-bulk-output/KNOWLEDGE.md)）
+- cmd.exe の `for /l` と `echo` は遅く、10 万行で約 7.6 秒かかる（出力を捨てても）。表示の速さを測るときは、node などで出力を作るほうがよい（由来: [Phase 36](archive/phase36-console-bulk-output/KNOWLEDGE.md)）
 
 ## electron-builder と配布
 

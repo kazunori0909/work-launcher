@@ -2,7 +2,15 @@ import { mkdtempSync, mkdirSync, realpathSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { gitBashCandidates, powershellCommand, prepareRun, prepareScript, startRun } from './runner'
+import {
+  MAX_LINE_LENGTH,
+  gitBashCandidates,
+  powershellCommand,
+  prepareRun,
+  prepareScript,
+  splitOutput,
+  startRun
+} from './runner'
 import type { RunHandle, RunRequest, Stream } from './runner'
 import type { Item, Page, Project } from './types'
 
@@ -182,6 +190,30 @@ describe.runIf(process.platform === 'win32')('startRun（powershell）', () => {
     expect(out.every((o) => o.stream === 'stderr')).toBe(true)
     expect(out.map((o) => o.line).join('\n')).not.toContain('OutputEncoding')
   }, 30_000)
+})
+
+describe('splitOutput', () => {
+  it('改行で分け、改行の来ていない残りを返す', () => {
+    expect(splitOutput('a\r\nb\nc')).toEqual({ lines: ['a', 'b'], rest: 'c' })
+  })
+
+  it('行の途中の \\r は上書きとして、最後の分だけを残す', () => {
+    expect(splitOutput('10%\r50%\r100%\ndone\n')).toEqual({ lines: ['100%', 'done'], rest: '' })
+    expect(splitOutput('10%\r50%')).toEqual({ lines: [], rest: '50%' })
+  })
+
+  it('末尾の \\r は残し、次の \\n と組の改行として扱える', () => {
+    const first = splitOutput('a\r')
+    expect(first).toEqual({ lines: [], rest: 'a\r' })
+    expect(splitOutput(first.rest + '\nb')).toEqual({ lines: ['a'], rest: 'b' })
+    expect(splitOutput(first.rest + 'b')).toEqual({ lines: [], rest: 'b' })
+  })
+
+  it('改行の来ない出力は長さで区切って出す', () => {
+    const r = splitOutput('x'.repeat(MAX_LINE_LENGTH * 2 + 3))
+    expect(r.lines.map((l) => l.length)).toEqual([MAX_LINE_LENGTH, MAX_LINE_LENGTH])
+    expect(r.rest).toBe('xxx')
+  })
 })
 
 describe('powershellCommand', () => {

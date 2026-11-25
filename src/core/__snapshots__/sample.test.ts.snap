@@ -400,6 +400,38 @@ echo done
                 },
                 "tooltip": undefined,
               },
+              {
+                "confirm": undefined,
+                "cwd": undefined,
+                "encoding": undefined,
+                "env": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "exec",
+                "label": "大量の出力（10 万行）",
+                "scripts": {
+                  "bat": "@echo off
+setlocal enabledelayedexpansion
+for /l %%i in (1,1,100000) do (
+  set /a m=%%i %% 1000
+  if !m!==0 (echo WARN step %%i) else if !m!==500 (echo error: sample %%i) else (echo [%%i] compiling Module.cpp)
+)
+echo done
+",
+                  "sh": "for i in $(seq 1 100000); do
+  case $((i % 1000)) in
+    0) echo "WARN step $i" ;;
+    500) echo "error: sample $i" ;;
+    *) echo "[$i] compiling Module$((i % 97)).cpp" ;;
+  esac
+done
+for p in $(seq 0 5 100); do printf '\\rprogress %3d%%' "$p"; sleep 0.05; done
+echo
+echo done
+",
+                },
+                "tooltip": undefined,
+              },
             ],
             "kind": "group",
             "title": "コマンド",

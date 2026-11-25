@@ -74,6 +74,27 @@ items:
           echo done
         label: 長い処理（停止の確認用）
         confirm: 30 秒かかります。実行しますか？
+      # 長いビルドのように、細かい出力を大量に出す。\r で書き直す進み具合も最後に出す
+      - sh: |
+          for i in $(seq 1 100000); do
+            case $((i % 1000)) in
+              0) echo "WARN step $i" ;;
+              500) echo "error: sample $i" ;;
+              *) echo "[$i] compiling Module$((i % 97)).cpp" ;;
+            esac
+          done
+          for p in $(seq 0 5 100); do printf '\rprogress %3d%%' "$p"; sleep 0.05; done
+          echo
+          echo done
+        bat: |
+          @echo off
+          setlocal enabledelayedexpansion
+          for /l %%i in (1,1,100000) do (
+            set /a m=%%i %% 1000
+            if !m!==0 (echo WARN step %%i) else if !m!==500 (echo error: sample %%i) else (echo [%%i] compiling Module.cpp)
+          )
+          echo done
+        label: 大量の出力（10 万行）
 
   #--------------------------------------
   # 資料（ファイルを開く・ボタングループ）

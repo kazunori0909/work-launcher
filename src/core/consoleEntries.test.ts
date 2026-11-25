@@ -1,14 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { compileRule } from './console'
-import {
-  countLevel,
-  filterEntries,
-  opensConsole,
-  promptFor,
-  promptLines,
-  runEventEntries
-} from './consoleEntries'
-import type { NewEntry } from './consoleEntries'
+import { opensConsole, promptFor, promptLines, runEventEntries } from './consoleEntries'
 
 const rules = [compileRule({ pattern: 'ERROR', level: 'error' })]
 const exit = { type: 'exit', runId: 1, label: 'ビルド', signal: null } as const
@@ -61,60 +53,6 @@ describe('runEventEntries', () => {
     [{ ...exit, code: null, error: '見つかりません' }, '■ ビルド: 見つかりません', 'error']
   ])('終了 %o', (event, text, level) => {
     expect(runEventEntries(event, rules)).toEqual([{ type: 'end', text, level, runId: 1 }])
-  })
-})
-
-describe('filterEntries', () => {
-  const run = (runId: number, label: string, lines: string[], code: number | null): NewEntry[] => [
-    ...runEventEntries(
-      { type: 'start', runId, label, kind: 'sh', cwd: '/w', script: 'make' },
-      rules
-    ),
-    ...runEventEntries({ type: 'output', runId, stream: 'stdout', lines }, rules),
-    ...runEventEntries({ ...exit, runId, label, code }, rules)
-  ]
-  const entries = [
-    ...run(1, 'テスト', ['ok'], 0),
-    ...runEventEntries({ type: 'message', level: 'info', text: 'hi' }, rules),
-    ...run(2, 'ビルド', ['a', 'ERROR x'], 0),
-    ...run(3, 'デプロイ', ['b'], 2),
-    ...run(4, '監視', ['c'], null),
-    ...runEventEntries({ type: 'message', level: 'error', text: 'ng' }, rules)
-  ]
-  const texts = (filter: 'all' | 'warn' | 'error'): string[] =>
-    filterEntries(entries, filter).map((e) => e.text)
-
-  it('すべてのときは全部出す', () => {
-    expect(filterEntries(entries, 'all')).toBe(entries)
-  })
-
-  it('エラーのみ: 当たる行と、その実行の開始・終了だけ。プロンプトは出さない', () => {
-    expect(texts('error')).toEqual([
-      '▶ ビルド',
-      'ERROR x',
-      '■ ビルド 終了（コード 0）',
-      '▶ デプロイ',
-      '■ デプロイ 失敗（コード 2）',
-      'ng'
-    ])
-  })
-
-  it('件数は絞り込みで当たる行を数える（失敗・停止の終了とアプリのエラーも含む）', () => {
-    expect(countLevel(entries, 'error')).toBe(3)
-    expect(countLevel(entries, 'warn')).toBe(1)
-  })
-
-  it('警告以上: 停止した実行も残す', () => {
-    expect(texts('warn')).toEqual([
-      '▶ ビルド',
-      'ERROR x',
-      '■ ビルド 終了（コード 0）',
-      '▶ デプロイ',
-      '■ デプロイ 失敗（コード 2）',
-      '▶ 監視',
-      '■ 監視 停止しました',
-      'ng'
-    ])
   })
 })
 

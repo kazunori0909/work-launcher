@@ -18,6 +18,9 @@
 
 - 初期値に戻すのは `ctx.reset` にした。`ctx.set(id, null)` のように初期値を表す値を渡す案は、
   読んで意味が分かりにくく、選択肢の値とも紛れるので採らなかった（由来: [Phase 35](archive/phase35-ctx-item-state/PLAN.md)）
+- 出力は 50ms ごとにまとめて画面に送る。出力の量によらず、画面の更新の回数を抑えるため（由来: [Phase 36](archive/phase36-console-bulk-output/PLAN.md)）
+- 行の途中の `\r` は上書きとして、最後の分だけを残す。`\r` で書き直すプログレス表示が、1行に溜まり続けないため（由来: [Phase 36](archive/phase36-console-bulk-output/PLAN.md)）
+- `function` の `wait: true` で受け取る出力には上限を付けない。途中で切れると、出力を読んで処理するスクリプトが誤るため（由来: [Phase 36](archive/phase36-console-bulk-output/PLAN.md)）
 
 ## 画面とヘルプ
 
@@ -25,6 +28,14 @@
   開始・プロンプト・終了の行にもレベルを当てて同じ基準で絞る案は、実行の見出しが消えるので採らなかった（由来: [Phase 31](archive/phase31-console-filter-fix/PLAN.md)）
 - エラー・警告の件数は、絞り込みで当たる行と同じものを数える。上へ流れたエラーをスクロールせずに知るために残している。
   件数を消す案もあった（由来: [Phase 31](archive/phase31-console-filter-fix/PLAN.md)）
+- コンソールの行は React を通さず、DOM に直接足す。足した行の分だけ DOM を触るので、全行の比較もコピーも起きない。
+  仮想スクロールは、画面外の行が DOM に無く、選択・コピー・ページ内検索を別に作る必要があるので採らなかった（数万行で足りなくなったときの次の候補）。
+  state の配列をリングバッファにする案は、DOM に直接足すなら要らない（由来: [Phase 36](archive/phase36-console-bulk-output/PLAN.md)）
+- 残す行は 3 万行。2〜3 万行では画面が止まらず、5 万行では止まった。`content-visibility` はかえって止まりが長くなったので使わない（由来: [Phase 36](archive/phase36-console-bulk-output/PLAN.md)）
+- 行は 500 行ずつのブロックに入れ、届いた行は1フレーム 8ms までの分だけ足す。値は計測で決めた。
+  どの値も子プロセスの実行は遅くせず、変わるのは画面に出るまでだけ。1通に送る行の上限は、効果がはっきりしなかったので付けない（由来: [Phase 36](archive/phase36-console-bulk-output/PLAN.md)）
+- 末尾への追従は、使う人の操作（ホイールを上・↑ / PageUp / Home・スクロールバーをつかむ）でだけやめる。
+  位置から推し量る案は、古い行を消したときの位置の変化と見分けられず、Windows で外れた（由来: [Phase 36](archive/phase36-console-bulk-output/PLAN.md)）
 
 ## Info
 

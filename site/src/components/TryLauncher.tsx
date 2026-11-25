@@ -160,7 +160,7 @@ function Demo({ lang }: { lang: Lang }): React.JSX.Element {
   const [values, setValues] = useState<Record<string, string>>({})
   const chat = useChat(m.welcome)
   const consoleState = useConsole(DEMO_CONSOLE_RULES)
-  const { entries, runs } = consoleState
+  const { counts, runs } = consoleState
   const running = new Set(runs.flatMap((r) => (r.path ? [pathKey(r.path)] : [])))
 
   const selections = useMemo<SelectContextValue>(() => {
@@ -286,7 +286,7 @@ function Demo({ lang }: { lang: Lang }): React.JSX.Element {
               <Icon name="monitor" />
               Info
             </button>
-            {!consoleState.open && entries.length > 0 && (
+            {!consoleState.open && counts.size > 0 && (
               <button
                 type="button"
                 className="console-toggle"
@@ -322,7 +322,8 @@ function Demo({ lang }: { lang: Lang }): React.JSX.Element {
           </EmbedContext.Provider>
           {consoleState.open && (
             <Console
-              entries={entries}
+              lines={consoleState.lines}
+              counts={counts}
               running={runs}
               onStop={(runId) => stop(runId)}
               onClear={consoleState.clear}

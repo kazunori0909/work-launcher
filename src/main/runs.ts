@@ -1,6 +1,7 @@
 import { itemLabel, resolveSelections } from '../core/items'
 import { asItemRef, asNumber } from '../core/ipcArgs'
 import type { CtxCall, CtxResult } from '../core/ctxCalls'
+import { batchOutput } from '../core/outputBatch'
 import { prepareRun, prepareScript, startRun } from '../core/runner'
 import type { RunEvent } from '../core/ipc'
 import type { RunHandle, RunRequest, Stream } from '../core/runner'
@@ -11,6 +12,9 @@ import { shellPathReady } from './shellPath'
 import { t } from '../core/i18n'
 
 let nextId = 1
+
+/** 画面へ出力を送る間隔（ms）。細かく出し続けるコマンドでも、画面の更新をこの回数に抑える */
+const OUTPUT_INTERVAL = 50
 
 interface StartOptions {
   /** 押した項目の位置（function から始めたときは無い） */
@@ -34,16 +38,24 @@ export async function startSessionRun(
   }
   send({ type: 'start', runId, label, ...at, kind: req.kind, cwd: req.cwd, script: req.script })
   for (const text of req.warnings) send({ type: 'output', runId, stream: 'stderr', lines: [text] })
+  const output = batchOutput(
+    (stream, lines) => send({ type: 'output', runId, stream, lines }),
+    OUTPUT_INTERVAL
+  )
   const handle = await startRun(req, (stream, lines) => {
     onLines?.(stream, lines)
-    send({ type: 'output', runId, stream, lines })
+    if (!quiet) output.push(stream, lines)
   })
   session.runs.set(runId, handle)
   handle.done
-    .then((r) => send({ type: 'exit', runId, label, ...r }))
-    .catch((err: Error) =>
+    .then((r) => {
+      output.flush()
+      send({ type: 'exit', runId, label, ...r })
+    })
+    .catch((err: Error) => {
+      output.flush()
       send({ type: 'exit', runId, label, code: null, signal: null, error: err.message })
-    )
+    })
     .finally(() => session.runs.delete(runId))
   return { runId, handle }
 }

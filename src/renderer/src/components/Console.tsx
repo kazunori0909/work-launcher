@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { countLevel, filterEntries } from '../../../core/consoleEntries'
-import type { ConsoleFilter, NewEntry } from '../../../core/consoleEntries'
+import type { ConsoleFilter } from '../../../core/consoleEntries'
+import type { LineCounts } from '../../../core/consoleLog'
 import { t } from '../../../core/i18n'
-
-export type ConsoleEntry = NewEntry & { key: number }
+import type { ConsoleLines } from '../lib/consoleLines'
 
 export interface RunningRun {
   runId: number
@@ -11,31 +10,58 @@ export interface RunningRun {
 }
 
 interface Props {
-  entries: ConsoleEntry[]
+  lines: ConsoleLines
+  counts: LineCounts
   running: RunningRun[]
   onStop(runId: number): void
   onClear(): void
   onClose(): void
 }
 
-export function Console({ entries, running, onStop, onClear, onClose }: Props): React.JSX.Element {
+export function Console({
+  lines,
+  counts,
+  running,
+  onStop,
+  onClear,
+  onClose
+}: Props): React.JSX.Element {
   const [filter, setFilter] = useState<ConsoleFilter>('all')
   const body = useRef<HTMLDivElement>(null)
+  /** 新しい行に追従するか */
   const stick = useRef(true)
+  /** スクロールバーをつかんでいる・文字を選んでいる */
+  const dragging = useRef(false)
 
-  // 末尾を見ているときだけ、新しい行に追従する
+  // 行は React で描かず、持ち続けている要素をここに付ける
   useEffect(() => {
-    if (stick.current && body.current) body.current.scrollTop = body.current.scrollHeight
-  }, [entries, filter])
+    const root = lines.root
+    body.current?.append(root)
+    return () => root.remove()
+  }, [lines])
 
-  const shown = filterEntries(entries, filter)
+  useEffect(() => lines.setFilter(filter), [lines, filter])
+
+  // 追従するときは、行が増えるたびに末尾へ動かす
+  useEffect(() => {
+    const el = body.current
+    if (stick.current && el) el.scrollTop = el.scrollHeight
+  }, [lines, counts, filter])
+
+  useEffect(() => {
+    const up = (): void => {
+      dragging.current = false
+    }
+    window.addEventListener('pointerup', up)
+    return () => window.removeEventListener('pointerup', up)
+  }, [])
 
   return (
     <section className="console">
       <div className="console-bar">
         <span className="console-title">{t().console.title}</span>
-        <span className="count error">{t().console.errors(countLevel(entries, 'error'))}</span>
-        <span className="count warn">{t().console.warnings(countLevel(entries, 'warn'))}</span>
+        <span className="count error">{t().console.errors(counts.error)}</span>
+        <span className="count warn">{t().console.warnings(counts.warn)}</span>
         <select value={filter} onChange={(e) => setFilter(e.target.value as ConsoleFilter)}>
           <option value="all">{t().console.all}</option>
           <option value="warn">{t().console.warnUp}</option>
@@ -55,31 +81,27 @@ export function Console({ entries, running, onStop, onClear, onClose }: Props): 
       <div
         className="console-body"
         ref={body}
+        tabIndex={0}
+        // 追従をやめるのは、上へ戻す操作をしたときだけ。scroll の知らせだけでは、古い行を消して
+        // 位置が変わったのか、使う人が動かしたのかを見分けられないため
+        onWheel={(e) => {
+          if (e.deltaY < 0) stick.current = false
+        }}
+        onKeyDown={(e) => {
+          if (UP_KEYS.includes(e.key)) stick.current = false
+        }}
+        onPointerDown={() => {
+          dragging.current = true
+        }}
         onScroll={(e) => {
           const el = e.currentTarget
-          stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 8
+          const atEnd = el.scrollHeight - el.scrollTop - el.clientHeight < 8
+          if (atEnd) stick.current = true
+          else if (dragging.current) stick.current = false
         }}
-      >
-        {shown.map((e) =>
-          e.type === 'line' ? (
-            <div
-              key={e.key}
-              className={`line ${e.style.level}`}
-              style={e.style.color ? { color: e.style.color } : undefined}
-            >
-              {e.text || ' '}
-            </div>
-          ) : e.type === 'prompt' ? (
-            <div key={e.key} className="line prompt">
-              <span className="prompt-path">{e.text}</span> {e.command}
-            </div>
-          ) : (
-            <div key={e.key} className={`line ${e.type} ${e.level}`}>
-              {e.text}
-            </div>
-          )
-        )}
-      </div>
+      />
     </section>
   )
 }
+
+const UP_KEYS = ['ArrowUp', 'PageUp', 'Home']
