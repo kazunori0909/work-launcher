@@ -6,6 +6,21 @@
 # - breaking には、直し方まで書く
 # - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
 
+- version: unreleased
+  summary:
+    ja: 長いビルドのように大量に出力するコマンドでも、コンソールが重くならないようにしました。
+    en: The console no longer slows down with commands that print a lot, such as long builds.
+  changed:
+    - ja: コンソールに残す行を 5000 行から 3 万行に増やしました。大量に出力しても、画面が止まりにくくなりました。
+      en: The console now keeps 30,000 lines instead of 5,000, and the screen is less likely to freeze when a command prints a lot.
+    - ja: '`\r` で書き直す進み具合の表示は、最後の表示だけを1行として出すようにしました。'
+      en: Progress output that rewrites itself with `\r` is now shown as one line with its last state.
+  fixed:
+    - ja: 大量に出力する間に、コンソールが新しい行に追従しなくなることがあったのを直しました。
+      en: Fixed the console sometimes stopping following new lines while a command printed a lot.
+    - ja: Windows で実行を止めたとき、「停止しました」ではなく「失敗（コード 1）」と出ていたのを直しました。
+      en: Fixed stopped runs on Windows being shown as "failed (code 1)" instead of stopped.
+
 - version: 0.4.0
   date: 2026-11-24
   summary:
