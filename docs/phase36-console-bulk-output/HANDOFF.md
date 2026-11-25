@@ -4,7 +4,7 @@
 
 ## 2026-11-24 22:35 mac → win: 大量の出力でコンソールが止まらないか
 
-- 状態: 回答済み
+- 状態: 完了
 - 関連: PLAN.md「上限は 3 万行、`content-visibility` は使わない」、KNOWLEDGE.md「大量の出力の重さ」
 
 ### 依頼
@@ -142,3 +142,48 @@ Windows の 9.4 秒が表示側のせいかを確かめるため、同じ 10 万
    1 回に足す行数に上限を付けて何フレームかに分けるなど、手当てが要りそう
 2. **末尾への追従は、少しずつ出るときだけ外れる。** node で一気に出したときは `atBottom: true` だった。
    少しずつ出る間に先頭の行が何度も消され、そのときの `scroll` の知らせで `following()` が false になる、という上の見立てに合う
+
+## 2026-11-25 13:46 mac → win: 直したコンソールを確かめ直す
+
+- 状態: 依頼中
+- 関連: 前の依頼「大量の出力でコンソールが止まらないか」の回答、PLAN.md の 2026-11-25 の決定
+
+### 依頼
+
+- 背景: 前の回答で出た3点を直した（ブランチは同じ `phase36-console-bulk-output`）
+  - 末尾への追従は、位置で推し量るのをやめ、使う人の操作（ホイールを上・↑ / PageUp / Home・スクロールバーをつかむ）でやめるようにした
+  - 行を 500 行ずつのブロックに入れ、1 フレーム 8ms までの分だけ足す
+  - 止めた実行は、終了コードによらず「停止しました」と出す
+- やってほしいこと:
+  1. `git pull` して `npx electron-vite build` する
+  2. 前と同じく、次の内容を `measure.txt` として保存してドライバに流す（2 回）。
+     前の手順から、上へ戻すときにホイールの操作を足し、行の数え方をブロックに合わせて変えた
+
+     ```text
+     wait button.tab
+     click button.tab >> nth=1
+     sleep 500
+     eval new Promise(r=>{const b=[...document.querySelectorAll("button")].find(x=>x.textContent.includes("\u5927\u91cf"));const t0=performance.now();let last=t0,gaps=[],started=false;b.click();const tick=()=>{const n=performance.now();if(n-last>50)gaps.push(Math.round(n-last));last=n;const run=!!document.querySelector(".console-bar .stop");if(run)started=true;if(started&&!run){const body=document.querySelector(".console-body");setTimeout(()=>r(JSON.stringify({ms:Math.round(n-t0),gaps,dom:document.querySelector(".console-lines").childElementCount,counts:document.querySelector(".console-bar").innerText.match(/\d+/g),atBottom:body.scrollHeight-body.scrollTop-body.clientHeight<8})),300)}else if(n-t0>300000)r("timeout");else requestAnimationFrame(tick)};requestAnimationFrame(tick)})
+     eval new Promise(r=>{const b=[...document.querySelectorAll("button")].find(x=>x.textContent.includes("\u5927\u91cf"));const t0=performance.now();let up=false,started=false;b.click();const tick=()=>{const n=performance.now();const body=document.querySelector(".console-body");if(!up&&n-t0>800){up=true;body.dispatchEvent(new WheelEvent("wheel",{deltaY:-100,bubbles:true}));body.scrollTop=100}const run=!!document.querySelector(".console-bar .stop");if(run)started=true;if(started&&!run)setTimeout(()=>r(JSON.stringify({scrolledUpThenEnd:Math.round(body.scrollTop)})),300);else if(n-t0>300000)r("timeout");else requestAnimationFrame(tick)};requestAnimationFrame(tick)})
+     select .console-bar select error
+     sleep 300
+     eval JSON.stringify({shownInError:[...document.querySelectorAll(".console-lines .line")].filter(e=>getComputedStyle(e).display!=="none").length})
+     ss filter-error
+     select .console-bar select all
+     eval (()=>{const b=document.querySelector(".console-body");b.scrollTop=b.scrollHeight})()
+     eval new Promise(r=>{const b=[...document.querySelectorAll("button")].find(x=>x.textContent.includes("\u5927\u91cf"));b.click();setTimeout(()=>{const s=document.querySelector(".console-bar .stop");const t0=performance.now();s.click();const tick=()=>{if(!document.querySelector(".console-bar .stop"))r(JSON.stringify({stopMs:Math.round(performance.now()-t0)}));else if(performance.now()-t0>10000)r("stop-timeout");else requestAnimationFrame(tick)};tick()},1500)})
+     sleep 500
+     ss after-stop
+     quit
+     sleep 1500
+     ```
+
+  3. 前の追記と同じく、node で 10 万行を一気に出す形でも 2 回測る（前と同じスクリプトでよい）
+  4. `after-stop.png` で、最後の行が「停止しました」になっているかを見る
+- 返してほしいもの:
+  - 2・3 の `{` で始まる行（各 2 回）
+  - 4 の所見。気になったことがあれば、それも
+
+### 回答
+
+（受けた側が書く）
