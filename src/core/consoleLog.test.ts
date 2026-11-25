@@ -114,12 +114,20 @@ describe('ConsoleLog の上限', () => {
     expect(c.texts('all')).toHaveLength(90)
   })
 
-  it('一度に上限より多く足すと、いま作った行も捨てる側に入る', () => {
+  it('上限より多く溜まっていたら、古い方は要素にしない', () => {
     const c = makeLog(10)
     const { added, removed } = c.log.append(lines(25))
-    expect(added).toHaveLength(25)
-    expect(removed).toEqual(added.slice(0, 16))
-    expect(c.log.counts.size).toBe(9)
+    expect(added).toHaveLength(10)
+    expect(removed).toEqual([])
+    expect(c.log.counts.size).toBe(10)
+  })
+
+  it('要素にしなかった行も、実行の開始・終了の印には数える', () => {
+    const c = makeLog(10)
+    c.append(start(1, 'ビルド'))
+    c.append([...output(1, ['ERROR x']), ...lines(30), ...end(1, 'ビルド', 0)])
+    expect(c.log.counts.error).toBe(0)
+    expect(c.texts('error')).toEqual(['■ ビルド 終了（コード 0）'])
   })
 
   it('消すと件数も戻る', () => {
@@ -127,5 +135,34 @@ describe('ConsoleLog の上限', () => {
     c.append(lines(3, 'ERROR'))
     c.log.clear()
     expect(c.log.counts).toEqual({ size: 0, error: 0, warn: 0 })
+  })
+})
+
+describe('ConsoleLog の溜めて少しずつ足す', () => {
+  const lines = (n: number): NewEntry[] => output(1, Array(n).fill('x'))
+
+  it('more() が true の間だけ、200 行ずつ要素にする', () => {
+    const log = new ConsoleLog(nodes, 10_000)
+    log.enqueue(lines(500))
+    let asked = 0
+    const { added } = log.drain(() => asked++ < 2)
+    expect(added).toHaveLength(400)
+    expect(log.pendingCount).toBe(100)
+    expect(log.counts.size).toBe(400)
+    expect(log.drain(() => true).added).toHaveLength(100)
+    expect(log.pendingCount).toBe(0)
+  })
+
+  it('drain されないまま上限の2倍を超えて溜まったら、上限まで減らす', () => {
+    const log = new ConsoleLog(nodes, 10)
+    log.enqueue(lines(21))
+    expect(log.pendingCount).toBe(10)
+  })
+
+  it('消すと溜めた分も捨てる', () => {
+    const log = new ConsoleLog(nodes, 10)
+    log.enqueue(lines(5))
+    log.clear()
+    expect(log.pendingCount).toBe(0)
   })
 })

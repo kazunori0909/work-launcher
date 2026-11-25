@@ -48,12 +48,17 @@ export function filterMarks(entry: NewEntry): FilterMark[] {
   return level === 'warn' ? ['in-warn'] : []
 }
 
+/** 一度に足す行の数（この数ごとに、まだ続けてよいかを聞く） */
+const CHUNK = 200
+
 /**
  * コンソールの行を足していく。足すたびに全行を見直さず、足した行と捨てた行の分だけ数を変える。
- * 上限を超えたら、上限の1割をまとめて古い方から捨てる（捨てるたびに詰め直さないため）
+ * 上限を超えたら、上限の1割をまとめて古い方から捨てる（捨てるたびに詰め直さないため）。
+ * 届いた行はいったん溜め（enqueue）、drain で少しずつ要素にする（一気に届いても画面を止めないため）
  */
 export class ConsoleLog<N> {
   private rows: Row<N>[] = []
+  private pending: NewEntry[] = []
   private runs = new Map<number, RunMarks<N>>()
   private _counts: LineCounts = { size: 0, error: 0, warn: 0 }
 
@@ -66,38 +71,79 @@ export class ConsoleLog<N> {
     return this._counts
   }
 
-  /** 行を足す。作った要素と、上限を超えて捨てる要素を返す（捨てる方に、いま作ったものが入ることもある） */
-  append(entries: NewEntry[]): { added: N[]; removed: N[] } {
+  /** まだ要素にしていない行の数 */
+  get pendingCount(): number {
+    return this.pending.length
+  }
+
+  /**
+   * 行を溜める。溜まりすぎたら（画面が描かれず drain されない間など）、上限を超えた古い方を
+   * 要素にせずに捨てる
+   */
+  enqueue(entries: NewEntry[]): void {
+    for (const entry of entries) this.pending.push(entry)
+    if (this.pending.length > this.max * 2) this.skipExcess()
+  }
+
+  /**
+   * 溜めた行を、more() が true を返す間だけ要素にする。作った要素と、上限を超えて捨てる要素を返す
+   * （捨てる方に、いま作ったものが入ることもある）。上限より多く溜まっていたら、古い方は要素にしない
+   */
+  drain(more: () => boolean): { added: N[]; removed: N[] } {
+    this.skipExcess()
     const counts = { ...this._counts }
     const added: N[] = []
-    for (const entry of entries) {
-      const marks = filterMarks(entry)
-      const run = entry.runId === undefined ? undefined : this.runOf(entry.runId)
-      const marker = run && (entry.type === 'start' || entry.type === 'end')
-      const node = this.nodes.create(entry, marker ? [...new Set([...marks, ...run.marks])] : marks)
-      if (marker) run.markers.push(node)
-      if (run) {
-        for (const m of marks) {
-          if (run.marks.has(m)) continue
-          run.marks.add(m)
-          for (const n of run.markers) this.nodes.mark(n, m)
-        }
-      }
-      const counted = countedLevel(entry)
-      if (counted) counts[counted]++
-      this.rows.push({ node, counted, markerOf: marker ? entry.runId : undefined })
-      added.push(node)
+    const removed: N[] = []
+    while (this.pending.length > 0 && more()) {
+      for (const entry of this.pending.splice(0, CHUNK)) added.push(this.add(entry, counts))
+      for (const node of this.trim(counts)) removed.push(node)
     }
-    const removed = this.trim(counts)
     counts.size = this.rows.length
     this._counts = counts
     return { added, removed }
   }
 
+  /** 行を足して、すぐに全部要素にする */
+  append(entries: NewEntry[]): { added: N[]; removed: N[] } {
+    this.enqueue(entries)
+    return this.drain(() => true)
+  }
+
   clear(): void {
     this.rows = []
+    this.pending = []
     this.runs.clear()
     this._counts = { size: 0, error: 0, warn: 0 }
+  }
+
+  private add(entry: NewEntry, counts: LineCounts): N {
+    const marks = filterMarks(entry)
+    const run = entry.runId === undefined ? undefined : this.runOf(entry.runId)
+    const marker = run && (entry.type === 'start' || entry.type === 'end')
+    const node = this.nodes.create(entry, marker ? [...new Set([...marks, ...run.marks])] : marks)
+    if (marker) run.markers.push(node)
+    if (run) this.markRun(run, marks)
+    const counted = countedLevel(entry)
+    if (counted) counts[counted]++
+    this.rows.push({ node, counted, markerOf: marker ? entry.runId : undefined })
+    return node
+  }
+
+  /** 上限を超えて溜まった古い行を、要素にせずに捨てる。実行の開始・終了の印には数える */
+  private skipExcess(): void {
+    if (this.pending.length <= this.max) return
+    for (const entry of this.pending.splice(0, this.pending.length - this.max)) {
+      if (entry.runId !== undefined) this.markRun(this.runOf(entry.runId), filterMarks(entry))
+    }
+  }
+
+  /** 実行で当たる行が出たら、その実行の開始・終了の行に印を足す */
+  private markRun(run: RunMarks<N>, marks: FilterMark[]): void {
+    for (const m of marks) {
+      if (run.marks.has(m)) continue
+      run.marks.add(m)
+      for (const n of run.markers) this.nodes.mark(n, m)
+    }
   }
 
   private runOf(runId: number): RunMarks<N> {

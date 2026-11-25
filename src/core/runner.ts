@@ -231,6 +231,8 @@ export async function startRun(
         if (stopped) return { code: null, signal: 'SIGTERM' }
         const r = await spawnOnce(cmd, args, req, onLines, (c) => (child = c))
         if (r === 'not-found') continue
+        // Windows は taskkill /F で止めると終了コード 1 になるので、止めたことを終了コードによらず伝える
+        if (stopped) return { code: null, signal: r.signal ?? 'SIGTERM' }
         if (req.kind === 'python' && req.platform === 'win32' && r.code === PYTHON_STUB_EXIT) {
           return {
             ...r,

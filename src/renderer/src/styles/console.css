@@ -91,9 +91,14 @@
   overflow-anchor: none;
 }
 
+/* 行を足したブロックの中だけで、位置を計算し直す */
+.console-block {
+  contain: layout style;
+}
+
 /* 絞り込み。出す行の印は core/consoleLog.ts が付ける */
-.console-lines.filter-warn > :not(.in-warn),
-.console-lines.filter-error > :not(.in-error) {
+.console-lines.filter-warn .line:not(.in-warn),
+.console-lines.filter-error .line:not(.in-error) {
   display: none;
 }
 

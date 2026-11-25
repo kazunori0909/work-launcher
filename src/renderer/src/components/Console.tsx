@@ -28,8 +28,10 @@ export function Console({
 }: Props): React.JSX.Element {
   const [filter, setFilter] = useState<ConsoleFilter>('all')
   const body = useRef<HTMLDivElement>(null)
-  /** 最後に末尾へ動かしたときの位置。追従をやめたら Infinity */
-  const autoTop = useRef(0)
+  /** 新しい行に追従するか */
+  const stick = useRef(true)
+  /** スクロールバーをつかんでいる・文字を選んでいる */
+  const dragging = useRef(false)
 
   // 行は React で描かず、持ち続けている要素をここに付ける
   useEffect(() => {
@@ -40,17 +42,19 @@ export function Console({
 
   useEffect(() => lines.setFilter(filter), [lines, filter])
 
-  // 末尾を見ているときだけ、新しい行に追従する
+  // 追従するときは、行が増えるたびに末尾へ動かす
   useEffect(() => {
     const el = body.current
-    if (!el) return
-    if (!following(el, autoTop.current)) {
-      autoTop.current = Infinity
-      return
-    }
-    el.scrollTop = el.scrollHeight
-    autoTop.current = el.scrollTop
+    if (stick.current && el) el.scrollTop = el.scrollHeight
   }, [lines, counts, filter])
+
+  useEffect(() => {
+    const up = (): void => {
+      dragging.current = false
+    }
+    window.addEventListener('pointerup', up)
+    return () => window.removeEventListener('pointerup', up)
+  }, [])
 
   return (
     <section className="console">
@@ -77,18 +81,27 @@ export function Console({
       <div
         className="console-body"
         ref={body}
+        tabIndex={0}
+        // 追従をやめるのは、上へ戻す操作をしたときだけ。scroll の知らせだけでは、古い行を消して
+        // 位置が変わったのか、使う人が動かしたのかを見分けられないため
+        onWheel={(e) => {
+          if (e.deltaY < 0) stick.current = false
+        }}
+        onKeyDown={(e) => {
+          if (UP_KEYS.includes(e.key)) stick.current = false
+        }}
+        onPointerDown={() => {
+          dragging.current = true
+        }}
         onScroll={(e) => {
-          if (!following(e.currentTarget, autoTop.current)) autoTop.current = Infinity
+          const el = e.currentTarget
+          const atEnd = el.scrollHeight - el.scrollTop - el.clientHeight < 8
+          if (atEnd) stick.current = true
+          else if (dragging.current) stick.current = false
         }}
       />
     </section>
   )
 }
 
-/**
- * 末尾を見ているか。scroll の知らせは遅れて届き、その間に行が増えていることがあるので、
- * 末尾にいなくても、最後に末尾へ動かした位置から上へ戻されていなければ見ているとみなす
- */
-function following(el: HTMLElement, autoTop: number): boolean {
-  return el.scrollHeight - el.scrollTop - el.clientHeight < 8 || el.scrollTop >= autoTop - 1
-}
+const UP_KEYS = ['ArrowUp', 'PageUp', 'Home']

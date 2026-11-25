@@ -38,12 +38,13 @@ export function useConsole(consoleRules: ConsoleRule[] | undefined): ConsoleStat
   const [open, setOpen] = useState(false)
   const rules = useMemo(() => (consoleRules ?? []).map(compileRule), [consoleRules])
 
+  useEffect(() => lines.subscribe(setCounts), [lines])
+
   // コンソールは実行の開始とエラーのときだけ開く
   const append = useCallback(
     (added: NewEntry[]) => {
       if (added.some(opensConsole)) setOpen(true)
       lines.append(added)
-      setCounts(lines.counts)
     },
     [lines]
   )
@@ -66,10 +67,7 @@ export function useConsole(consoleRules: ConsoleRule[] | undefined): ConsoleStat
     (text: string) => append([systemEntry('system', text, 'error')]),
     [append]
   )
-  const clear = useCallback(() => {
-    lines.clear()
-    setCounts(lines.counts)
-  }, [lines])
+  const clear = useCallback(() => lines.clear(), [lines])
 
   return { lines, counts, runs, open, setOpen, clear, reportError }
 }

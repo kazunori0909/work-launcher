@@ -39,11 +39,11 @@ describe('batchOutput', () => {
   it('間隔が来るまで溜め、まとめて1回渡す', () => {
     const { out, timer, batch } = setup()
     batch.push('stdout', ['a'])
-    batch.push('stdout', ['b', 'c'])
+    batch.push('stdout', ['b'])
     expect(out).toEqual([])
     expect(timer.pending).toBe(1)
     timer.fire()
-    expect(out).toEqual([['stdout', ['a', 'b', 'c']]])
+    expect(out).toEqual([['stdout', ['a', 'b']]])
   })
 
   it('stream が変わったら、それまでの分を先に渡して順番を保つ', () => {
