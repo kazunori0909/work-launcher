@@ -14,7 +14,9 @@ import type { Item, Page } from '../../../core/types'
 import { DisabledContext } from './disabledContext'
 import { HtmlEmbed, Markdown } from './embed'
 import { EmbedContext } from './embedContext'
+import { Alert } from './Alert'
 import { Icon } from './Icon'
+import { ImageView } from './ImageView'
 import { SelectContext } from './selectContext'
 import { t } from '../../../core/i18n'
 
@@ -100,6 +102,16 @@ function ItemViewInner(props: ItemProps): React.JSX.Element {
       return <div className="item-heading">{item.text}</div>
     case 'error':
       return <div className="item-error">{item.message}</div>
+    case 'image':
+      return <ImageView item={item} />
+    case 'alert':
+      return (
+        <div className="item-alert">
+          <Alert kind={item.level}>
+            <div className="wl-alert-text">{item.text}</div>
+          </Alert>
+        </div>
+      )
     case 'markdown':
       return (
         <div className="item-embed">
@@ -131,6 +143,28 @@ function ItemViewInner(props: ItemProps): React.JSX.Element {
             parent={path}
           />
         </fieldset>
+      )
+    case 'details':
+      return (
+        <details className={item.frame ? 'item-details framed' : 'item-details'} open={item.open}>
+          <summary>
+            <Icon name="chevron-right" />
+            <Icon name={item.icon} />
+            {item.title}
+          </summary>
+          <div className="item-details-body">
+            {item.text !== undefined && <div className="item-details-text">{item.text}</div>}
+            {item.items.length > 0 && (
+              <ItemList
+                items={item.items}
+                platform={platform}
+                running={running}
+                onActivate={onActivate}
+                parent={path}
+              />
+            )}
+          </div>
+        </details>
       )
     case 'buttons':
       return (

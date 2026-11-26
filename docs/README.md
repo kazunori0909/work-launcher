@@ -63,6 +63,7 @@
 | 34  | 置き場所の整理 ✅   | 紛らわしい名前と置き場所を直す         |
 | 35  | 項目の状態 ✅       | YAML・JS で値と押せる状態を変える      |
 | 36  | 大量の出力 ✅       | 行を DOM に直接足し、送信をまとめる    |
+| 37  | 表示の項目 ✅       | details・アラート・image を足す        |
 
 ## 次に扱う候補
 
@@ -74,6 +75,7 @@
 - TypeScript 7 に上げる。lint が通らない（typescript-eslint の対応待ちと思われる）（→ phase12）
 - Electron 46（安定版は 2027-01 予定、Node 26 入り）に上げ、`@types/node` も 26 にする（2026-11）
 - Dependabot #1（minimatch の DoS、開発用の依存のみ）の残り。electron-builder が minimatch 11 に上げたら更新で消す（27 alpha でも ^10、2026-11）
+- 画像を並べたギャラリーのページを作る（image 項目の拡大表示を使う）（→ phase37）
 - 署名を入れる。Win は SignPath Foundation（無償・審査あり）、mac は Apple Developer Program。使う人が出てから（2026-11 に見送り）（→ phase8）
 - Steam の入っていない Windows で、Info の steam が「pattern が一致しません」ではなく「未インストール」と出るか確かめる（→ phase21）
 - 組み込みのツールに pnpm・yarn（corepack の確認ダイアログに注意）・bun・deno・uv・gh・Unity Hub・Visual Studio を足す（→ phase28）

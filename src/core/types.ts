@@ -1,4 +1,5 @@
 // 設定ファイルを読み込んで正規化したあとの形（仕様は docs/config.md）
+import type { AlertKind } from './alert'
 import type { ConsoleRule } from './console'
 import type { Lang } from './i18n'
 
@@ -41,6 +42,18 @@ export type Item =
   | (ItemCommon & { kind: 'reset'; ids: string[] })
   | { kind: 'group'; id?: string; icon?: string; title?: string; when?: ItemWhen; items: Item[] }
   | { kind: 'buttons'; id?: string; when?: ItemWhen; items: Item[] }
+  /** 折りたたみ。text（書いたままの文）を先に、items を後に出す */
+  | {
+      kind: 'details'
+      id?: string
+      icon?: string
+      title: string
+      text?: string
+      open: boolean
+      /** 枠で囲む */
+      frame: boolean
+      items: Item[]
+    }
   | (ItemCommon & {
       kind: 'select'
       /** select の ID。`${select:ID}` で参照する（id と同じ値） */
@@ -53,6 +66,21 @@ export type Item =
       /** 画面で値を変えたときに呼ぶ関数（scripts の関数名） */
       change?: string
     })
+  /**
+   * 画像。width は CSS の長さ（px か %）。zoom なら押すとウィンドウの中で拡大する。
+   * label は画像の代わりの文字（alt）
+   */
+  | {
+      kind: 'image'
+      id?: string
+      path: string
+      label?: string
+      tooltip?: string
+      width?: string
+      zoom: boolean
+    }
+  /** アラート（note・tip などの項目）。text は書いたままの文 */
+  | { kind: 'alert'; id?: string; level: AlertKind; text: string }
   | { kind: 'break'; id?: string }
   | { kind: 'heading'; id?: string; text: string }
   | { kind: 'error'; id?: string; message: string }

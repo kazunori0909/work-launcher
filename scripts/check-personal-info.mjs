@@ -7,9 +7,13 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync, statSync } from 'node:fs'
 import os from 'node:os'
 
+// core.quotePath=false: 日本語などのファイル名を、引用符とエスケープを付けずにそのまま返させる
 const git = (...args) => {
   try {
-    return execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
+    return execFileSync('git', ['-c', 'core.quotePath=false', ...args], {
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024
+    }).trim()
   } catch {
     return undefined
   }

@@ -280,6 +280,82 @@ describe('項目の誤りは、その項目だけエラーにする', () => {
     })
   })
 
+  it('details を読む。中に group・details も置ける', async () => {
+    const { items } = await loadItems(`
+- details: 古い手順
+  text: |
+    1行目
+    2行目
+- details: 詳しく
+  expanded: true
+  frame: true
+  items:
+    - { group: 中, items: [{ open: a }] }
+    - { details: さらに, text: 本文 }
+- details: 空
+- { details: 開閉, text: a, expanded: はい }
+`)
+    expect(items[0]).toEqual({
+      kind: 'details',
+      title: '古い手順',
+      text: '1行目\n2行目',
+      open: false,
+      frame: false,
+      items: []
+    })
+    expect(items[1]).toMatchObject({
+      kind: 'details',
+      open: true,
+      frame: true,
+      items: [
+        { kind: 'group', items: [{ kind: 'open' }] },
+        { kind: 'details', title: 'さらに', text: '本文' }
+      ]
+    })
+    expect(errorMessage(items[2])).toContain('text か items')
+    expect(errorMessage(items[3])).toContain('expanded は true / false')
+  })
+
+  it('image を読む。width は数値なら px、% はそのまま', async () => {
+    const { items } = await loadItems(`
+- image: img/a.png
+- { image: img/a.png, width: 300, zoom: false, label: 図 }
+- { image: img/a.png, width: 50% }
+- { image: img/a.png, width: 120px }
+- { image: img/a.png, width: 150% }
+- { image: img/a.png, width: 大きい }
+- { image: img/a.png, zoom: いいえ }
+`)
+    expect(items[0]).toEqual({ kind: 'image', path: 'img/a.png', zoom: true })
+    expect(items[1]).toEqual({
+      kind: 'image',
+      path: 'img/a.png',
+      label: '図',
+      width: '300px',
+      zoom: false
+    })
+    expect(items[2]).toMatchObject({ width: '50%' })
+    expect(items[3]).toMatchObject({ width: '120px' })
+    expect(errorMessage(items[4])).toContain('width')
+    expect(errorMessage(items[5])).toContain('width')
+    expect(errorMessage(items[6])).toContain('zoom は true / false')
+  })
+
+  it('アラートの項目を読む', async () => {
+    const { items } = await loadItems(`
+- note: メモの本文
+- caution: |
+    1行目
+    2行目
+- { warning: 警告, id: w }
+- important:
+`)
+    expect(items[0]).toEqual({ kind: 'alert', level: 'note', text: 'メモの本文' })
+    expect(items[1]).toEqual({ kind: 'alert', level: 'caution', text: '1行目\n2行目' })
+    expect(items[2]).toEqual({ kind: 'alert', id: 'w', level: 'warning', text: '警告' })
+    expect(errorMessage(items[3])).not.toBe(false)
+  })
+
   it('checkbox に options は書けない（警告にとどめる）', async () => {
     const { items, diagnostics } = await loadItems('- { checkbox: c, options: [a] }')
     expect(errorMessage(items[0])).toBe(false)

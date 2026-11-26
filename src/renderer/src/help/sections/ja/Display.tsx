@@ -36,6 +36,57 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
       </p>
       <SampleView example={EXAMPLES.buttons} platform={platform} />
 
+      <h3>折りたたみ（details）</h3>
+      <p>
+        見出しを押すと、中身が開いたり閉じたりします。ふだんは見せなくてよい説明や、たまにしか使わないボタンをしまっておけます。
+        短い文なら <code>text</code> に書き、ボタンなども入れたいときは group と同じく{' '}
+        <code>items</code> に並べます。
+      </p>
+      <SampleView example={EXAMPLES.details} platform={platform} />
+      <Table
+        head={['キー', '内容']}
+        rows={[
+          ['details', '見出し'],
+          ['text', '中に出す文（書いたまま、改行もそのまま）'],
+          ['items', '中に置く項目（details や group も置ける）'],
+          ['expanded', 'true なら開いた状態で出す（省略時は閉じる）'],
+          ['frame', 'true なら枠で囲む（省略時は枠なし）']
+        ]}
+      />
+      <p>
+        <code>text</code> と <code>items</code> の両方を書くと、text
+        を先に出します。開閉は覚えないので、ページを開き直すと書いたとおりに戻ります。
+      </p>
+
+      <h3>アラート（note・tip・important・warning・caution）</h3>
+      <p>
+        色付きの枠で、注意書きを目立たせます。種類は5つで、見出しにアイコンと種類の名前が出ます。
+      </p>
+      <SampleView example={EXAMPLES.alert} platform={platform} />
+      <p>
+        本文は書いたままの文です。太字やリンクを使いたいときは、<code>md</code>{' '}
+        に引用の形で書き、1行目に <code>[!NOTE]</code> のような印を置きます（
+        <code>[!TIP]</code>・<code>[!IMPORTANT]</code>・<code>[!WARNING]</code>・
+        <code>[!CAUTION]</code>）。md ファイルの中でも同じように書けます。
+      </p>
+      <SampleView example={EXAMPLES.alertMd} platform={platform} />
+
+      <h3>画像（image）</h3>
+      <p>
+        画像を出します。押すと、ウィンドウの中に大きく出します（閉じるボタン・Esc・背景を押すと閉じる）。
+      </p>
+      <Code lang="yaml">{`- image: launcher/img/構成図.png
+  width: 50%      # 数値なら px（width: 300）、% はページの幅に対する割合
+  label: 構成図    # 画像を読めないときの代わりの文字（省略可）
+- image: launcher/img/logo.svg
+  width: 96
+  zoom: false     # 押しても大きくしない`}</Code>
+      <p>
+        ほかの項目と同じく横に並びます。<code>width: 50%</code>{' '}
+        を2つ書けば、ちょうど1行に並びます。width を省くと画像の大きさのまま出します。出せる画像は
+        md と同じで、ランチャーのフォルダの中のファイルと <code>https</code> の URL です。
+      </p>
+
       <h3>説明を書く（md / html）</h3>
       <p>
         ボタンではなく、その位置に文章を出します。作業の前の注意書きなどに使います。

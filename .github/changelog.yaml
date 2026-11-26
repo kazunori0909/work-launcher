@@ -6,6 +6,18 @@
 # - breaking には、直し方まで書く
 # - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
 
+- version: unreleased
+  summary:
+    ja: 折りたたみ・アラート・画像の項目を足しました。md を書かなくても、説明を整えて見せられます。
+    en: Added collapsible sections, alerts, and images, so you can lay out explanations without writing md.
+  added:
+    - ja: '`details` で、見出しを押すと開閉する折りたたみを置けるようにしました。中には文も項目も入れられます。'
+      en: '`details` adds a collapsible section that opens and closes when you click its heading. It can hold text and items.'
+    - ja: '`note`・`tip`・`important`・`warning`・`caution` で、色付きの注意書き（アラート）を置けるようにしました。md でも `> [!NOTE]` の形で書けます。'
+      en: '`note`, `tip`, `important`, `warning`, and `caution` add colored notices (alerts). In md, write them as `> [!NOTE]`.'
+    - ja: '`image` で画像を置けるようにしました。大きさは px か割合で決められ、押すとウィンドウの中で大きく表示します。'
+      en: '`image` shows an image. Set its size in px or as a percentage; clicking it enlarges it inside the window.'
+
 - version: 0.4.1
   date: 2026-11-25
   summary:

@@ -27,8 +27,11 @@ export function itemLabel(item: Item, platform: string): string {
   if (item.kind === 'error') return t().run.errorLabel
   if (item.kind === 'break') return ''
   if (item.kind === 'heading') return item.text
+  if (item.kind === 'alert') return item.text.split('\n')[0]
+  if (item.kind === 'image') return item.label ?? item.path.split(/[\\/]/).pop() ?? item.path
   if (item.kind === 'buttons') return ''
   if (item.kind === 'group') return item.title ?? ''
+  if (item.kind === 'details') return item.title
   if (item.kind === 'select') return item.label ?? item.name
   if (item.label) return item.label
   switch (item.kind) {
@@ -84,6 +87,9 @@ export function defaultIcon(item: Item): string | undefined {
     case 'markdown':
     case 'mdfile':
     case 'group':
+    case 'details':
+    case 'alert':
+    case 'image':
     case 'buttons':
     case 'select':
     case 'break':

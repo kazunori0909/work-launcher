@@ -792,6 +792,139 @@ echo %DATE%
       },
       {
         "cwd": undefined,
+        "icon": "layout-list",
+        "id": "display",
+        "items": [
+          {
+            "frame": false,
+            "icon": undefined,
+            "id": undefined,
+            "items": [],
+            "kind": "details",
+            "open": false,
+            "text": "2025 年までの手順です。
+いまは使いません。",
+            "title": "古い手順について",
+          },
+          {
+            "frame": false,
+            "icon": "settings",
+            "id": undefined,
+            "items": [
+              {
+                "confirm": undefined,
+                "content": "中には **どの項目でも** 置けます。",
+                "icon": undefined,
+                "id": undefined,
+                "kind": "markdown",
+                "label": undefined,
+                "tooltip": undefined,
+              },
+              {
+                "confirm": undefined,
+                "icon": undefined,
+                "id": undefined,
+                "kind": "open",
+                "label": undefined,
+                "path": "docs",
+                "tooltip": undefined,
+              },
+              {
+                "frame": false,
+                "icon": undefined,
+                "id": undefined,
+                "items": [],
+                "kind": "details",
+                "open": false,
+                "text": "入れ子にもできます。",
+                "title": "さらに折りたたむ",
+              },
+            ],
+            "kind": "details",
+            "open": true,
+            "title": "詳しい設定",
+          },
+          {
+            "frame": true,
+            "icon": undefined,
+            "id": undefined,
+            "items": [],
+            "kind": "details",
+            "open": false,
+            "text": "frame を true にすると枠で囲みます。",
+            "title": "枠で囲む",
+          },
+          {
+            "id": undefined,
+            "kind": "heading",
+            "text": "アラート（項目）",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "note",
+            "text": "メモ。流し読みでも知っておいてほしいこと",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "tip",
+            "text": "ヒント。知っていると楽になること",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "important",
+            "text": "重要。目的を果たすのに要ること",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "warning",
+            "text": "警告。すぐに気をつけてほしいこと
+2行目も書けます",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "caution",
+            "text": "注意。操作のリスク",
+          },
+          {
+            "id": undefined,
+            "kind": "heading",
+            "text": "アラート（md）",
+          },
+          {
+            "confirm": undefined,
+            "content": "> [!NOTE]
+> メモ。md なら **太字** や [リンク](https://example.com) も使えます。
+
+> [!TIP]
+> ヒント。\`コード\` も書けます。
+
+> [!IMPORTANT]
+> 重要。目的を果たすのに要ること
+
+> [!WARNING]
+> 警告。すぐに気をつけてほしいこと
+
+> [!CAUTION]
+> 注意。
+> - 箇条書きも
+> - 入れられます
+",
+            "icon": undefined,
+            "id": undefined,
+            "kind": "markdown",
+            "label": undefined,
+            "tooltip": undefined,
+          },
+        ],
+        "title": "表示",
+      },
+      {
+        "cwd": undefined,
         "icon": undefined,
         "id": "help",
         "items": [

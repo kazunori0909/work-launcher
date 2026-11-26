@@ -36,6 +36,60 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
       </p>
       <SampleView example={EXAMPLES_EN.buttons} platform={platform} />
 
+      <h3>Collapsible section (details)</h3>
+      <p>
+        Clicking the heading opens or closes the contents. Use it to tuck away explanations that
+        need not always be shown, or buttons used only now and then. Write short text in{' '}
+        <code>text</code>; to include buttons as well, list them in <code>items</code> as with
+        group.
+      </p>
+      <SampleView example={EXAMPLES_EN.details} platform={platform} />
+      <Table
+        head={['Key', 'Meaning']}
+        rows={[
+          ['details', 'Heading'],
+          ['text', 'Text shown inside (as written, line breaks kept)'],
+          ['items', 'Items placed inside (details and group can go inside too)'],
+          ['expanded', 'true shows it open (closed if omitted)'],
+          ['frame', 'true draws a frame around it (no frame if omitted)']
+        ]}
+      />
+      <p>
+        If you write both <code>text</code> and <code>items</code>, the text comes first. The
+        open/closed state is not remembered: reopening the page shows it as written.
+      </p>
+
+      <h3>Alerts (note, tip, important, warning, caution)</h3>
+      <p>
+        A colored box that makes a notice stand out. There are five kinds; the heading shows an icon
+        and the name of the kind.
+      </p>
+      <SampleView example={EXAMPLES_EN.alert} platform={platform} />
+      <p>
+        The body is plain text, as written. To use bold or links, write a quote in <code>md</code>{' '}
+        and put a marker such as <code>[!NOTE]</code> on its first line (<code>[!TIP]</code>,{' '}
+        <code>[!IMPORTANT]</code>, <code>[!WARNING]</code>, <code>[!CAUTION]</code>). The same works
+        inside md files.
+      </p>
+      <SampleView example={EXAMPLES_EN.alertMd} platform={platform} />
+
+      <h3>Image (image)</h3>
+      <p>
+        Shows an image. Clicking it shows it large inside the window (close it with the close
+        button, Esc, or by clicking the background).
+      </p>
+      <Code lang="yaml">{`- image: launcher/img/diagram.png
+  width: 50%      # a number means px (width: 300); % is a share of the page width
+  label: Diagram  # text shown if the image cannot be loaded (optional)
+- image: launcher/img/logo.svg
+  width: 96
+  zoom: false     # do not enlarge on click`}</Code>
+      <p>
+        Images line up side by side like other items. Two images with <code>width: 50%</code> fit on
+        one line. Without width, the image is shown at its own size. The same images as in md can be
+        shown: files inside the launcher folder and <code>https</code> URLs.
+      </p>
+
       <h3>Writing text (md / html)</h3>
       <p>
         Shows text in place instead of a button, for things like notes before a task. In{' '}

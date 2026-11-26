@@ -1,4 +1,5 @@
 import { isMdFilePath } from '../items'
+import type { AlertKind } from '../alert'
 import { BUTTON_KINDS, EXEC_KINDS } from '../types'
 import type { ExecKind, Item, ItemCommon, ItemWhen, SelectControl, SelectOption } from '../types'
 import { isObj, scalar } from './reader'
@@ -33,7 +34,7 @@ interface ItemFields {
   dict(key: string): Record<string, string> | undefined
   problem(message: string): void
   /** 子の項目の並びを読む */
-  children(raw: unknown, where: string, parent: 'group'): Item[]
+  children(raw: unknown, where: string, parent?: 'group'): Item[]
   /** 子の項目を1つ読む */
   child(raw: unknown, parent: 'buttons'): Item
 }
@@ -53,6 +54,30 @@ const office = (kind: 'excel' | 'powerpoint' | 'word'): KindSpec => ({
     return { ...f.common, kind, path: f.req(kind), readonly: readonly === true }
   }
 })
+
+const alert = (level: AlertKind): KindSpec => ({
+  keys: ['id'],
+  read: (f) => ({
+    kind: 'alert',
+    id: f.common.id,
+    level,
+    // `|` で書いた末尾の改行は空行に見えるので落とす
+    text: f.reqText(level).replace(/\n+$/, '')
+  })
+})
+
+/** image の width。数値は px、`50%` のような文字列は割合。`300px` とも書ける */
+function imageWidth(raw: unknown, problem: (message: string) => void): string | undefined {
+  if (raw === undefined) return undefined
+  if (typeof raw === 'number' && raw > 0) return `${raw}px`
+  if (typeof raw === 'string') {
+    const m = /^\s*(\d+(?:\.\d+)?)\s*(px|%)?\s*$/.exec(raw)
+    if (m && Number(m[1]) > 0 && !(m[2] === '%' && Number(m[1]) > 100))
+      return `${m[1]}${m[2] ?? 'px'}`
+  }
+  problem(t().load.badWidth)
+  return undefined
+}
 
 const select = (control: SelectControl): KindSpec => ({
   keys:
@@ -140,6 +165,28 @@ const KINDS = {
       return { ...f.common, kind: 'reset', ids: [...new Set(ids as string[])] }
     }
   },
+  image: {
+    keys: ['id', 'label', 'tooltip', 'width', 'zoom'],
+    read: (f) => {
+      const zoom = f.raw.zoom ?? true
+      if (typeof zoom !== 'boolean') f.problem(t().load.notBoolean('zoom'))
+      const width = imageWidth(f.raw.width, f.problem)
+      return {
+        kind: 'image',
+        id: f.common.id,
+        path: f.req('image'),
+        label: f.common.label,
+        tooltip: f.common.tooltip,
+        ...(width !== undefined ? { width } : {}),
+        zoom: zoom !== false
+      }
+    }
+  },
+  note: alert('note'),
+  tip: alert('tip'),
+  important: alert('important'),
+  warning: alert('warning'),
+  caution: alert('caution'),
   break: { keys: COMMON_KEYS, read: (f) => ({ kind: 'break', id: f.common.id }) },
   heading: {
     keys: COMMON_KEYS,
@@ -158,6 +205,32 @@ const KINDS = {
         id: f.common.id,
         icon: f.common.icon,
         title,
+        items
+      }
+    }
+  },
+  details: {
+    keys: ['id', 'icon', 'text', 'items', 'expanded', 'frame'],
+    read: (f) => {
+      const title = f.reqText('details')
+      // `|` で書いた末尾の改行は空行に見えるので落とす
+      const text = f.text('text')?.replace(/\n+$/, '')
+      // `open` は種類キー（ファイルを開く）なので、開いて出すのは expanded と書く
+      const open = f.raw.expanded ?? false
+      if (typeof open !== 'boolean') f.problem(t().load.notBoolean('expanded'))
+      const frame = f.raw.frame ?? false
+      if (typeof frame !== 'boolean') f.problem(t().load.notBoolean('frame'))
+      if (text === undefined && f.raw.items === undefined) f.problem(t().load.detailsEmpty)
+      const items =
+        f.raw.items === undefined ? [] : f.children(f.raw.items, t().load.detailsItems(title))
+      return {
+        kind: 'details',
+        id: f.common.id,
+        icon: f.common.icon,
+        title,
+        ...(text !== undefined ? { text } : {}),
+        open: open === true,
+        frame: frame === true,
         items
       }
     }

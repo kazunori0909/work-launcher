@@ -112,6 +112,68 @@ export const EXAMPLES_EN = {
       { kind: 'html', content: '<span style="color: #cf222e">Careful: production</span>\n' }
     ]
   },
+  details: {
+    yaml: `- details: About the old steps
+  text: |
+    These are the steps used until 2025.
+    They are no longer used.
+- details: For administrators
+  expanded: true
+  frame: true
+  items:
+    - note: Only administrators use these
+    - { bat: setup.bat, label: Set up }`,
+    items: [
+      {
+        kind: 'details',
+        title: 'About the old steps',
+        text: 'These are the steps used until 2025.\nThey are no longer used.',
+        open: false,
+        frame: false,
+        items: []
+      },
+      {
+        kind: 'details',
+        title: 'For administrators',
+        open: true,
+        frame: true,
+        items: [
+          { kind: 'alert', level: 'note', text: 'Only administrators use these' },
+          { kind: 'exec', scripts: { bat: 'setup.bat' }, label: 'Set up' }
+        ]
+      }
+    ]
+  },
+  alert: {
+    yaml: `- note: Note. Something to know even when skimming
+- tip: Tip. Something that makes the work easier
+- important: Important. Something needed to reach the goal
+- warning: Warning. Something that needs attention right away
+- caution: Caution. The risks of an action`,
+    items: [
+      { kind: 'alert', level: 'note', text: 'Note. Something to know even when skimming' },
+      { kind: 'alert', level: 'tip', text: 'Tip. Something that makes the work easier' },
+      { kind: 'alert', level: 'important', text: 'Important. Something needed to reach the goal' },
+      {
+        kind: 'alert',
+        level: 'warning',
+        text: 'Warning. Something that needs attention right away'
+      },
+      { kind: 'alert', level: 'caution', text: 'Caution. The risks of an action' }
+    ]
+  },
+  alertMd: {
+    yaml: `- md: |
+    > [!WARNING]
+    > This deletes production data. Take a [backup](docs/backup.md) **before you run it**.`,
+    items: [
+      {
+        kind: 'markdown',
+        content:
+          '> [!WARNING]\n> This deletes production data. Take a [backup](docs/backup.md) **before you run it**.\n'
+      }
+    ]
+  },
   layout: {
     yaml: `- heading: Build
 - { bat: build.bat, label: Build }
@@ -521,6 +583,28 @@ export const LAYOUT_CHEATS_EN: Cheat[] = [
         items: [exec('bat', 'build.bat', 'Build'), exec('bat', 'test.bat', 'Test')]
       }
     ]
+  },
+  {
+    name: 'details',
+    note: 'Opens and closes on click',
+    yaml: `- details: Old steps
+  text: No longer used`,
+    items: [
+      {
+        kind: 'details',
+        title: 'Old steps',
+        text: 'No longer used',
+        open: false,
+        frame: false,
+        items: []
+      }
+    ]
+  },
+  {
+    name: 'note',
+    note: 'Colored notice (also tip, important, warning, caution)',
+    yaml: '- note: The build takes about 10 minutes',
+    items: [{ kind: 'alert', level: 'note', text: 'The build takes about 10 minutes' }]
   },
   {
     name: 'md',

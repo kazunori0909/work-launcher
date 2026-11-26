@@ -68,6 +68,53 @@
   color: var(--muted);
 }
 
+/* アラート。種類の色を薄く敷き、左の太線と見出しにその色を使う */
+.wl-alert {
+  --alert-color: var(--alert-note);
+  margin: 0 0 12px;
+  padding: 8px 14px 10px;
+  border-left: 4px solid var(--alert-color);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--alert-color) 9%, transparent);
+}
+
+.wl-alert:last-child {
+  margin-bottom: 0;
+}
+
+.wl-alert-tip {
+  --alert-color: var(--alert-tip);
+}
+
+.wl-alert-important {
+  --alert-color: var(--alert-important);
+}
+
+.wl-alert-warning {
+  --alert-color: var(--alert-warning);
+}
+
+.wl-alert-caution {
+  --alert-color: var(--alert-caution);
+}
+
+.wl-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  color: var(--alert-color);
+  font-weight: 600;
+}
+
+.wl-alert-title + * {
+  margin-top: 0;
+}
+
+.wl-alert > :not(.wl-alert-title):last-child {
+  margin-bottom: 0;
+}
+
 .markdown table {
   display: block;
   max-width: 100%;

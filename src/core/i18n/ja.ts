@@ -23,6 +23,7 @@ export const ja = {
     page: (id: string) => `ページ ${id}`,
     pageItems: (id: string) => `ページ ${id} の items`,
     groupItems: (title: string) => `group ${title} の items`,
+    detailsItems: (title: string) => `details ${title} の items`,
     item: (name: string) => `項目 ${name}`,
     notList: (where: string) => `${where} は「- 」で始まる並びで書いてください`,
     notPaths: (where: string) => `${where} にはパスを並べてください`,
@@ -39,6 +40,8 @@ export const ja = {
     whenValue: (key: string, id: string) => `${key} の ${id} には値か、値の並びを書いてください`,
     groupTitle: 'group には見出しの文字を書いてください（省略可）',
     groupNoItems: 'group には items で中の項目を並べてください',
+    badWidth: 'width は数値（px）か「50%」のような割合（100% まで）で書いてください',
+    detailsEmpty: 'details には text か items で、折りたたむ中身を書いてください',
     buttonsNotList: 'buttons にはボタンを「- 」で並べてください',
     buttonsOnly: (kind: string) =>
       `buttons に置けるのはボタンになる項目だけです（${kind} は置けません）`,
@@ -217,8 +220,13 @@ export const ja = {
     registryHint: ['設定の', 'に値のパスを並べると表示します']
   },
 
+  /** アラートの見出し（docs.github.com の日本語版の呼び方） */
+  alert: { note: 'メモ', tip: 'ヒント', important: '重要', warning: '警告', caution: '注意' },
   ui: {
     loading: '読み込み中…',
+    imageMissing: (path: string) => `画像を読み込めません: ${path}`,
+    imageZoom: '押すと大きく表示',
+    imageClose: '閉じる（Esc）',
     cannotLoad: '設定を読み込めませんでした',
     openOther: '別の案件を開く…',
     help: 'ヘルプ',

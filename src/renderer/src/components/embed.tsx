@@ -7,8 +7,10 @@ import rehypeRaw from 'rehype-raw'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
+import { alertKindOf, remarkAlerts } from '../../../core/alert'
 import { resolveAsset } from '../../../core/markdown'
 import { FORBIDDEN_SCHEMES, hrefAllowed } from '../../../core/schemes'
+import { Alert } from './Alert'
 import { EmbedContext } from './embedContext'
 import { highlightMd } from '../lib/highlight'
 
@@ -68,6 +70,12 @@ export function Markdown({ text, baseDir }: Props): React.JSX.Element {
           }}
         />
       ),
+      // `> [!NOTE]` から作った div（remarkAlerts）に見出しを足す
+      div: (props: ComponentProps<'div'> & ExtraProps) => {
+        const kind = alertKindOf(props.className)
+        if (kind === undefined) return <div {...domProps(props)} />
+        return <Alert kind={kind}>{props.children}</Alert>
+      },
       code: (props: ComponentProps<'code'> & ExtraProps) => {
         const html = codeHtml(props)
         const attrs = domProps(props)
@@ -87,7 +95,7 @@ export function Markdown({ text, baseDir }: Props): React.JSX.Element {
   return (
     <div className="markdown">
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkAlerts]}
         rehypePlugins={[rehypeRaw, [rehypeSanitize, schema], rehypeSlug]}
         components={components}
         urlTransform={urlTransform}
