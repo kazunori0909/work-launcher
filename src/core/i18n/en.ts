@@ -43,6 +43,7 @@ export const en: Messages = {
     whenValue: (key, id) => `${key}: ${id} takes a value or a list of values`,
     groupTitle: 'Write the heading text in group (optional)',
     groupNoItems: 'List the contents of group under items',
+    badWidth: 'width must be a number (px) or a percentage such as "50%" (up to 100%)',
     detailsEmpty: 'Write the folded contents of details in text or items',
     buttonsNotList: 'List the buttons in buttons with "- "',
     buttonsOnly: (kind) => `Only button items can be placed in buttons (${kind} cannot)`,
@@ -224,6 +225,9 @@ export const en: Messages = {
   },
   ui: {
     loading: 'Loading…',
+    imageMissing: (path) => `Cannot load the image: ${path}`,
+    imageZoom: 'Click to enlarge',
+    imageClose: 'Close (Esc)',
     cannotLoad: 'Could not load the settings',
     openOther: 'Open another project…',
     help: 'Help',

@@ -28,6 +28,7 @@ export function itemLabel(item: Item, platform: string): string {
   if (item.kind === 'break') return ''
   if (item.kind === 'heading') return item.text
   if (item.kind === 'alert') return item.text.split('\n')[0]
+  if (item.kind === 'image') return item.label ?? item.path.split(/[\\/]/).pop() ?? item.path
   if (item.kind === 'buttons') return ''
   if (item.kind === 'group') return item.title ?? ''
   if (item.kind === 'details') return item.title
@@ -88,6 +89,7 @@ export function defaultIcon(item: Item): string | undefined {
     case 'group':
     case 'details':
     case 'alert':
+    case 'image':
     case 'buttons':
     case 'select':
     case 'break':

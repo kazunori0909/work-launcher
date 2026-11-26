@@ -66,6 +66,19 @@ const alert = (level: AlertKind): KindSpec => ({
   })
 })
 
+/** image の width。数値は px、`50%` のような文字列は割合。`300px` とも書ける */
+function imageWidth(raw: unknown, problem: (message: string) => void): string | undefined {
+  if (raw === undefined) return undefined
+  if (typeof raw === 'number' && raw > 0) return `${raw}px`
+  if (typeof raw === 'string') {
+    const m = /^\s*(\d+(?:\.\d+)?)\s*(px|%)?\s*$/.exec(raw)
+    if (m && Number(m[1]) > 0 && !(m[2] === '%' && Number(m[1]) > 100))
+      return `${m[1]}${m[2] ?? 'px'}`
+  }
+  problem(t().load.badWidth)
+  return undefined
+}
+
 const select = (control: SelectControl): KindSpec => ({
   keys:
     control === 'checkbox'
@@ -150,6 +163,23 @@ const KINDS = {
         return { ...f.common, kind: 'reset', ids: [] }
       }
       return { ...f.common, kind: 'reset', ids: [...new Set(ids as string[])] }
+    }
+  },
+  image: {
+    keys: ['id', 'label', 'tooltip', 'width', 'zoom'],
+    read: (f) => {
+      const zoom = f.raw.zoom ?? true
+      if (typeof zoom !== 'boolean') f.problem(t().load.notBoolean('zoom'))
+      const width = imageWidth(f.raw.width, f.problem)
+      return {
+        kind: 'image',
+        id: f.common.id,
+        path: f.req('image'),
+        label: f.common.label,
+        tooltip: f.common.tooltip,
+        ...(width !== undefined ? { width } : {}),
+        zoom: zoom !== false
+      }
     }
   },
   note: alert('note'),

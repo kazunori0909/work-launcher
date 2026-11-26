@@ -316,6 +316,31 @@ describe('項目の誤りは、その項目だけエラーにする', () => {
     expect(errorMessage(items[3])).toContain('expanded は true / false')
   })
 
+  it('image を読む。width は数値なら px、% はそのまま', async () => {
+    const { items } = await loadItems(`
+- image: img/a.png
+- { image: img/a.png, width: 300, zoom: false, label: 図 }
+- { image: img/a.png, width: 50% }
+- { image: img/a.png, width: 120px }
+- { image: img/a.png, width: 150% }
+- { image: img/a.png, width: 大きい }
+- { image: img/a.png, zoom: いいえ }
+`)
+    expect(items[0]).toEqual({ kind: 'image', path: 'img/a.png', zoom: true })
+    expect(items[1]).toEqual({
+      kind: 'image',
+      path: 'img/a.png',
+      label: '図',
+      width: '300px',
+      zoom: false
+    })
+    expect(items[2]).toMatchObject({ width: '50%' })
+    expect(items[3]).toMatchObject({ width: '120px' })
+    expect(errorMessage(items[4])).toContain('width')
+    expect(errorMessage(items[5])).toContain('width')
+    expect(errorMessage(items[6])).toContain('zoom は true / false')
+  })
+
   it('アラートの項目を読む', async () => {
     const { items } = await loadItems(`
 - note: メモの本文

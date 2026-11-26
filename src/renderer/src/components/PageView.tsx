@@ -16,6 +16,7 @@ import { HtmlEmbed, Markdown } from './embed'
 import { EmbedContext } from './embedContext'
 import { Alert } from './Alert'
 import { Icon } from './Icon'
+import { ImageView } from './ImageView'
 import { SelectContext } from './selectContext'
 import { t } from '../../../core/i18n'
 
@@ -101,6 +102,8 @@ function ItemViewInner(props: ItemProps): React.JSX.Element {
       return <div className="item-heading">{item.text}</div>
     case 'error':
       return <div className="item-error">{item.message}</div>
+    case 'image':
+      return <ImageView item={item} />
     case 'alert':
       return (
         <div className="item-alert">

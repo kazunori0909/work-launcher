@@ -66,6 +66,19 @@ export type Item =
       /** 画面で値を変えたときに呼ぶ関数（scripts の関数名） */
       change?: string
     })
+  /**
+   * 画像。width は CSS の長さ（px か %）。zoom なら押すとウィンドウの中で拡大する。
+   * label は画像の代わりの文字（alt）
+   */
+  | {
+      kind: 'image'
+      id?: string
+      path: string
+      label?: string
+      tooltip?: string
+      width?: string
+      zoom: boolean
+    }
   /** アラート（note・tip などの項目）。text は書いたままの文 */
   | { kind: 'alert'; id?: string; level: AlertKind; text: string }
   | { kind: 'break'; id?: string }

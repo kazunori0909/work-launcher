@@ -116,6 +116,64 @@ export const EXAMPLES = {
       { kind: 'html', content: '<span style="color: #cf222e">本番環境に注意</span>\n' }
     ]
   },
+  details: {
+    yaml: `- details: 古い手順について
+  text: |
+    2025 年までの手順です。
+    いまは使いません。
+- details: 管理者向け
+  expanded: true
+  frame: true
+  items:
+    - note: 管理者だけが使います
+    - { bat: setup.bat, label: セットアップ }`,
+    items: [
+      {
+        kind: 'details',
+        title: '古い手順について',
+        text: '2025 年までの手順です。\nいまは使いません。',
+        open: false,
+        frame: false,
+        items: []
+      },
+      {
+        kind: 'details',
+        title: '管理者向け',
+        open: true,
+        frame: true,
+        items: [
+          { kind: 'alert', level: 'note', text: '管理者だけが使います' },
+          { kind: 'exec', scripts: { bat: 'setup.bat' }, label: 'セットアップ' }
+        ]
+      }
+    ]
+  },
+  alert: {
+    yaml: `- note: メモ。流し読みでも知っておいてほしいこと
+- tip: ヒント。知っていると楽になること
+- important: 重要。目的を果たすのに要ること
+- warning: 警告。すぐに気をつけてほしいこと
+- caution: 注意。操作のリスク`,
+    items: [
+      { kind: 'alert', level: 'note', text: 'メモ。流し読みでも知っておいてほしいこと' },
+      { kind: 'alert', level: 'tip', text: 'ヒント。知っていると楽になること' },
+      { kind: 'alert', level: 'important', text: '重要。目的を果たすのに要ること' },
+      { kind: 'alert', level: 'warning', text: '警告。すぐに気をつけてほしいこと' },
+      { kind: 'alert', level: 'caution', text: '注意。操作のリスク' }
+    ]
+  },
+  alertMd: {
+    yaml: `- md: |
+    > [!WARNING]
+    > 本番のデータを消します。**実行する前に** [バックアップ](docs/backup.md) を取ってください。`,
+    items: [
+      {
+        kind: 'markdown',
+        content:
+          '> [!WARNING]\n> 本番のデータを消します。**実行する前に** [バックアップ](docs/backup.md) を取ってください。\n'
+      }
+    ]
+  },
   layout: {
     yaml: `- heading: ビルド
 - { bat: build.bat, label: ビルド }
@@ -542,6 +600,28 @@ export const LAYOUT_CHEATS: Cheat[] = [
         items: [exec('bat', 'build.bat', 'ビルド'), exec('bat', 'test.bat', 'テスト')]
       }
     ]
+  },
+  {
+    name: 'details',
+    note: '押すと開閉する',
+    yaml: `- details: 古い手順
+  text: いまは使いません`,
+    items: [
+      {
+        kind: 'details',
+        title: '古い手順',
+        text: 'いまは使いません',
+        open: false,
+        frame: false,
+        items: []
+      }
+    ]
+  },
+  {
+    name: 'note',
+    note: '色付きの注意書き（ほかに tip・important・warning・caution）',
+    yaml: '- note: ビルドに 10 分ほどかかります',
+    items: [{ kind: 'alert', level: 'note', text: 'ビルドに 10 分ほどかかります' }]
   },
   {
     name: 'md',

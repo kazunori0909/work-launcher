@@ -89,6 +89,7 @@ export function registerActionHandlers(sessionOf: SessionOf): void {
       case 'group':
       case 'details':
       case 'alert':
+      case 'image':
       case 'buttons':
       case 'select':
       case 'break':
