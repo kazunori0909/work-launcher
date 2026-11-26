@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { EmbedContext } from '../../../components/embedContext'
-import { CheatSheet, Code, SampleView, Table } from '../../parts'
+import { Callout, CheatSheet, Code, Fold, SampleView, Table } from '../../parts'
 import { EXAMPLES_EN, LAYOUT_CHEATS_EN } from '../../examples.en'
 import { IconBrowser } from '../../IconBrowser'
 import type { SectionProps } from '../../parts'
@@ -102,16 +102,18 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
         Only a single-line value ending in <code>.md</code> is read as a file path. Anything else is
         treated as the text itself.
       </p>
-      <p>
-        Relative paths in links and images count from the launcher folder; only those in an md file
-        count from that file&apos;s location. Clicking a link opens URLs in the browser and files in
-        the default app. Images can be shown only from inside the launcher folder.
-      </p>
-      <p>
-        A common pitfall is text containing <code>: </code> (a colon and a space). Text like{' '}
-        <code>color: red</code> written on the same line is read as a YAML key. As in the example
-        above, write <code>|</code> and start the text on the next line.
-      </p>
+      <Callout kind="warning">
+        Text containing <code>: </code> (a colon and a space) is read as a YAML key. As in the
+        example above, write <code>|</code> and start the text on the next line.
+      </Callout>
+      <p>Clicking a link opens URLs in the browser and files in the default app.</p>
+      <Fold title="How relative paths in links and images are counted">
+        <p>
+          Relative paths in links and images count from the launcher folder; only those in an md
+          file count from that file&apos;s location. Images can be shown only from inside the
+          launcher folder or from <code>https</code> URLs.
+        </p>
+      </Fold>
 
       <h3>Icons (icon)</h3>
       <p>

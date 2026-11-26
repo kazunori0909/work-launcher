@@ -1,4 +1,4 @@
-import { Code, SampleView } from '../../parts'
+import { Callout, Code, SampleView } from '../../parts'
 import { EXAMPLES } from '../../examples'
 import type { SectionProps } from '../../parts'
 
@@ -71,11 +71,11 @@ export function SetValues({ platform }: SectionProps): React.JSX.Element {
         にも入ります。そのあとに呼ぶ <code>ctx.sh</code> などの <code>{'${select:ID}'}</code>{' '}
         も、新しい値になります。
       </p>
-      <p>
+      <Callout kind="warning">
         <code>reset</code> のボタン、<code>ctx.set</code>、<code>ctx.reset</code> では、変えた項目の{' '}
         <code>change</code>{' '}
         の関数を呼びません。項目どうしで書き換え合って、止まらなくなるのを避けるためです。続けて処理したいときは、同じ関数の中に書きます。
-      </p>
+      </Callout>
       <p>無い ID や、選択肢に無い値を渡すと、例外になります。</p>
     </>
   )

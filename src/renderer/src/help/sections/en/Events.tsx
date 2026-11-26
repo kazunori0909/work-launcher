@@ -1,4 +1,4 @@
-import { Code, Table } from '../../parts'
+import { Callout, Code, Table } from '../../parts'
 
 /** ヘルプの章「イベント」（英語） */
 export function Events(): React.JSX.Element {
@@ -45,11 +45,11 @@ module.exports = {
         remembered or default values. If <code>beforeClose</code> takes a while, &quot;Close without
         waiting&quot; appears; pressing it stops the function and closes.
       </p>
-      <p>
-        Saving the settings and reloading does not call the open events again. JS is reloaded on
-        every call, so variables do not carry over between functions. Write anything you want to
-        keep to a file.
-      </p>
+      <p>Saving the settings and reloading does not call the open events again.</p>
+      <Callout kind="warning">
+        JS is reloaded on every call, so variables do not carry over between functions. Write
+        anything you want to keep to a file.
+      </Callout>
 
       <h3>When a choice changes (change)</h3>
       <p>

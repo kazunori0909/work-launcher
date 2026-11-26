@@ -1,4 +1,4 @@
-import { Code, Table } from '../../parts'
+import { Callout, Code, Fold, Table } from '../../parts'
 
 /** ヘルプの章「関数から呼び出す」 */
 export function Functions(): React.JSX.Element {
@@ -40,15 +40,19 @@ module.exports = {
       <p>
         書けるのは動作に関わるものだけです。<code>label</code> や <code>icon</code>{' '}
         のような見た目の属性は書けません。パスの起点や <code>{'${workDir}'}</code>{' '}
-        などの変数、開ける URL の種類は、YAML に書いたときと同じです。変数は{' '}
-        <code>{"'${workDir}/out'"}</code> のように引用符（<code>&apos;</code> か <code>&quot;</code>
-        ）の中に書きます。バッククォートの中では JS の値の埋め込みになります。
+        などの変数、開ける URL の種類は、YAML に書いたときと同じです。
       </p>
       <p>
         何行もあるコマンドは、バッククォートで囲んで改行をそのまま書けます。前後の空行と、どの行にも共通する先頭の空白は取り除きます。関数に合わせてインデントしてかまいません（YAML
-        の <code>|</code> と同じです）。<code>bat</code> の改行は自動で CRLF
-        にします。その中で設定の変数を使うときは、<code>$</code> の前に <code>\</code> を付けます。
+        の <code>|</code> と同じです）。<code>bat</code> の改行は自動で CRLF にします。
       </p>
+      <Callout kind="warning">
+        設定の変数は <code>{"'${workDir}/out'"}</code> のように引用符（<code>&apos;</code> か{' '}
+        <code>&quot;</code>
+        ）の中に書きます。バッククォートの中では JS の値の埋め込みになるので、<code>
+          $
+        </code> の前に <code>\</code> を付けます。
+      </Callout>
       <Code lang="javascript">{`await ctx.bat(\`
   cd tools
   call setup.bat
@@ -66,6 +70,7 @@ ctx.log(\`終了コード: \${result.code}\`)   // 止めたときは code が n
 // 待たずに始めるだけにする（サーバーの起動など）
 await ctx.sh('npm run dev', { wait: false })`}</Code>
 
+      <h3>動かすフォルダと OS</h3>
       <p>
         <code>cwd</code> を書かなければ、関数と同じ作業フォルダ（<code>ctx.workDir</code>
         ）で動きます。相対パスで書いた <code>cwd</code> は、YAML
@@ -91,18 +96,20 @@ if (r.code !== 0) ctx.log(\`失敗しました: \${r.stderr}\`)
 else if (r.stdout === '') ctx.log('変更はありません')
 else ctx.log(\`変更があります:\\n\${r.stdout}\`)`}</Code>
       <p>
-        <code>bat</code> は、YAML と同じく実行したコマンドも出力に出ます。出力を読むときは、先頭に{' '}
-        <code>@echo off</code> を書きます（1行だけなら <code>@cd</code> のように <code>@</code>{' '}
-        を付けます）。
+        <code>console: false</code> の実行は、実行中の一覧に出ないので画面からは止められません。
       </p>
-      <Code lang="javascript">{`const r = await ctx.bat(\`
+      <Fold title="bat の出力を読むとき">
+        <p>
+          <code>bat</code> は、YAML と同じく実行したコマンドも出力に出ます。出力を読むときは、先頭に{' '}
+          <code>@echo off</code> を書きます（1行だけなら <code>@cd</code> のように <code>@</code>{' '}
+          を付けます）。
+        </p>
+        <Code lang="javascript">{`const r = await ctx.bat(\`
   @echo off
   git rev-parse --abbrev-ref HEAD
 \`, { console: false })
 ctx.log(\`ブランチ: \${r.stdout}\`)`}</Code>
-      <p>
-        <code>console: false</code> の実行は、実行中の一覧に出ないので画面からは止められません。
-      </p>
+      </Fold>
       <h3>項目の値と押せる・押せないを変える</h3>
       <p>
         <code>ctx.set</code>・<code>ctx.reset</code> で select などの値を、<code>ctx.disable</code>
@@ -115,14 +122,17 @@ ctx.log(\`ブランチ: \${r.stdout}\`)`}</Code>
         ファイルが無い、コマンドを始められない、といったときは例外になります。<code>await</code>{' '}
         していれば関数はそこで止まり、コンソールにエラーが出ます。続けたいときは{' '}
         <code>try / catch</code> で受けます。<code>await</code>{' '}
-        しなかったときは、エラーをコンソールに出して関数は先へ進みます。コマンドが 0
-        以外の終了コードで終わったときは、例外にはなりません。
+        しなかったときは、エラーをコンソールに出して関数は先へ進みます。
       </p>
       <Code lang="javascript">{`try {
   await ctx.open('logs/today.log')
 } catch (e) {
   ctx.log('まだログがありません')
 }`}</Code>
+      <Callout kind="warning">
+        コマンドが 0 以外の終了コードで終わっても、例外にはなりません。失敗で止めたいときは{' '}
+        <code>result.code</code> を見てください。
+      </Callout>
     </>
   )
 }

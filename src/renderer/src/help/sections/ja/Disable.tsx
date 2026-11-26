@@ -1,4 +1,4 @@
-import { Code, SampleView } from '../../parts'
+import { Callout, Code, SampleView } from '../../parts'
 import { EXAMPLES } from '../../examples'
 import type { SectionProps } from '../../parts'
 
@@ -90,11 +90,11 @@ export function Disable({ platform }: SectionProps): React.JSX.Element {
         関数で押せなくした状態は、設定ファイルを読み直しても変わりません。案件を開き直すと、全部押せる状態に戻ります。開いたときから押せなくしておくときは{' '}
         <code>beforeOpen</code> か <code>afterOpen</code> で呼びます。
       </p>
-      <p>
+      <Callout kind="warning">
         押せなくするのは画面の操作だけです。関数から <code>ctx.sh</code>{' '}
-        などで呼ぶ動作は止めません。無い ID や、見出し・md のように押せない項目の ID
-        を渡すと、例外になります。
-      </p>
+        などで呼ぶ動作は止めません。
+      </Callout>
+      <p>無い ID や、見出し・md のように押せない項目の ID を渡すと、例外になります。</p>
     </>
   )
 }

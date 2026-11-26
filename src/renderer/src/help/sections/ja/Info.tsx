@@ -1,5 +1,5 @@
 import { BUILTIN_TOOLS, toolHelp } from '../../../../../core/builtinTools'
-import { Code, Table } from '../../parts'
+import { Callout, Code, Fold, Table } from '../../parts'
 
 /** ヘルプの章「Info ページ」 */
 export function Info(): React.JSX.Element {
@@ -23,6 +23,13 @@ export function Info(): React.JSX.Element {
     - name: JDK                # 表示名（省略時は値の名前）
       path: HKLM\\SOFTWARE\\JavaSoft\\JDK\\CurrentVersion
   drives: false                # ドライブを出さないとき`}</Code>
+      <Callout kind="warning">
+        レジストリのパスには引用符を付けないでください。<code>{'"…"'}</code> で囲むと、
+        <code>\</code> がエスケープの文字として読まれてしまいます。
+      </Callout>
+      <p>
+        レジストリのパスの末尾を <code>\</code> で終えると、キーの既定値を読みます。
+      </p>
       <h3>組み込みのツール</h3>
       <p>
         <code>tools</code>{' '}
@@ -43,16 +50,18 @@ export function Info(): React.JSX.Element {
         ツールの枠の下の「脆弱性を調べる（Zero Wire）」を押すと、Cloudflare
         の脆弱性の情報のサイトを既定のブラウザで開きます。製品名を入れると、その製品の脆弱性を探せます。アプリからは何も送りません。
       </p>
-      <p>
-        ツール側の取り方が変わって組み込みで取れなくなったときは、同じ名前で <code>command</code> や{' '}
-        <code>pattern</code> を書くと上書きできます。<code>command</code> を書くと{' '}
-        <code>pattern</code> とまとめて置き換わり、どの OS でもそのコマンドを使います。
-        <code>pattern</code> だけなら、組み込みのコマンドの出力から抜き出し方だけを変えます。
-      </p>
-      <Code lang="yaml">{`info:
+      <Fold title="組み込みのツールが取れなくなったとき">
+        <p>
+          ツール側の取り方が変わって組み込みで取れなくなったときは、同じ名前で <code>command</code>{' '}
+          や <code>pattern</code> を書くと上書きできます。<code>command</code> を書くと{' '}
+          <code>pattern</code> とまとめて置き換わり、どの OS でもそのコマンドを使います。
+          <code>pattern</code> だけなら、組み込みのコマンドの出力から抜き出し方だけを変えます。
+        </p>
+        <Code lang="yaml">{`info:
   tools:
     - name: steam              # 表示名は Steam のまま
       pattern: '"version"\\s+"(\\d+)"'`}</Code>
+      </Fold>
       <h3>自分の PC だけツールを変える</h3>
       <p>
         <code>config.local.yaml</code> の <code>tools</code>{' '}
@@ -64,11 +73,6 @@ export function Info(): React.JSX.Element {
     - { name: node, hidden: true }   # 共通の設定の node を出さない
     - name: Maven                    # 自分だけ使うツールを足す
       command: mvn -v`}</Code>
-      <p>
-        レジストリのパスには引用符を付けないでください。<code>{'"…"'}</code> で囲むと、
-        <code>\</code> がエスケープの文字として読まれてしまいます。末尾を <code>\</code>{' '}
-        で終えると、キーの既定値を読みます。
-      </p>
     </>
   )
 }

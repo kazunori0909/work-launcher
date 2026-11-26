@@ -1,4 +1,4 @@
-import { Code, SampleView } from '../../parts'
+import { Callout, Code, SampleView } from '../../parts'
 import { EXAMPLES_EN } from '../../examples.en'
 import type { SectionProps } from '../../parts'
 
@@ -94,10 +94,13 @@ export function Disable({ platform }: SectionProps): React.JSX.Element {
         project again makes all items pressable. To start with items disabled, call it in{' '}
         <code>beforeOpen</code> or <code>afterOpen</code>.
       </p>
-      <p>
+      <Callout kind="warning">
         Only the window is affected: actions called from a function, such as <code>ctx.sh</code>,
-        still run. An unknown ID, or the ID of an item that cannot be pressed (such as a heading or
-        md), throws an exception.
+        still run.
+      </Callout>
+      <p>
+        An unknown ID, or the ID of an item that cannot be pressed (such as a heading or md), throws
+        an exception.
       </p>
     </>
   )

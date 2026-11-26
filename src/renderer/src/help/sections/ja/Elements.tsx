@@ -1,4 +1,4 @@
-import { CheatSheet, SampleView, Table } from '../../parts'
+import { Callout, CheatSheet, SampleView, Table } from '../../parts'
 import { ELEMENT_CHEATS, EXAMPLES } from '../../examples'
 import type { SectionProps } from '../../parts'
 
@@ -33,8 +33,7 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
       />
       <p>
         記憶した値は、この PC
-        のアプリの中に案件ごとに保存します。案件のファイルは書き換えないので、リポジトリに差分は出ません。同じ
-        ID の select を別のページにも置くと、どちらも同じ値になります。
+        のアプリの中に案件ごとに保存します。案件のファイルは書き換えないので、リポジトリに差分は出ません。
       </p>
 
       <h3>ラジオボタン（radio）</h3>
@@ -73,10 +72,10 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
           ['remember', 'select と同じ']
         ]}
       />
-      <p>
-        ID は select、radio、checkbox の3つで共通です。種類が違っても、同じ ID
-        なら同じ値を指します。
-      </p>
+      <Callout kind="warning">
+        ID は select・radio・checkbox で共通で、ページや種類が違っても同じ ID
+        なら同じ値です。別の値を持たせたいときは ID を分けてください。
+      </Callout>
     </>
   )
 }

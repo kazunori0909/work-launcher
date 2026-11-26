@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Children, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { buildUrl, execKindFor, expandSelect, itemAt, resolveSelections } from '../../../core/items'
 import { resetValues } from '../../../core/itemState'
@@ -7,6 +7,9 @@ import { highlight } from '../lib/highlight'
 import type { CodeLang } from '../lib/highlight'
 import { ItemList } from '../components/PageView'
 import { SelectContext } from '../components/selectContext'
+import { Alert } from '../components/Alert'
+import { Icon } from '../components/Icon'
+import type { AlertKind } from '../../../core/alert'
 import type { SelectContextValue } from '../components/selectContext'
 import type { Cheat, Example } from './examples'
 import { t } from '../../../core/i18n'
@@ -43,6 +46,70 @@ export function Section(props: {
       <h2>{props.title}</h2>
       {props.children}
     </section>
+  )
+}
+
+/**
+ * 本文の中のアラート。使う種類と数は docs/phase38-help-alerts-details/PLAN.md「アラートのルール」に沿う。
+ * 中身は1〜3文の文（コード見本や表は外に置く）
+ */
+export function Callout({
+  kind,
+  children
+}: {
+  kind: Extract<AlertKind, 'note' | 'tip' | 'warning'>
+  children: ReactNode
+}): React.JSX.Element {
+  return (
+    <div className="help-callout">
+      <Alert kind={kind}>
+        <p>{bySentence(children)}</p>
+      </Alert>
+    </div>
+  )
+}
+
+/**
+ * 日本語の文ごとに .help-sentence で包み、入りきらない文を次の行から始める（→ docs/writing.md「画面での改行」）。
+ * 「。」が無い文（英語など）はそのまま返す
+ */
+function bySentence(children: ReactNode): ReactNode {
+  const sentences: ReactNode[][] = [[]]
+  for (const child of Children.toArray(children)) {
+    if (typeof child !== 'string') {
+      sentences[sentences.length - 1].push(child)
+      continue
+    }
+    for (const part of child.split(/(?<=[。！？])/)) {
+      sentences[sentences.length - 1].push(part)
+      if (/[。！？]$/.test(part)) sentences.push([])
+    }
+  }
+  const filled = sentences.filter((s) => s.some((n) => typeof n !== 'string' || n.trim() !== ''))
+  if (filled.length < 2) return children
+  return filled.map((s, i) => (
+    <span key={i} className="help-sentence">
+      {s}
+    </span>
+  ))
+}
+
+/** 特定の状況でだけ要る内容を畳む（→ 同 PLAN.md「折りたたみのルール」）。見た目は details の項目と同じ */
+export function Fold({
+  title,
+  children
+}: {
+  title: string
+  children: ReactNode
+}): React.JSX.Element {
+  return (
+    <details className="item-details help-fold">
+      <summary>
+        <Icon name="chevron-right" />
+        {title}
+      </summary>
+      <div className="item-details-body">{children}</div>
+    </details>
   )
 }
 

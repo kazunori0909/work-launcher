@@ -220,3 +220,22 @@
 .icon-cell:hover {
   border-color: var(--accent);
 }
+
+/* 本文の中のアラートと折りたたみ（parts.tsx の Callout・Fold） */
+.help-callout {
+  margin: 12px 0;
+}
+
+/* アラートの中の日本語の1文（parts.tsx の bySentence）。入りきらない文は次の行から始める */
+.help-sentence {
+  display: inline-block;
+}
+
+.help-fold {
+  margin: 8px 0;
+}
+
+/* 中身は本文と同じく段落の余白で並べる（項目の details のような flex の隙間は使わない） */
+.help-fold > .item-details-body {
+  display: block;
+}

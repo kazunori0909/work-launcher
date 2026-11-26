@@ -1,4 +1,4 @@
-import { CheatSheet, Code, SampleView, Table } from '../../parts'
+import { Callout, CheatSheet, Code, Fold, SampleView, Table } from '../../parts'
 import { EXAMPLES_EN, ITEM_CHEATS_EN } from '../../examples.en'
 import type { SectionProps } from '../../parts'
 
@@ -75,10 +75,10 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
           ['encoding', 'Output encoding (default: cp932 for bat, utf-8 otherwise)']
         ]}
       />
-      <p>
+      <Callout kind="warning">
         You cannot type input into a command. Even if it waits for input, like <code>pause</code>,
         it continues without stopping.
-      </p>
+      </Callout>
 
       <h3>Opening files and folders (open)</h3>
       <p>
@@ -90,23 +90,36 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
       <h3>Opening Office files (excel / powerpoint / word)</h3>
       <p>
         <code>readonly: true</code> opens the file read-only, which suits documents you do not want
-        to overwrite by accident. It works only on Windows. On a Mac without Office, files open in
-        the default app, such as Numbers, Keynote or Pages.
+        to overwrite by accident.
       </p>
       <SampleView example={EXAMPLES_EN.office} platform={platform} />
+      <Callout kind="note">
+        <code>readonly</code> works only on Windows. On a Mac without Office, files open in the
+        default app, such as Numbers, Keynote or Pages.
+      </Callout>
 
       <h3>Opening in the browser (url)</h3>
       <p>
         Opens in the default browser. Values in <code>params</code> are URL-encoded and added to the
         end, so you can write search words in any language as they are.
       </p>
+      <SampleView example={EXAMPLES_EN.url} platform={platform} />
       <p>
         Only URLs starting with <code>http</code>, <code>https</code> or <code>mailto</code> can be
-        opened. The same applies to links in md and html, and to <code>ctx.url</code>. To open a
-        shared folder with <code>file://</code>, list the allowed kinds at the top level, like{' '}
-        <code>openSchemes: [http, https, mailto, file]</code>.
+        opened. The same applies to links in md and html, and to <code>ctx.url</code>.
       </p>
-      <SampleView example={EXAMPLES_EN.url} platform={platform} />
+      <Fold title="To open other kinds of URL, such as file://">
+        <p>
+          To open a shared folder with <code>file://</code>, for example, list the allowed kinds in{' '}
+          <code>openSchemes</code> at the top level. Only the listed kinds can be opened, so include
+          the default three as well.
+        </p>
+        <Code lang="yaml">{`openSchemes: [http, https, mailto, file]`}</Code>
+        <p>
+          Allowing <code>file</code> also lets exe files and the like open, so add it only in
+          projects that need it.
+        </p>
+      </Fold>
 
       <h3>Calling a JavaScript function (function)</h3>
       <p>
