@@ -2,8 +2,8 @@
 
 - [x] details 項目（読み込み・描画・開閉）
 - [x] details の入れ子をどこまで許すか決める
-- [ ] md のアラート記法（remark プラグイン）
-- [ ] アラートの項目（note・tip・important・warning・caution）
+- [x] md のアラート記法（remark プラグイン）
+- [x] アラートの項目（note・tip・important・warning・caution）
 - [ ] アラートの見た目（アイコン・色。ライト・ダーク）
 - [ ] image 項目（読み込み・width の px と %・描画）
 - [ ] image の拡大表示（閉じるボタン・Esc・背景）と `zoom: false`

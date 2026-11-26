@@ -88,6 +88,7 @@ export function registerActionHandlers(sessionOf: SessionOf): void {
       case 'mdfile':
       case 'group':
       case 'details':
+      case 'alert':
       case 'buttons':
       case 'select':
       case 'break':

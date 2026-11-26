@@ -51,3 +51,37 @@ describe('md のコードブロックの色付け', () => {
     expect(render('```' + lang + '\n' + code + '\n```')).toContain('<span class="hljs-')
   })
 })
+
+describe('md のアラート', () => {
+  it('[!NOTE] などで始まる引用をアラートにし、見出しを足す', () => {
+    const html = render('> [!WARNING]\n> 消す前に **バックアップ** を取る')
+    expect(html).toContain('<div class="wl-alert wl-alert-warning">')
+    expect(html).toContain('警告</div>')
+    expect(html).toContain('消す前に <strong>バックアップ</strong> を取る')
+    expect(html).not.toContain('[!WARNING]')
+    expect(html).not.toContain('<blockquote')
+  })
+
+  it('大文字・小文字は問わず、5種類を読む', () => {
+    for (const [mark, label] of [
+      ['note', 'メモ'],
+      ['Tip', 'ヒント'],
+      ['IMPORTANT', '重要'],
+      ['caution', '注意']
+    ]) {
+      expect(render(`> [!${mark}]\n> 本文`)).toContain(`${label}</div>`)
+    }
+  })
+
+  it('印の行のあとに空の行があっても、空の段落を残さない', () => {
+    const html = render('> [!TIP]\n>\n> 本文')
+    expect(html).not.toContain('<p></p>')
+    expect(html).toContain('<p>本文</p>')
+  })
+
+  it('知らない種類・印が行の途中にあるものは、ふつうの引用のまま', () => {
+    expect(render('> [!DANGER]\n> 本文')).toContain('<blockquote>')
+    expect(render('> [!NOTE] 本文')).toContain('<blockquote>')
+    expect(render('> 本文 [!NOTE]')).toContain('<blockquote>')
+  })
+})

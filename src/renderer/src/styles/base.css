@@ -11,6 +11,12 @@
   --error-bg: #ffebe9;
   --warning: #9a6700;
   --success: #1a7f37;
+  /* アラート（メモ・ヒント・重要・警告・注意）の色 */
+  --alert-note: #2f6fd0;
+  --alert-tip: #2a8a4a;
+  --alert-important: #7a4fd0;
+  --alert-warning: #a86b00;
+  --alert-caution: #c8323a;
   --header-bg: var(--surface);
   --header-text: var(--muted);
   /* ヘルプのコード見本の色 */
@@ -35,6 +41,11 @@
     --error-bg: #3c1618;
     --warning: #d29922;
     --success: #3fb950;
+    --alert-note: #5b9bf5;
+    --alert-tip: #4cc06a;
+    --alert-important: #a888f0;
+    --alert-warning: #d9a33a;
+    --alert-caution: #f0646a;
     --code-comment: #8b949e;
     --code-keyword: #ff7b72;
     --code-string: #a5d6ff;

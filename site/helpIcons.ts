@@ -21,6 +21,7 @@ export function helpIconNames(): string[] {
   // 体験ページで描く画面の部品（<Icon name="…"> と name={… ? '…' : '…'}）
   for (const file of [
     'src/renderer/src/components/InfoPage.tsx',
+    'src/renderer/src/components/PageView.tsx',
     'site/src/components/TryLauncher.tsx'
   ]) {
     for (const m of read(file).matchAll(/<Icon name=(?:"([a-z0-9-]+)"|\{([^}]*)\})/g)) {
@@ -34,6 +35,13 @@ export function helpIconNames(): string[] {
     items.indexOf('function looksLikeFile')
   )
   for (const m of body.matchAll(/'([a-z][a-z0-9-]*)'/g)) names.add(m[1])
+  // アラートの見出しのアイコン（ALERT_ICONS）
+  const alert = read('src/core/alert.ts')
+  const icons = alert.slice(
+    alert.indexOf('ALERT_ICONS'),
+    alert.indexOf('}', alert.indexOf('ALERT_ICONS'))
+  )
+  for (const m of icons.matchAll(/: '([a-z][a-z0-9-]*)'/g)) names.add(m[1])
   return [...names]
 }
 

@@ -1,4 +1,5 @@
 // 設定ファイルを読み込んで正規化したあとの形（仕様は docs/config.md）
+import type { AlertKind } from './alert'
 import type { ConsoleRule } from './console'
 import type { Lang } from './i18n'
 
@@ -65,6 +66,8 @@ export type Item =
       /** 画面で値を変えたときに呼ぶ関数（scripts の関数名） */
       change?: string
     })
+  /** アラート（note・tip などの項目）。text は書いたままの文 */
+  | { kind: 'alert'; id?: string; level: AlertKind; text: string }
   | { kind: 'break'; id?: string }
   | { kind: 'heading'; id?: string; text: string }
   | { kind: 'error'; id?: string; message: string }

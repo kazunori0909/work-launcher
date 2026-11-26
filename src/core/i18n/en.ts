@@ -215,6 +215,13 @@ export const en: Messages = {
     registryHint: ['List value paths in', 'to show them']
   },
 
+  alert: {
+    note: 'Note',
+    tip: 'Tip',
+    important: 'Important',
+    warning: 'Warning',
+    caution: 'Caution'
+  },
   ui: {
     loading: 'Loading…',
     cannotLoad: 'Could not load the settings',

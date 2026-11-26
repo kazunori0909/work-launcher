@@ -1,5 +1,6 @@
 import { icons } from 'lucide-react'
 import { describe, expect, it } from 'vitest'
+import { ALERT_ICONS } from '../src/core/alert'
 import { defaultIcon } from '../src/core/items'
 import type { Item } from '../src/core/types'
 import * as ja from '../src/renderer/src/help/examples'
@@ -44,5 +45,17 @@ describe('サイトに入れるアイコン', () => {
       return !Object.entries(icons).some(([k, v]) => v === icon && keys.has(k))
     })
     expect(missing).toEqual([])
+  })
+
+  it('アラートと折りたたみのアイコンが Lucide にあり、全部入っている', () => {
+    const keys = new Set(helpIconKeys())
+    for (const name of [...Object.values(ALERT_ICONS), 'chevron-right']) {
+      const icon = lookupIcon(icons, name)
+      expect(icon, name).toBeDefined()
+      expect(
+        Object.entries(icons).some(([k, v]) => v === icon && keys.has(k)),
+        name
+      ).toBe(true)
+    }
   })
 })

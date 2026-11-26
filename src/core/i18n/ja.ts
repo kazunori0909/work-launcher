@@ -219,6 +219,8 @@ export const ja = {
     registryHint: ['設定の', 'に値のパスを並べると表示します']
   },
 
+  /** アラートの見出し（docs.github.com の日本語版の呼び方） */
+  alert: { note: 'メモ', tip: 'ヒント', important: '重要', warning: '警告', caution: '注意' },
   ui: {
     loading: '読み込み中…',
     cannotLoad: '設定を読み込めませんでした',

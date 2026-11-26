@@ -316,6 +316,21 @@ describe('項目の誤りは、その項目だけエラーにする', () => {
     expect(errorMessage(items[3])).toContain('expanded は true / false')
   })
 
+  it('アラートの項目を読む', async () => {
+    const { items } = await loadItems(`
+- note: メモの本文
+- caution: |
+    1行目
+    2行目
+- { warning: 警告, id: w }
+- important:
+`)
+    expect(items[0]).toEqual({ kind: 'alert', level: 'note', text: 'メモの本文' })
+    expect(items[1]).toEqual({ kind: 'alert', level: 'caution', text: '1行目\n2行目' })
+    expect(items[2]).toEqual({ kind: 'alert', id: 'w', level: 'warning', text: '警告' })
+    expect(errorMessage(items[3])).not.toBe(false)
+  })
+
   it('checkbox に options は書けない（警告にとどめる）', async () => {
     const { items, diagnostics } = await loadItems('- { checkbox: c, options: [a] }')
     expect(errorMessage(items[0])).toBe(false)

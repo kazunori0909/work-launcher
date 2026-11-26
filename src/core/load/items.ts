@@ -1,4 +1,5 @@
 import { isMdFilePath } from '../items'
+import type { AlertKind } from '../alert'
 import { BUTTON_KINDS, EXEC_KINDS } from '../types'
 import type { ExecKind, Item, ItemCommon, ItemWhen, SelectControl, SelectOption } from '../types'
 import { isObj, scalar } from './reader'
@@ -52,6 +53,17 @@ const office = (kind: 'excel' | 'powerpoint' | 'word'): KindSpec => ({
     if (typeof readonly !== 'boolean') f.problem(t().load.notBoolean('readonly'))
     return { ...f.common, kind, path: f.req(kind), readonly: readonly === true }
   }
+})
+
+const alert = (level: AlertKind): KindSpec => ({
+  keys: ['id'],
+  read: (f) => ({
+    kind: 'alert',
+    id: f.common.id,
+    level,
+    // `|` で書いた末尾の改行は空行に見えるので落とす
+    text: f.reqText(level).replace(/\n+$/, '')
+  })
 })
 
 const select = (control: SelectControl): KindSpec => ({
@@ -140,6 +152,11 @@ const KINDS = {
       return { ...f.common, kind: 'reset', ids: [...new Set(ids as string[])] }
     }
   },
+  note: alert('note'),
+  tip: alert('tip'),
+  important: alert('important'),
+  warning: alert('warning'),
+  caution: alert('caution'),
   break: { keys: COMMON_KEYS, read: (f) => ({ kind: 'break', id: f.common.id }) },
   heading: {
     keys: COMMON_KEYS,

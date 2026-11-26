@@ -854,6 +854,72 @@ echo %DATE%
             "text": "frame を true にすると枠で囲みます。",
             "title": "枠で囲む",
           },
+          {
+            "id": undefined,
+            "kind": "heading",
+            "text": "アラート（項目）",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "note",
+            "text": "メモ。流し読みでも知っておいてほしいこと",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "tip",
+            "text": "ヒント。知っていると楽になること",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "important",
+            "text": "重要。目的を果たすのに要ること",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "warning",
+            "text": "警告。すぐに気をつけてほしいこと
+2行目も書けます",
+          },
+          {
+            "id": undefined,
+            "kind": "alert",
+            "level": "caution",
+            "text": "注意。操作のリスク",
+          },
+          {
+            "id": undefined,
+            "kind": "heading",
+            "text": "アラート（md）",
+          },
+          {
+            "confirm": undefined,
+            "content": "> [!NOTE]
+> メモ。md なら **太字** や [リンク](https://example.com) も使えます。
+
+> [!TIP]
+> ヒント。\`コード\` も書けます。
+
+> [!IMPORTANT]
+> 重要。目的を果たすのに要ること
+
+> [!WARNING]
+> 警告。すぐに気をつけてほしいこと
+
+> [!CAUTION]
+> 注意。
+> - 箇条書きも
+> - 入れられます
+",
+            "icon": undefined,
+            "id": undefined,
+            "kind": "markdown",
+            "label": undefined,
+            "tooltip": undefined,
+          },
         ],
         "title": "表示",
       },

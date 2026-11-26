@@ -93,6 +93,32 @@ pages:
       - details: 枠で囲む
         frame: true
         text: frame を true にすると枠で囲みます。
+      - heading: アラート（項目）
+      - note: メモ。流し読みでも知っておいてほしいこと
+      - tip: ヒント。知っていると楽になること
+      - important: 重要。目的を果たすのに要ること
+      - warning: |
+          警告。すぐに気をつけてほしいこと
+          2行目も書けます
+      - caution: 注意。操作のリスク
+      - heading: アラート（md）
+      - md: |
+          > [!NOTE]
+          > メモ。md なら **太字** や [リンク](https://example.com) も使えます。
+
+          > [!TIP]
+          > ヒント。`コード` も書けます。
+
+          > [!IMPORTANT]
+          > 重要。目的を果たすのに要ること
+
+          > [!WARNING]
+          > 警告。すぐに気をつけてほしいこと
+
+          > [!CAUTION]
+          > 注意。
+          > - 箇条書きも
+          > - 入れられます
 
   # ヘルプ
   - id: help

@@ -151,6 +151,16 @@
   border-left: none;
 }
 
+/* アラートの項目。md の中のアラートと同じく1行を占める */
+.item-alert {
+  flex-basis: 100%;
+  min-width: 0;
+}
+
+.wl-alert-text {
+  white-space: pre-wrap;
+}
+
 /* ボタングループ。隣り合うボタンの枠をつなげて1つの塊に見せる */
 .item-buttons {
   display: inline-flex;

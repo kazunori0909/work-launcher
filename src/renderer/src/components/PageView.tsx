@@ -14,6 +14,7 @@ import type { Item, Page } from '../../../core/types'
 import { DisabledContext } from './disabledContext'
 import { HtmlEmbed, Markdown } from './embed'
 import { EmbedContext } from './embedContext'
+import { Alert } from './Alert'
 import { Icon } from './Icon'
 import { SelectContext } from './selectContext'
 import { t } from '../../../core/i18n'
@@ -100,6 +101,14 @@ function ItemViewInner(props: ItemProps): React.JSX.Element {
       return <div className="item-heading">{item.text}</div>
     case 'error':
       return <div className="item-error">{item.message}</div>
+    case 'alert':
+      return (
+        <div className="item-alert">
+          <Alert kind={item.level}>
+            <div className="wl-alert-text">{item.text}</div>
+          </Alert>
+        </div>
+      )
     case 'markdown':
       return (
         <div className="item-embed">
