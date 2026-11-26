@@ -1,4 +1,4 @@
-import { Code, Table } from '../../parts'
+import { Callout, Code, Fold, Table } from '../../parts'
 
 /** ヘルプの章「関数から呼び出す」（英語） */
 export function Functions(): React.JSX.Element {
@@ -42,17 +42,19 @@ module.exports = {
       <p>
         Only behavior can be written. Look-related attributes such as <code>label</code> and{' '}
         <code>icon</code> cannot. Path bases, variables like <code>{'${workDir}'}</code>, and the
-        kinds of URL that can be opened are the same as in YAML. Write variables inside quotes (
-        <code>&apos;</code> or <code>&quot;</code>), like <code>{"'${workDir}/out'"}</code>. Inside
-        backquotes, they become JS template values.
+        kinds of URL that can be opened are the same as in YAML.
       </p>
       <p>
         A multi-line command can be written in backquotes with the line breaks as they are. Blank
         lines at either end and leading spaces shared by every line are removed, so you can indent
         to match the function (just like <code>|</code> in YAML). Line breaks in <code>bat</code>{' '}
-        become CRLF automatically. To use a settings variable there, put <code>\</code> before{' '}
-        <code>$</code>.
+        become CRLF automatically.
       </p>
+      <Callout kind="warning">
+        Write settings variables inside quotes (<code>&apos;</code> or <code>&quot;</code>), like{' '}
+        <code>{"'${workDir}/out'"}</code>. Inside backquotes they become JS template values, so put{' '}
+        <code>\</code> before <code>$</code>.
+      </Callout>
       <Code lang="javascript">{`await ctx.bat(\`
   cd tools
   call setup.bat
@@ -70,6 +72,7 @@ ctx.log(\`Exit code: \${result.code}\`)   // code is null when stopped
 // just start it without waiting (e.g. starting a server)
 await ctx.sh('npm run dev', { wait: false })`}</Code>
 
+      <h3>Folders and OS</h3>
       <p>
         Without <code>cwd</code>, commands run in the same working folder as the function (
         <code>ctx.workDir</code>). A relative <code>cwd</code> counts from the launcher folder, as
@@ -95,19 +98,21 @@ if (r.code !== 0) ctx.log(\`Failed: \${r.stderr}\`)
 else if (r.stdout === '') ctx.log('No changes')
 else ctx.log(\`Changes:\\n\${r.stdout}\`)`}</Code>
       <p>
-        As in YAML, <code>bat</code> also echoes the commands it runs. When reading the output, put{' '}
-        <code>@echo off</code> first (for a single line, add <code>@</code>, as in <code>@cd</code>
-        ).
+        A run with <code>console: false</code> is not listed as running, so it cannot be stopped
+        from the window.
       </p>
-      <Code lang="javascript">{`const r = await ctx.bat(\`
+      <Fold title="To read the output of bat">
+        <p>
+          As in YAML, <code>bat</code> also echoes the commands it runs. When reading the output,
+          put <code>@echo off</code> first (for a single line, add <code>@</code>, as in{' '}
+          <code>@cd</code>).
+        </p>
+        <Code lang="javascript">{`const r = await ctx.bat(\`
   @echo off
   git rev-parse --abbrev-ref HEAD
 \`, { console: false })
 ctx.log(\`Branch: \${r.stdout}\`)`}</Code>
-      <p>
-        A run with <code>console: false</code> is not listed as running, so it cannot be stopped
-        from the window.
-      </p>
+      </Fold>
       <h3>Changing values and whether items can be pressed</h3>
       <p>
         <code>ctx.set</code> and <code>ctx.reset</code> change the values of selects and the like,
@@ -120,13 +125,17 @@ ctx.log(\`Branch: \${r.stdout}\`)`}</Code>
         A missing file or a command that cannot start throws an exception. If you <code>await</code>
         , the function stops there and the error appears in the console. To keep going, catch it
         with <code>try / catch</code>. Without <code>await</code>, the error goes to the console and
-        the function continues. A command that ends with a non-zero exit code does not throw.
+        the function continues.
       </p>
       <Code lang="javascript">{`try {
   await ctx.open('logs/today.log')
 } catch (e) {
   ctx.log('No log yet')
 }`}</Code>
+      <Callout kind="warning">
+        A command that ends with a non-zero exit code does not throw. To stop on failure, check{' '}
+        <code>result.code</code>.
+      </Callout>
     </>
   )
 }

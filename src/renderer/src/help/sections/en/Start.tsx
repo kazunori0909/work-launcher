@@ -1,4 +1,4 @@
-import { Code } from '../../parts'
+import { Callout, Code } from '../../parts'
 
 /** ヘルプの章「はじめに」（英語） */
 export function Start(): React.JSX.Element {
@@ -20,8 +20,9 @@ export function Start(): React.JSX.Element {
       <p>
         On Windows, the easiest way is to put the portable <code>WorkLauncher.exe</code> in the same
         folder and double-click it. If you commit the exe to the repository, everyone on the team
-        can open the project the same way. There is no portable version for Mac.
+        can open the project the same way.
       </p>
+      <Callout kind="note">There is no portable version for Mac. Install the app instead.</Callout>
       <p>
         If the app is installed, double-click <code>work.launcher</code> or drop it on the app icon.
         You can also choose it with &quot;Open Project…&quot; in the menu (<code>⌘O</code> /{' '}

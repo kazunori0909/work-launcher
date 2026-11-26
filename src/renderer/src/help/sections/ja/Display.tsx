@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { EmbedContext } from '../../../components/embedContext'
-import { CheatSheet, Code, SampleView, Table } from '../../parts'
+import { Callout, CheatSheet, Code, Fold, SampleView, Table } from '../../parts'
 import { EXAMPLES, LAYOUT_CHEATS } from '../../examples'
 import { IconBrowser } from '../../IconBrowser'
 import type { SectionProps } from '../../parts'
@@ -99,17 +99,20 @@ export function Display({ platform }: SectionProps): React.JSX.Element {
         値が1行で <code>.md</code>{' '}
         で終わるときだけ、ファイルのパスとして読みます。それ以外は本文として扱います。
       </p>
-      <p>
-        リンクや画像の相対パスは、ランチャーのフォルダから数えます。md
-        ファイルに書いたものだけは、その md ファイルの場所から数えます。リンクを押すと、URL
-        はブラウザで、ファイルは既定のアプリで開きます。画像は、ランチャーのフォルダの中にあるものしか出せません。
-      </p>
-      <p>
-        つまずきやすいのは、本文に <code>: </code>（コロンと空白）が入るときです。
-        <code>color: red</code> のような文を1行に続けて書くと、YAML
+      <Callout kind="warning">
+        本文に <code>: </code>（コロンと空白）が入ると、YAML
         のキーと読まれてしまいます。上の例のように <code>|</code>{' '}
         を書いて、次の行から本文を書いてください。
-      </p>
+      </Callout>
+      <p>リンクを押すと、URL はブラウザで、ファイルは既定のアプリで開きます。</p>
+      <Fold title="リンクと画像の相対パスの数え方">
+        <p>
+          リンクや画像の相対パスは、ランチャーのフォルダから数えます。md
+          ファイルに書いたものだけは、その md
+          ファイルの場所から数えます。画像は、ランチャーのフォルダの中にあるものと{' '}
+          <code>https</code> の URL しか出せません。
+        </p>
+      </Fold>
 
       <h3>アイコン（icon）</h3>
       <p>

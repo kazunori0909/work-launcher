@@ -1,4 +1,4 @@
-import { Code } from '../../parts'
+import { Callout, Code } from '../../parts'
 
 /** ヘルプの章「はじめに」 */
 export function Start(): React.JSX.Element {
@@ -19,9 +19,11 @@ export function Start(): React.JSX.Element {
       <p>
         Windows なら、ポータブル版の <code>WorkLauncher.exe</code>{' '}
         を同じフォルダに置いてダブルクリックするのが手軽です。exe
-        ごとリポジトリにコミットしておけば、チームの誰でも同じ手順で開けます。Mac
-        にはポータブル版がありません。
+        ごとリポジトリにコミットしておけば、チームの誰でも同じ手順で開けます。
       </p>
+      <Callout kind="note">
+        Mac にはポータブル版がありません。アプリをインストールして使います。
+      </Callout>
       <p>
         アプリをインストールしているなら、<code>work.launcher</code>{' '}
         をダブルクリックするか、アプリのアイコンにドロップします。メニューの「案件を開く…」（

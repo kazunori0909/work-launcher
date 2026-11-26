@@ -17,6 +17,9 @@
       en: '`note`, `tip`, `important`, `warning`, and `caution` add colored notices (alerts). In md, write them as `> [!NOTE]`.'
     - ja: '`image` で画像を置けるようにしました。大きさは px か割合で決められ、押すとウィンドウの中で大きく表示します。'
       en: '`image` shows an image. Set its size in px or as a percentage; clicking it enlarges it inside the window.'
+  changed:
+    - ja: ヘルプの注意点をアラートで目立たせ、一部の人だけに要る説明を折りたたみにしました。
+      en: The help now highlights pitfalls with alerts and folds away details that only some readers need.
 
 - version: 0.4.1
   date: 2026-11-25

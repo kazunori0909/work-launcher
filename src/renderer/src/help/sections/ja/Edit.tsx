@@ -1,5 +1,5 @@
 import { t } from '../../../../../core/i18n'
-import { Code, OnlyApp, Table } from '../../parts'
+import { Callout, Code, OnlyApp, Table } from '../../parts'
 import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「設定ファイルの編集」 */
@@ -33,9 +33,12 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
       <p>
         自分の PC だけで使いたいボタンは <code>launcher/config.local.yaml</code>{' '}
         に書きます。書き方は <code>config.yaml</code>{' '}
-        と同じで、アプリは共通の設定にこのファイルを重ねて読みます。<code>.gitignore</code>{' '}
-        に入れておけば、ほかの人の画面には出ません。
+        と同じで、アプリは共通の設定にこのファイルを重ねて読みます。
       </p>
+      <Callout kind="warning">
+        <code>config.local.yaml</code> は <code>.gitignore</code>{' '}
+        に入れてください。入れ忘れてコミットすると、ほかの人の画面にも出ます。
+      </Callout>
       {launcherDir && (
         <div className="help-row">
           <button className="item" onClick={createLocal}>
@@ -80,12 +83,11 @@ id: tools
 title: ツール
 cwd: tools        # このページのコマンドを動かすフォルダ
 items: [...]`}</Code>
-      <p>
-        <code>help</code> という ID は、このヘルプのために取ってあります。<code>pages</code> に{' '}
-        <code>id: help</code>{' '}
+      <Callout kind="tip">
+        <code>pages</code> に <code>id: help</code>{' '}
         のページを書くと、その項目がヘルプのいちばん上の章に出ます。章の名前は案件の{' '}
         <code>title</code> です。案件ならではの手順やメモを置く場所に使えます。
-      </p>
+      </Callout>
 
       <h3>言語ごとに書く</h3>
       <p>

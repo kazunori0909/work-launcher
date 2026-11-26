@@ -1,4 +1,4 @@
-import { CheatSheet, Code, SampleView, Table } from '../../parts'
+import { Callout, CheatSheet, Code, Fold, SampleView, Table } from '../../parts'
 import { EXAMPLES, ITEM_CHEATS } from '../../examples'
 import type { SectionProps } from '../../parts'
 
@@ -71,10 +71,10 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
           ['encoding', '出力の文字コード（既定は bat が cp932、ほかは utf-8）']
         ]}
       />
-      <p>
+      <Callout kind="warning">
         コマンドにキーで入力することはできません。<code>pause</code>{' '}
         のような入力待ちがあっても、止まらずに先へ進みます。
-      </p>
+      </Callout>
 
       <h3>ファイル・フォルダを開く（open）</h3>
       <p>
@@ -86,24 +86,35 @@ export function Items({ platform }: SectionProps): React.JSX.Element {
       <h3>Office 製品を開く（excel / powerpoint / word）</h3>
       <p>
         <code>readonly: true</code>{' '}
-        を書くと読み取り専用で開くので、うっかり上書きしたくない資料に向いています。これが効くのは
-        Windows だけです。Mac で Office が入っていなければ、Numbers や Keynote、Pages
-        など既定のアプリで開きます。
+        を書くと読み取り専用で開くので、うっかり上書きしたくない資料に向いています。
       </p>
       <SampleView example={EXAMPLES.office} platform={platform} />
+      <Callout kind="note">
+        <code>readonly</code> が効くのは Windows だけです。Mac で Office が入っていなければ、Numbers
+        や Keynote、Pages など既定のアプリで開きます。
+      </Callout>
 
       <h3>ブラウザで開く（url）</h3>
       <p>
         既定のブラウザで開きます。<code>params</code> に書いた値は URL
         エンコードしてから末尾に付けるので、日本語の検索語もそのまま書けます。
       </p>
+      <SampleView example={EXAMPLES.url} platform={platform} />
       <p>
         開ける URL は、<code>http</code>、<code>https</code>、<code>mailto</code>{' '}
-        で始まるものだけに絞っています。md や html の中のリンク、<code>ctx.url</code>{' '}
-        も同じです。社内の共有フォルダを <code>file://</code> で開きたいときは、最上位に{' '}
-        <code>openSchemes: [http, https, mailto, file]</code> のように、開いてよい種類を並べます。
+        で始まるものだけに絞っています。md や html の中のリンク、<code>ctx.url</code> も同じです。
       </p>
-      <SampleView example={EXAMPLES.url} platform={platform} />
+      <Fold title="file:// などほかの種類の URL を開きたいとき">
+        <p>
+          社内の共有フォルダを <code>file://</code> で開きたいときなどは、最上位の{' '}
+          <code>openSchemes</code>{' '}
+          に開いてよい種類を並べます。書いた種類だけが開けるので、既定の3つも並べてください。
+        </p>
+        <Code lang="yaml">{`openSchemes: [http, https, mailto, file]`}</Code>
+        <p>
+          <code>file</code> を許すと exe なども開けてしまうので、要る案件でだけ書いてください。
+        </p>
+      </Fold>
 
       <h3>JavaScript の関数を呼ぶ（function）</h3>
       <p>

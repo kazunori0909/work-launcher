@@ -65,7 +65,7 @@
   Web サイトでは、Web だけの文言にビルド時に当てている（`site/src/phrase.ts`）
 - **文節で折る（CSS だけ）**: `word-break: auto-phrase`。効くのは Chrome / Edge だけ（2026-11 時点。Safari・Firefox は普通に折れる）。
   React で描くヘルプの見出し・表はこれにしている（アプリは Electron なので必ず効く）
-- **文の途中で行を変えない**: 文ごとに `display: inline-block` の要素で包むと、入りきらない文は次の行から始まる（`site/src/phrase.ts` の `.s-sentence`）
+- **文の途中で行を変えない**: 文ごとに `display: inline-block` の要素で包むと、入りきらない文は次の行から始まる（`site/src/phrase.ts` の `.s-sentence`、ヘルプのアラートの `.help-sentence`）
 - **行の長さを揃える**: 中央揃えの見出し・リード文は `text-wrap: balance`、左揃えの本文は `text-wrap: pretty`
 - **行頭の句読点を防ぐ**: `line-break: strict`
 - 文節を `<span>` で包むときは、その親に `display: flex` を当てない（1文字ずつ割れることがある）

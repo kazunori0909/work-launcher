@@ -1,4 +1,4 @@
-import { Code, SampleView } from '../../parts'
+import { Callout, Code, SampleView } from '../../parts'
 import { EXAMPLES_EN } from '../../examples.en'
 import type { SectionProps } from '../../parts'
 
@@ -70,11 +70,11 @@ export function SetValues({ platform }: SectionProps): React.JSX.Element {
         function, and <code>{'${select:ID}'}</code> in a later <code>ctx.sh</code> and the like uses
         the new value.
       </p>
-      <p>
+      <Callout kind="warning">
         A <code>reset</code> button, <code>ctx.set</code> and <code>ctx.reset</code> do not call the{' '}
-        <code>change</code> function of the changed item. This keeps items that rewrite each other
-        from looping forever. To do more, write it in the same function.
-      </p>
+        <code>change</code> function of the changed item (this keeps items that rewrite each other
+        from looping forever). To do more, write it in the same function.
+      </Callout>
       <p>An unknown ID, or a value that is not an option, throws an exception.</p>
     </>
   )

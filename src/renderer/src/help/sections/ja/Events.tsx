@@ -1,4 +1,4 @@
-import { Code, Table } from '../../parts'
+import { Callout, Code, Table } from '../../parts'
 
 /** ヘルプの章「イベント」 */
 export function Events(): React.JSX.Element {
@@ -41,10 +41,11 @@ module.exports = {
         <code>beforeClose</code>{' '}
         に時間がかかると「待たずに閉じる」が出て、押せば関数を止めて閉じます。
       </p>
-      <p>
-        設定ファイルを保存して読み直したときは、開くイベントをもう一度は呼びません。JS
-        は呼ぶたびに読み直すので、関数の間で変数の値を持ち越すこともできません。残したい値はファイルに書いてください。
-      </p>
+      <p>設定ファイルを保存して読み直したときは、開くイベントをもう一度は呼びません。</p>
+      <Callout kind="warning">
+        JS
+        は呼ぶたびに読み直すので、関数の間で変数の値を持ち越せません。残したい値はファイルに書いてください。
+      </Callout>
 
       <h3>選択肢を変えたとき（change）</h3>
       <p>

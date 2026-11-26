@@ -1,4 +1,4 @@
-import { CheatSheet, SampleView, Table } from '../../parts'
+import { Callout, CheatSheet, SampleView, Table } from '../../parts'
 import { ELEMENT_CHEATS_EN, EXAMPLES_EN } from '../../examples.en'
 import type { SectionProps } from '../../parts'
 
@@ -33,8 +33,7 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
       />
       <p>
         Remembered values are stored per project inside the app on this PC. Project files are not
-        changed, so there is no diff in the repository. A select with the same ID on another page
-        shares the same value.
+        changed, so there is no diff in the repository.
       </p>
 
       <h3>Radio buttons (radio)</h3>
@@ -73,10 +72,10 @@ export function Elements({ platform }: SectionProps): React.JSX.Element {
           ['remember', 'Same as select']
         ]}
       />
-      <p>
-        IDs are shared by select, radio and checkbox. The same ID means the same value, even for
-        different kinds.
-      </p>
+      <Callout kind="warning">
+        IDs are shared by select, radio and checkbox: the same ID means the same value, even on
+        another page or for a different kind. Use different IDs to keep values separate.
+      </Callout>
     </>
   )
 }

@@ -1,5 +1,5 @@
 import { BUILTIN_TOOLS, toolHelp } from '../../../../../core/builtinTools'
-import { Code, Table } from '../../parts'
+import { Callout, Code, Fold, Table } from '../../parts'
 
 /** ヘルプの章「Info ページ」（英語） */
 export function Info(): React.JSX.Element {
@@ -27,6 +27,13 @@ export function Info(): React.JSX.Element {
     - name: JDK                # display name (the value name if omitted)
       path: HKLM\\SOFTWARE\\JavaSoft\\JDK\\CurrentVersion
   drives: false                # to hide drives`}</Code>
+      <Callout kind="warning">
+        Do not quote registry paths. Inside <code>{'"…"'}</code>, <code>\</code> is read as an
+        escape character.
+      </Callout>
+      <p>
+        Ending a registry path with <code>\</code> reads the key&apos;s default value.
+      </p>
       <h3>Built-in tools</h3>
       <p>
         These tools can be shown by writing just the name in <code>tools</code>, without saying how
@@ -47,17 +54,19 @@ export function Info(): React.JSX.Element {
         Cloudflare&apos;s vulnerability site in your default browser. Enter a product name there to
         find its vulnerabilities. The app sends nothing.
       </p>
-      <p>
-        If a tool changes and the built-in way stops working, write <code>command</code> or{' '}
-        <code>pattern</code> under the same name to override it. Writing <code>command</code>{' '}
-        replaces it together with <code>pattern</code> and uses that command on every OS. Writing
-        only <code>pattern</code> changes just how the version is taken from the built-in
-        command&apos;s output.
-      </p>
-      <Code lang="yaml">{`info:
+      <Fold title="When a built-in tool stops working">
+        <p>
+          If a tool changes and the built-in way stops working, write <code>command</code> or{' '}
+          <code>pattern</code> under the same name to override it. Writing <code>command</code>{' '}
+          replaces it together with <code>pattern</code> and uses that command on every OS. Writing
+          only <code>pattern</code> changes just how the version is taken from the built-in
+          command&apos;s output.
+        </p>
+        <Code lang="yaml">{`info:
   tools:
     - name: steam              # still shown as Steam
       pattern: '"version"\\s+"(\\d+)"'`}</Code>
+      </Fold>
       <h3>Changing tools on your PC only</h3>
       <p>
         Tools written in <code>tools</code> of <code>config.local.yaml</code> are added after the
@@ -69,10 +78,6 @@ export function Info(): React.JSX.Element {
     - { name: node, hidden: true }   # hide node from the shared settings
     - name: Maven                    # add a tool only you use
       command: mvn -v`}</Code>
-      <p>
-        Do not quote registry paths. Inside <code>{'"…"'}</code>, <code>\</code> is read as an
-        escape character. Ending a path with <code>\</code> reads the key&apos;s default value.
-      </p>
     </>
   )
 }

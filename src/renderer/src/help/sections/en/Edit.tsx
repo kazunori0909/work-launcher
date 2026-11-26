@@ -1,5 +1,5 @@
 import { t } from '../../../../../core/i18n'
-import { Code, OnlyApp, Table } from '../../parts'
+import { Callout, Code, OnlyApp, Table } from '../../parts'
 import type { SectionProps } from '../../parts'
 
 /** ヘルプの章「設定ファイルの編集」（英語） */
@@ -34,8 +34,12 @@ export function Edit({ launcherDir, onError }: SectionProps): React.JSX.Element 
       <p>
         Buttons you want only on your own machine go in <code>launcher/config.local.yaml</code>. It
         is written the same way as <code>config.yaml</code>, and the app layers it on top of the
-        shared settings. Add it to <code>.gitignore</code> and it will not appear for anyone else.
+        shared settings.
       </p>
+      <Callout kind="warning">
+        Add <code>config.local.yaml</code> to <code>.gitignore</code>. If you commit it by mistake,
+        it appears for everyone else too.
+      </Callout>
       {launcherDir && (
         <div className="help-row">
           <button className="item" onClick={createLocal}>
@@ -80,12 +84,11 @@ id: tools
 title: Tools
 cwd: tools        # folder where this page's commands run
 items: [...]`}</Code>
-      <p>
-        The ID <code>help</code> is reserved for this help. If you write a page with{' '}
-        <code>id: help</code> in <code>pages</code>, its items appear as the first chapter of the
-        help, named after the project&apos;s <code>title</code>. Use it for steps and notes specific
-        to the project.
-      </p>
+      <Callout kind="tip">
+        If you write a page with <code>id: help</code> in <code>pages</code>, its items appear as
+        the first chapter of the help (named after the project&apos;s <code>title</code>). Use it
+        for steps and notes specific to the project.
+      </Callout>
 
       <h3>Writing per language</h3>
       <p>
