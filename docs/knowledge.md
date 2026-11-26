@@ -49,3 +49,7 @@
 - Rollup は、静的にも読み込むパッケージを `import()` しても別の塊にしない。あとから読ませたいものは、
   別のファイルに分けてそこを `import()` する（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
 - DOMPurify は DOM が要るので、ビルド時（Node）の描画では動かない（由来: [Phase 29](archive/phase29-github-pages/PLAN.md)）
+- Lucide はアイコンの名前を変えることがある（例: `triangle-alert` → `triangle-exclamation-point`）。
+  古い名前では何も出ないので、コードで使う名前は `lucide-react` の `icons` にあるかを確かめる（サイトのアイコンのテストで確かめている）（由来: [Phase 37](archive/phase37-display-items/PLAN.md)）
+- git は日本語などのファイル名を、既定で引用符とエスケープ（`"\346..."`）つきで返す。
+  スクリプトでファイル名を読むときは `git -c core.quotePath=false` を付ける（由来: [Phase 37](archive/phase37-display-items/PLAN.md)）
