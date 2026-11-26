@@ -50,7 +50,7 @@ export function Section(props: {
 }
 
 /**
- * 本文の中のアラート。使う種類と数は docs/phase38-help-alerts-details/PLAN.md「アラートのルール」に沿う。
+ * 本文の中のアラート。使う種類と数は docs/writing.md「ヘルプのアラートと折りたたみ」に沿う。
  * 中身は1〜3文の文（コード見本や表は外に置く）
  */
 export function Callout({
@@ -94,7 +94,7 @@ function bySentence(children: ReactNode): ReactNode {
   ))
 }
 
-/** 特定の状況でだけ要る内容を畳む（→ 同 PLAN.md「折りたたみのルール」）。見た目は details の項目と同じ */
+/** 特定の状況でだけ要る内容を畳む（→ 同じ節）。見た目は details の項目と同じ */
 export function Fold({
   title,
   children

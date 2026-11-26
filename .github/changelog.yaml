@@ -6,7 +6,8 @@
 # - breaking には、直し方まで書く
 # - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
 
-- version: unreleased
+- version: 0.5.0
+  date: 2026-11-26
   summary:
     ja: 折りたたみ・アラート・画像の項目を足しました。md を書かなくても、説明を整えて見せられます。
     en: Added collapsible sections, alerts, and images, so you can lay out explanations without writing md.
