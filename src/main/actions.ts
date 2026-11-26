@@ -87,6 +87,7 @@ export function registerActionHandlers(sessionOf: SessionOf): void {
       case 'markdown':
       case 'mdfile':
       case 'group':
+      case 'details':
       case 'buttons':
       case 'select':
       case 'break':

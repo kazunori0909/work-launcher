@@ -73,6 +73,27 @@ pages:
   # 別ファイルからページ追加
   - include: launcher/pages/sample-page.yaml
 
+  # 表示の項目（折りたたみ・アラート・画像）
+  - id: display
+    title: { ja: 表示, en: Display }
+    icon: layout-list
+    items:
+      - details: 古い手順について
+        text: |
+          2025 年までの手順です。
+          いまは使いません。
+      - details: 詳しい設定
+        expanded: true
+        icon: settings
+        items:
+          - md: 中には **どの項目でも** 置けます。
+          - open: docs
+          - details: さらに折りたたむ
+            text: 入れ子にもできます。
+      - details: 枠で囲む
+        frame: true
+        text: frame を true にすると枠で囲みます。
+
   # ヘルプ
   - id: help
     items:

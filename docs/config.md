@@ -114,6 +114,7 @@ info: # → 7章
 | `url`                                    | 既定のブラウザで開く             |
 | `break` / `heading`                      | 並びの改行 / 見出し              |
 | `group` / `buttons`                      | 枠で囲む / ボタンを1つの塊にする |
+| `details`                                | 押すと開閉する枠に入れる         |
 | `select` / `radio` / `checkbox`          | 選択肢。値をほかの項目で使う     |
 | `reset`                                  | select などを初期値に戻す        |
 
@@ -372,7 +373,7 @@ openSchemes: [http, https, mailto, file] # config.yaml の最上位
 - ボタンは横に並び、幅が足りなければ折り返す。それ以外の位置で行を変えたいときに使う
 - `id` を付ければ、ローカル設定から置き換えられる（ほかの共通属性は使わない）
 
-### 3.7 グループとボタングループ（group / buttons）
+### 3.7 グループ・ボタングループ・折りたたみ（group / buttons / details）
 
 ```yaml
 - group: 資料 # 枠で囲む。値は枠の見出し（`group:` だけなら見出しなし）
@@ -395,6 +396,26 @@ openSchemes: [http, https, mailto, file] # config.yaml の最上位
   - 中に置けるのはボタンになる項目（`function`・ファイルを開く・実行系・`url`・`reset`）だけ。それ以外はその位置にエラーを出す
   - 書けるキーは `buttons`・`id`・`enabledWhen`・`disabledWhen`。中のボタンは普通の項目と同じ書き方
 - グループ・ボタングループの中の項目も、`id` を付ければローカル設定から置き換えられる（→ 5章）
+
+折りたたみ（details）:
+
+```yaml
+- details: 古い手順について # 見出し。押すと開閉する
+  text: | # 書いたままの文（改行もそのまま）
+    2025 年までの手順です。
+- details: 詳しい設定
+  expanded: true # 開いた状態で出す（既定は閉じる）
+  frame: true # 枠で囲む（既定は枠なし）
+  items: # group と同じく項目を並べる
+    - bat: setup.bat
+```
+
+- 中身は `text` と `items` のどちらか、または両方で書く。両方あれば `text` を先に出す
+- 1行を占める。既定は枠を付けず、開いた中身の左に線を引く。`frame: true` で枠で囲む
+- 開閉は覚えない（ページを開き直すと書いたとおりに戻る）
+- 中にはどの項目も置ける（details・group も置ける）
+- 書けるキーは `details`・`text`・`items`・`expanded`・`frame`・`icon`・`id`。
+  開いて出すキーが `open` でないのは、`open` が種類キー（→ 3.2）だから
 
 ### 3.8 選択（select）
 

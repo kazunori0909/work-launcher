@@ -90,6 +90,67 @@
   font-weight: 600;
 }
 
+/* 折りたたみ。1行を占める。既定は枠を付けず、開いた中身の左に線を引いて範囲を示す。frame: true で枠で囲む */
+.item-details {
+  flex-basis: 100%;
+  min-width: 0;
+}
+
+.item-details > summary {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  padding: 4px 0;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  user-select: none;
+}
+
+.item-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.item-details > summary > .icon:first-child {
+  flex: none;
+  color: var(--muted);
+  transition: transform 0.15s;
+}
+
+.item-details[open] > summary > .icon:first-child {
+  transform: rotate(90deg);
+}
+
+.item-details-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 4px 7px;
+  padding: 2px 0 2px 14px;
+  border-left: 2px solid var(--border);
+}
+
+.item-details-text {
+  white-space: pre-wrap;
+}
+
+.item-details.framed {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.item-details.framed > summary {
+  width: auto;
+  padding: 6px 10px;
+}
+
+.item-details.framed > .item-details-body {
+  margin: 0;
+  padding: 0 12px 12px;
+  border-left: none;
+}
+
 /* ボタングループ。隣り合うボタンの枠をつなげて1つの塊に見せる */
 .item-buttons {
   display: inline-flex;

@@ -132,6 +132,28 @@ function ItemViewInner(props: ItemProps): React.JSX.Element {
           />
         </fieldset>
       )
+    case 'details':
+      return (
+        <details className={item.frame ? 'item-details framed' : 'item-details'} open={item.open}>
+          <summary>
+            <Icon name="chevron-right" />
+            <Icon name={item.icon} />
+            {item.title}
+          </summary>
+          <div className="item-details-body">
+            {item.text !== undefined && <div className="item-details-text">{item.text}</div>}
+            {item.items.length > 0 && (
+              <ItemList
+                items={item.items}
+                platform={platform}
+                running={running}
+                onActivate={onActivate}
+                parent={path}
+              />
+            )}
+          </div>
+        </details>
+      )
     case 'buttons':
       return (
         <div className="item-buttons" role="group">

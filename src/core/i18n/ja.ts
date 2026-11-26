@@ -23,6 +23,7 @@ export const ja = {
     page: (id: string) => `ページ ${id}`,
     pageItems: (id: string) => `ページ ${id} の items`,
     groupItems: (title: string) => `group ${title} の items`,
+    detailsItems: (title: string) => `details ${title} の items`,
     item: (name: string) => `項目 ${name}`,
     notList: (where: string) => `${where} は「- 」で始まる並びで書いてください`,
     notPaths: (where: string) => `${where} にはパスを並べてください`,
@@ -39,6 +40,7 @@ export const ja = {
     whenValue: (key: string, id: string) => `${key} の ${id} には値か、値の並びを書いてください`,
     groupTitle: 'group には見出しの文字を書いてください（省略可）',
     groupNoItems: 'group には items で中の項目を並べてください',
+    detailsEmpty: 'details には text か items で、折りたたむ中身を書いてください',
     buttonsNotList: 'buttons にはボタンを「- 」で並べてください',
     buttonsOnly: (kind: string) =>
       `buttons に置けるのはボタンになる項目だけです（${kind} は置けません）`,

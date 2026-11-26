@@ -41,6 +41,18 @@ export type Item =
   | (ItemCommon & { kind: 'reset'; ids: string[] })
   | { kind: 'group'; id?: string; icon?: string; title?: string; when?: ItemWhen; items: Item[] }
   | { kind: 'buttons'; id?: string; when?: ItemWhen; items: Item[] }
+  /** 折りたたみ。text（書いたままの文）を先に、items を後に出す */
+  | {
+      kind: 'details'
+      id?: string
+      icon?: string
+      title: string
+      text?: string
+      open: boolean
+      /** 枠で囲む */
+      frame: boolean
+      items: Item[]
+    }
   | (ItemCommon & {
       kind: 'select'
       /** select の ID。`${select:ID}` で参照する（id と同じ値） */

@@ -280,6 +280,42 @@ describe('項目の誤りは、その項目だけエラーにする', () => {
     })
   })
 
+  it('details を読む。中に group・details も置ける', async () => {
+    const { items } = await loadItems(`
+- details: 古い手順
+  text: |
+    1行目
+    2行目
+- details: 詳しく
+  expanded: true
+  frame: true
+  items:
+    - { group: 中, items: [{ open: a }] }
+    - { details: さらに, text: 本文 }
+- details: 空
+- { details: 開閉, text: a, expanded: はい }
+`)
+    expect(items[0]).toEqual({
+      kind: 'details',
+      title: '古い手順',
+      text: '1行目\n2行目',
+      open: false,
+      frame: false,
+      items: []
+    })
+    expect(items[1]).toMatchObject({
+      kind: 'details',
+      open: true,
+      frame: true,
+      items: [
+        { kind: 'group', items: [{ kind: 'open' }] },
+        { kind: 'details', title: 'さらに', text: '本文' }
+      ]
+    })
+    expect(errorMessage(items[2])).toContain('text か items')
+    expect(errorMessage(items[3])).toContain('expanded は true / false')
+  })
+
   it('checkbox に options は書けない（警告にとどめる）', async () => {
     const { items, diagnostics } = await loadItems('- { checkbox: c, options: [a] }')
     expect(errorMessage(items[0])).toBe(false)

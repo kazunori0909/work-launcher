@@ -29,6 +29,7 @@ export function itemLabel(item: Item, platform: string): string {
   if (item.kind === 'heading') return item.text
   if (item.kind === 'buttons') return ''
   if (item.kind === 'group') return item.title ?? ''
+  if (item.kind === 'details') return item.title
   if (item.kind === 'select') return item.label ?? item.name
   if (item.label) return item.label
   switch (item.kind) {
@@ -84,6 +85,7 @@ export function defaultIcon(item: Item): string | undefined {
     case 'markdown':
     case 'mdfile':
     case 'group':
+    case 'details':
     case 'buttons':
     case 'select':
     case 'break':

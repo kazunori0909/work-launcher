@@ -33,7 +33,7 @@ interface ItemFields {
   dict(key: string): Record<string, string> | undefined
   problem(message: string): void
   /** 子の項目の並びを読む */
-  children(raw: unknown, where: string, parent: 'group'): Item[]
+  children(raw: unknown, where: string, parent?: 'group'): Item[]
   /** 子の項目を1つ読む */
   child(raw: unknown, parent: 'buttons'): Item
 }
@@ -158,6 +158,32 @@ const KINDS = {
         id: f.common.id,
         icon: f.common.icon,
         title,
+        items
+      }
+    }
+  },
+  details: {
+    keys: ['id', 'icon', 'text', 'items', 'expanded', 'frame'],
+    read: (f) => {
+      const title = f.reqText('details')
+      // `|` で書いた末尾の改行は空行に見えるので落とす
+      const text = f.text('text')?.replace(/\n+$/, '')
+      // `open` は種類キー（ファイルを開く）なので、開いて出すのは expanded と書く
+      const open = f.raw.expanded ?? false
+      if (typeof open !== 'boolean') f.problem(t().load.notBoolean('expanded'))
+      const frame = f.raw.frame ?? false
+      if (typeof frame !== 'boolean') f.problem(t().load.notBoolean('frame'))
+      if (text === undefined && f.raw.items === undefined) f.problem(t().load.detailsEmpty)
+      const items =
+        f.raw.items === undefined ? [] : f.children(f.raw.items, t().load.detailsItems(title))
+      return {
+        kind: 'details',
+        id: f.common.id,
+        icon: f.common.icon,
+        title,
+        ...(text !== undefined ? { text } : {}),
+        open: open === true,
+        frame: frame === true,
         items
       }
     }
