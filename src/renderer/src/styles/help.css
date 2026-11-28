@@ -154,6 +154,8 @@
 
 .cheat-note {
   margin-top: 2px;
+  /* 説明の \n でだけ改行する（ほかは折り返さない） */
+  white-space: pre;
   color: var(--muted);
   font-size: 11px;
 }

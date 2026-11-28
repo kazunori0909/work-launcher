@@ -211,8 +211,12 @@ function CheatRow({ cheat, platform }: { cheat: Cheat; platform: string }): Reac
     <>
       <tr>
         <td className="cheat-name" rowSpan={1 + rest.length}>
-          <code>{cheat.name}</code>
-          <div className="cheat-note">{cheat.note}</div>
+          {[cheat.name, ...(cheat.also ?? [])].map((name) => (
+            <div key={name}>
+              <code>{name}</code>
+            </div>
+          ))}
+          {cheat.note && <div className="cheat-note">{cheat.note}</div>}
         </td>
         <CheatCells example={first} platform={platform} />
       </tr>

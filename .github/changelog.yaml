@@ -16,6 +16,8 @@
   changed:
     - ja: 言語のボタンに、いまの言語名を出すようにしました。押すと一覧から選べます。
       en: The language button now shows the current language name; click it to pick from a list.
+    - ja: ヘルプの早見表で、種類の欄が広くなりすぎて横にスクロールしないと見えないことがあったので、並べ方と説明を見直しました。
+      en: In the help's quick-reference tables, the type column no longer grows so wide that you have to scroll sideways.
 
 - version: 0.5.0
   date: 2026-11-26
