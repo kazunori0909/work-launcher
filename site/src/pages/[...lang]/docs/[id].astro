@@ -26,6 +26,19 @@ const next = sections[index + 1]
 ---
 
 <Base lang={lang} title={section.title} path={`docs/${id}/`}>
+  <Fragment slot="head">
+    <!-- 見本の OS を描く前に決める（選んだ OS か、見ている人の OS。使い方は DocBody.tsx） -->
+    <script is:inline>
+      {
+        let platform = navigator.userAgent.includes('Mac') ? 'darwin' : 'win32'
+        try {
+          const chosen = sessionStorage.getItem('samplePlatform')
+          if (chosen === 'win32' || chosen === 'darwin') platform = chosen
+        } catch {}
+        document.documentElement.dataset.platform = platform
+      }
+    </script>
+  </Fragment>
   <div class="s-docs">
     <aside class="s-sidebar">
       <details open>

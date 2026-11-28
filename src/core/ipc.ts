@@ -3,6 +3,7 @@
 import type { SystemInfo } from './info'
 import type { ExecKind, ItemState, ProjectView, ThirdPartyLicense } from './types'
 import type { Lang } from './i18n'
+import type { Theme } from './theme'
 
 export type RunEvent =
   /** function（scripts.js）からの知らせ。error のときだけコンソールを開く */
@@ -78,6 +79,8 @@ export interface InvokeApi {
   closeNow(): Promise<void>
   /** 表示の言語を変えて記憶する。開いているすべてのウィンドウを読み直して知らせる */
   setLang(lang: Lang): Promise<void>
+  /** 開いている案件のテーマを記憶する（画面にはその画面が当てる）。案件を開いていなければ何もしない */
+  setTheme(theme: Theme): Promise<void>
 }
 
 export const INVOKE_CHANNELS = {
@@ -95,7 +98,8 @@ export const INVOKE_CHANNELS = {
   listLicenses: 'licenses:list',
   changeSelection: 'select:change',
   closeNow: 'window:closeNow',
-  setLang: 'lang:set'
+  setLang: 'lang:set',
+  setTheme: 'theme:set'
 } as const satisfies Record<keyof InvokeApi, string>
 
 /** メインから画面への知らせ（チャンネル → 中身） */

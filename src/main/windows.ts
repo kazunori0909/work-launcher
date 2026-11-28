@@ -17,6 +17,8 @@ import { addRecent, listRecent, refreshJumpList } from './recent'
 import { saveLang } from './lang'
 import { NO_DISABLED } from '../core/itemState'
 import { readRemembered } from './remembered'
+import { readTheme, saveTheme } from './theme'
+import { isTheme } from '../core/theme'
 import { WindowSession } from './session'
 import { getLang, isLang, t } from '../core/i18n'
 import type { Lang } from '../core/i18n'
@@ -88,7 +90,8 @@ async function load(w: WindowSession): Promise<ProjectView> {
     ...loaded.view,
     appVersion: app.getVersion(),
     remembered,
-    lang: getLang()
+    lang: getLang(),
+    theme: readTheme(loaded.view.launcherDir)
   })
   const { project, launcherDir } = view
   if (!project || !launcherDir) return view
@@ -189,6 +192,10 @@ export function registerWindowHandlers(): void {
   handle('listRecent', () => listRecent())
   handle('setLang', (_, arg) => {
     if (isLang(arg)) changeLang(arg)
+  })
+  handle('setTheme', (e, arg) => {
+    const dir = windows.get(e.sender.id)?.view?.launcherDir
+    if (dir && isTheme(arg)) saveTheme(dir, arg)
   })
   // 「待たずに閉じる」: 待っている beforeClose の子プロセスを止める（止まれば prepareClose が終わり、閉じる）
   handle('closeNow', (e) => {

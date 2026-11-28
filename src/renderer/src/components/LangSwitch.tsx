@@ -1,25 +1,31 @@
-import { getLang, LANGS, t } from '../../../core/i18n'
+import { getLang, LANG_NAMES, LANGS, t } from '../../../core/i18n'
+import { MenuSwitch } from './MenuSwitch'
+
+const OPTIONS = LANGS.map((l) => ({ value: l, label: LANG_NAMES[l], lang: l }))
 
 /**
- * 右上の言語の切り替え。いまの言語を出し、押すたびに次の言語に変える。
- * 選んだ言語はメインが記憶し、すべてのウィンドウを読み直す
+ * 右上の言語の切り替え。いまの言語を出し、押すと一覧から選ぶ。
+ * 選んだ言語はメインが記憶し（アプリ全体で1つ）、すべてのウィンドウを読み直す
  */
 export function LangSwitch(): React.JSX.Element {
   const lang = getLang()
-  const next = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]
   return (
-    <button
-      className="lang-switch"
-      title={`${t().ui.langSwitch}: ${lang} → ${next}`}
-      aria-label={`${t().ui.langSwitch}: ${lang}`}
-      onClick={() => window.launcher.setLang(next)}
-    >
-      {/* 全部の言語を重ねて置き、いまの言語だけ見せる（幅がいちばん広いラベルに揃う） */}
-      {LANGS.map((l) => (
-        <span key={l} aria-hidden className={l === lang ? undefined : 'lang-hidden'}>
-          {l}
+    <MenuSwitch
+      icon="globe"
+      label={
+        // 全部の言語名を重ねて置き、いまの言語だけ見せる（幅がいちばん広い名前に揃い、切り替えてもずれない）
+        <span className="menu-switch-stack">
+          {LANGS.map((l) => (
+            <span key={l} aria-hidden className={l === lang ? undefined : 'menu-switch-hidden'}>
+              {LANG_NAMES[l]}
+            </span>
+          ))}
         </span>
-      ))}
-    </button>
+      }
+      title={`${t().ui.langSwitch}: ${LANG_NAMES[lang]}`}
+      options={OPTIONS}
+      value={lang}
+      onChange={(l) => window.launcher.setLang(l)}
+    />
   )
 }

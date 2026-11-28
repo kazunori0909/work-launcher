@@ -12,6 +12,7 @@ import type { EmbedContextValue } from './components/embedContext'
 import { Icon } from './components/Icon'
 import { InfoPage } from './components/InfoPage'
 import { LangSwitch } from './components/LangSwitch'
+import { ThemeSwitch } from './components/ThemeSwitch'
 import { PageView } from './components/PageView'
 import { DisabledContext } from './components/disabledContext'
 import { SelectContext } from './components/selectContext'
@@ -21,6 +22,7 @@ import { HelpPage } from './help/HelpPage'
 import { useConsole } from './hooks/useConsole'
 import { useClosing, useProjectView, useWindowTitle } from './hooks/useProjectView'
 import { useSelections } from './hooks/useSelections'
+import { useTheme } from './hooks/useTheme'
 import { findIcon } from './lib/icons'
 import { t } from '../../core/i18n'
 
@@ -49,6 +51,7 @@ function App(): React.JSX.Element {
   const { counts, runs, reportError } = consoleState
   const selections = useSelections(view, reportError)
   const disabled = view?.state?.disabled ?? NO_DISABLED
+  const [theme, setTheme] = useTheme(view)
 
   const onLink = useCallback(
     async (href: string, baseDir: string) => {
@@ -119,6 +122,7 @@ function App(): React.JSX.Element {
         </span>
         {view.appVersion && <span className="header-version">WorkLauncher {view.appVersion}</span>}
         <LangSwitch />
+        <ThemeSwitch theme={theme} onChange={setTheme} />
       </header>
       <nav className="tabs">
         {pages.map((p) => (

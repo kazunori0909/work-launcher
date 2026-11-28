@@ -2,6 +2,7 @@
 import type { AlertKind } from './alert'
 import type { ConsoleRule } from './console'
 import type { Lang } from './i18n'
+import type { Theme } from './theme'
 
 export const EXEC_KINDS = ['bat', 'sh', 'powershell', 'python'] as const
 export type ExecKind = (typeof EXEC_KINDS)[number]
@@ -189,6 +190,8 @@ export interface ProjectView {
   appVersion?: string
   /** 表示の言語（メインが決め、画面はこれに合わせる） */
   lang?: Lang
+  /** 案件で選んだテーマ（アプリのユーザーデータから読む。案件を開いていなければ system） */
+  theme?: Theme
   /** remember: true の select で記憶している値（ID → 値。アプリのユーザーデータから読む） */
   remembered?: Record<string, string>
   /** mdfile に書いたパス（未展開）ごとの中身 */
