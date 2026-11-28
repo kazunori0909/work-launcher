@@ -429,7 +429,7 @@ export const EXAMPLES_EN = {
 export const ITEM_CHEATS_EN: Cheat[] = [
   {
     name: 'bat',
-    note: 'Run with cmd (Windows)',
+    note: 'Run with cmd\n(Windows)',
     yaml: '- { bat: build.bat, label: Build }',
     items: [exec('bat', 'build.bat', 'Build')],
     more: [
@@ -467,7 +467,8 @@ export const ITEM_CHEATS_EN: Cheat[] = [
     items: [{ kind: 'open', path: 'docs' }]
   },
   {
-    name: 'excel / powerpoint / word',
+    name: 'excel',
+    also: ['powerpoint', 'word'],
     note: 'Open in Office',
     yaml: '- excel: docs/spec.xlsx',
     items: [{ kind: 'excel', path: 'docs/spec.xlsx', readonly: false }]
@@ -489,7 +490,7 @@ export const ITEM_CHEATS_EN: Cheat[] = [
 export const ELEMENT_CHEATS_EN: Cheat[] = [
   {
     name: 'select',
-    note: 'Pick one from a drop-down',
+    note: 'Drop-down',
     yaml: '- select: target\n  options: [dev, prod]',
     items: [
       {
@@ -507,7 +508,7 @@ export const ELEMENT_CHEATS_EN: Cheat[] = [
   },
   {
     name: 'radio',
-    note: 'Pick one from a row',
+    note: 'Pick one in a row',
     yaml: '- radio: mode\n  options: [debug, release]',
     items: [
       {
@@ -525,7 +526,7 @@ export const ELEMENT_CHEATS_EN: Cheat[] = [
   },
   {
     name: 'checkbox',
-    note: 'On or off (values default to true / false)',
+    note: 'Off by default',
     yaml: '- checkbox: dry\n  label: Dry run',
     items: [
       {
@@ -565,7 +566,7 @@ export const LAYOUT_CHEATS_EN: Cheat[] = [
   },
   {
     name: 'group',
-    note: 'Draw a frame around items',
+    note: 'Draw a frame',
     yaml: `- group: Documents
   items:
     - open: docs`,
@@ -573,7 +574,7 @@ export const LAYOUT_CHEATS_EN: Cheat[] = [
   },
   {
     name: 'buttons',
-    note: 'Join buttons together',
+    note: 'Join buttons',
     yaml: `- buttons:
     - { bat: build.bat, label: Build }
     - { bat: test.bat, label: Test }`,
@@ -586,7 +587,7 @@ export const LAYOUT_CHEATS_EN: Cheat[] = [
   },
   {
     name: 'details',
-    note: 'Opens and closes on click',
+    note: 'Collapsible',
     yaml: `- details: Old steps
   text: No longer used`,
     items: [
@@ -602,7 +603,8 @@ export const LAYOUT_CHEATS_EN: Cheat[] = [
   },
   {
     name: 'note',
-    note: 'Colored notice (also tip, important, warning, caution)',
+    also: ['tip', 'important', 'warning', 'caution'],
+    note: 'Colored notice',
     yaml: '- note: The build takes about 10 minutes',
     items: [{ kind: 'alert', level: 'note', text: 'The build takes about 10 minutes' }]
   },

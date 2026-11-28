@@ -429,7 +429,10 @@ export const EXAMPLES = {
 /** チートシートの1行。name は種類、note は一言の説明 */
 export interface Cheat extends Example {
   name: string
-  note: string
+  /** 同じ書き方のほかの種類（種類の欄に1行ずつ並べる） */
+  also?: string[]
+  /** 種類の下に出す短い説明。名前で分かるものは書かない */
+  note?: string
   /** 同じ種類の見本をさらに並べるとき（種類の欄を共有して、コードと表示を1組ずつ下に足す） */
   more?: Example[]
 }
@@ -444,7 +447,7 @@ export const exec = (kind: string, script: string, label: string): Item => ({
 export const ITEM_CHEATS: Cheat[] = [
   {
     name: 'bat',
-    note: 'cmd で実行（Windows）',
+    note: 'cmd で実行\n（Windows）',
     yaml: '- { bat: build.bat, label: ビルド }',
     items: [exec('bat', 'build.bat', 'ビルド')],
     more: [
@@ -482,7 +485,8 @@ export const ITEM_CHEATS: Cheat[] = [
     items: [{ kind: 'open', path: 'docs' }]
   },
   {
-    name: 'excel / powerpoint / word',
+    name: 'excel',
+    also: ['powerpoint', 'word'],
     note: 'Office で開く',
     yaml: '- excel: docs/仕様書.xlsx',
     items: [{ kind: 'excel', path: 'docs/仕様書.xlsx', readonly: false }]
@@ -505,7 +509,7 @@ export const ITEM_CHEATS: Cheat[] = [
 export const ELEMENT_CHEATS: Cheat[] = [
   {
     name: 'select',
-    note: 'ドロップダウンで1つ選ぶ',
+    note: 'ドロップダウン',
     yaml: '- select: target\n  options: [dev, prod]',
     items: [
       {
@@ -523,7 +527,7 @@ export const ELEMENT_CHEATS: Cheat[] = [
   },
   {
     name: 'radio',
-    note: '横に並べて1つ選ぶ',
+    note: '横に並べて選ぶ',
     yaml: '- radio: mode\n  options: [debug, release]',
     items: [
       {
@@ -541,7 +545,7 @@ export const ELEMENT_CHEATS: Cheat[] = [
   },
   {
     name: 'checkbox',
-    note: 'オン・オフ（既定の値は true / false）',
+    note: '既定はオフ',
     yaml: '- checkbox: dry\n  label: 試しに実行',
     items: [
       {
@@ -619,7 +623,8 @@ export const LAYOUT_CHEATS: Cheat[] = [
   },
   {
     name: 'note',
-    note: '色付きの注意書き（ほかに tip・important・warning・caution）',
+    also: ['tip', 'important', 'warning', 'caution'],
+    note: '色付きの注意書き',
     yaml: '- note: ビルドに 10 分ほどかかります',
     items: [{ kind: 'alert', level: 'note', text: 'ビルドに 10 分ほどかかります' }]
   },
