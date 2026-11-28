@@ -1,59 +1,41 @@
 /* 色の変数・リセット・ヘッダー・タブ */
 
 :root {
-  --bg: #f6f7f9;
-  --surface: #ffffff;
-  --text: #1f2328;
-  --muted: #656d76;
-  --border: #d0d7de;
-  --accent: #0969da;
-  --error: #cf222e;
-  --error-bg: #ffebe9;
-  --warning: #9a6700;
-  --success: #1a7f37;
+  /* 色は light-dark(ライト, ダーク)。どちらを使うかは color-scheme で決まる（OS に従う。data-theme があればそちら） */
+  --bg: light-dark(#f6f7f9, #0d1117);
+  --surface: light-dark(#ffffff, #161b22);
+  --text: light-dark(#1f2328, #e6edf3);
+  --muted: light-dark(#656d76, #8d96a0);
+  --border: light-dark(#d0d7de, #30363d);
+  --accent: light-dark(#0969da, #4493f8);
+  --error: light-dark(#cf222e, #f85149);
+  --error-bg: light-dark(#ffebe9, #3c1618);
+  --warning: light-dark(#9a6700, #d29922);
+  --success: light-dark(#1a7f37, #3fb950);
   /* アラート（メモ・ヒント・重要・警告・注意）の色 */
-  --alert-note: #2f6fd0;
-  --alert-tip: #2a8a4a;
-  --alert-important: #7a4fd0;
-  --alert-warning: #a86b00;
-  --alert-caution: #c8323a;
+  --alert-note: light-dark(#2f6fd0, #5b9bf5);
+  --alert-tip: light-dark(#2a8a4a, #4cc06a);
+  --alert-important: light-dark(#7a4fd0, #a888f0);
+  --alert-warning: light-dark(#a86b00, #d9a33a);
+  --alert-caution: light-dark(#c8323a, #f0646a);
   --header-bg: var(--surface);
   --header-text: var(--muted);
   /* ヘルプのコード見本の色 */
-  --code-comment: #6e7781;
-  --code-keyword: #cf222e;
-  --code-string: #0a3069;
-  --code-attr: #0550ae;
-  --code-func: #8250df;
-  --code-tag: #116329;
+  --code-comment: light-dark(#6e7781, #8b949e);
+  --code-keyword: light-dark(#cf222e, #ff7b72);
+  --code-string: light-dark(#0a3069, #a5d6ff);
+  --code-attr: light-dark(#0550ae, #79c0ff);
+  --code-func: light-dark(#8250df, #d2a8ff);
+  --code-tag: light-dark(#116329, #7ee787);
+  color-scheme: light dark;
+}
+
+:root[data-theme='light'] {
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --text: #e6edf3;
-    --muted: #8d96a0;
-    --border: #30363d;
-    --accent: #4493f8;
-    --error: #f85149;
-    --error-bg: #3c1618;
-    --warning: #d29922;
-    --success: #3fb950;
-    --alert-note: #5b9bf5;
-    --alert-tip: #4cc06a;
-    --alert-important: #a888f0;
-    --alert-warning: #d9a33a;
-    --alert-caution: #f0646a;
-    --code-comment: #8b949e;
-    --code-keyword: #ff7b72;
-    --code-string: #a5d6ff;
-    --code-attr: #79c0ff;
-    --code-func: #d2a8ff;
-    --code-tag: #7ee787;
-    color-scheme: dark;
-  }
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 * {
@@ -137,12 +119,19 @@ button {
   container-type: size;
 }
 
-/* 右上の言語の切り替え（ヘッダーの右端。開始画面では右上に置く）。
-   案件の style でヘッダーの色が変わっても読めるよう、背景は塗らずに文字色の枠で示す */
-.lang-switch {
-  display: inline-grid;
-  justify-items: center;
-  padding: 0 6px;
+/* 右上の言語・テーマの切り替え（ヘッダーの右端。開始画面では右上に置く）。
+   案件の style でヘッダーの色が変わっても読めるよう、ボタンは背景を塗らずに文字色の枠で示す */
+.menu-switch {
+  position: relative;
+}
+
+.menu-switch-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* 文字のある言語とアイコンだけのテーマで、高さを揃える（文字の行 16px と枠） */
+  height: 18px;
+  padding: 0 4px 0 6px;
   border: 1px solid currentColor;
   border-radius: 4px;
   background: none;
@@ -154,14 +143,65 @@ button {
   cursor: pointer;
 }
 
-.lang-switch:hover {
+.menu-switch-button:hover,
+.menu-switch-button[aria-expanded='true'] {
   opacity: 1;
 }
 
-.lang-switch > span {
+.menu-switch-button > .icon {
+  flex-shrink: 0;
+}
+
+.menu-switch-stack {
+  display: inline-grid;
+  justify-items: center;
+}
+
+.menu-switch-stack > span {
   grid-area: 1 / 1;
 }
 
-.lang-switch > .lang-hidden {
+.menu-switch-stack > .menu-switch-hidden {
   visibility: hidden;
+}
+
+.menu-switch-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.18);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.menu-switch-list > button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.menu-switch-list > button:hover {
+  background: var(--bg);
+}
+
+.menu-switch-check {
+  display: inline-flex;
+  width: 14px;
+  color: var(--accent);
 }

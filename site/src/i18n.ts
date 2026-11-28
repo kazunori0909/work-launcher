@@ -14,7 +14,6 @@ const ja = {
     download: 'ダウンロード',
     github: 'GitHub'
   },
-  langSwitch: 'English',
   hero: {
     badge: 'Windows / macOS ・ MIT ライセンス',
     title: ['案件のコマンドと資料を、', 'ボタン1つに。'],
@@ -163,7 +162,6 @@ const en: SiteMessages = {
     download: 'Download',
     github: 'GitHub'
   },
-  langSwitch: '日本語',
   hero: {
     badge: 'Windows / macOS · MIT License',
     title: ['Your project’s commands and docs,', 'one click away.'],

@@ -6,6 +6,17 @@
 # - breaking には、直し方まで書く
 # - ja は1行で書く（>- で行を分けると、つなぎ目に半角スペースが入る）
 
+- version: unreleased
+  summary:
+    ja: ライト・ダークを選べるようにしました。言語の切り替えは一覧から選ぶ形にしました。
+    en: You can now choose light or dark mode, and pick the display language from a list.
+  added:
+    - ja: ヘッダーの右端のボタンで、テーマ（OS に従う・ライト・ダーク）を選べるようにしました。選んだテーマは案件ごとに覚えます。
+      en: The button at the right end of the header now chooses the theme (system, light, or dark). The choice is remembered per project.
+  changed:
+    - ja: 言語のボタンに、いまの言語名を出すようにしました。押すと一覧から選べます。
+      en: The language button now shows the current language name; click it to pick from a list.
+
 - version: 0.5.0
   date: 2026-11-26
   summary:

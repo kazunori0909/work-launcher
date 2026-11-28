@@ -9,6 +9,9 @@ export type { Messages }
 export const LANGS = ['ja', 'en'] as const
 export type Lang = (typeof LANGS)[number]
 
+/** 言語の切り替えに出す名前。その言語自身で書くので、表示の言語によらない */
+export const LANG_NAMES: Record<Lang, string> = { ja: '日本語', en: 'English' }
+
 const DICTS: Record<Lang, Messages> = { ja, en }
 let current: Lang = 'ja'
 

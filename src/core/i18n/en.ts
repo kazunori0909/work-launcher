@@ -240,7 +240,9 @@ export const en: Messages = {
     startLead2: 'file of a project. You can also double-click it or drop it on the app icon.',
     openProject: 'Open project…',
     recent: 'Recent projects',
-    langSwitch: 'Display language'
+    langSwitch: 'Display language',
+    theme: 'Theme',
+    themes: { system: 'Use system setting', light: 'Light', dark: 'Dark' }
   },
 
   help: {

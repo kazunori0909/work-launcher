@@ -239,7 +239,9 @@ export const ja = {
     startLead2: 'を開いてください。ダブルクリックやアプリのアイコンへのドロップでも開けます。',
     openProject: '案件を開く…',
     recent: '最近開いた案件',
-    langSwitch: '表示の言語'
+    langSwitch: '表示の言語',
+    theme: 'テーマ',
+    themes: { system: 'OS に従う', light: 'ライト', dark: 'ダーク' }
   },
 
   /** ヘルプの部品の文言（章の本文は renderer/src/help/sections/<言語>/） */

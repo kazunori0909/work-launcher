@@ -5,35 +5,23 @@
  */
 
 :root {
-  --s-bg: #ffffff;
-  --s-bg-alt: #f6f8fb;
-  --s-surface: #ffffff;
-  --s-text: #0f172a;
-  --s-muted: #5b6577;
-  --s-border: #e3e8ef;
-  --s-accent: #1f6feb;
-  --s-accent-2: #7c3aed;
-  --s-glow: rgba(61, 139, 255, 0.28);
-  --s-header-bg: rgba(255, 255, 255, 0.72);
-  --s-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 12px 32px -12px rgba(15, 23, 42, 0.18);
+  /* 色は light-dark(ライト, ダーク)。切り替えはアプリの base.css の color-scheme */
+  --s-bg: light-dark(#ffffff, #0b0f17);
+  --s-bg-alt: light-dark(#f6f8fb, #0f1521);
+  --s-surface: light-dark(#ffffff, #121a28);
+  --s-text: light-dark(#0f172a, #e6edf6);
+  --s-muted: light-dark(#5b6577, #95a1b5);
+  --s-border: light-dark(#e3e8ef, #222c3d);
+  --s-accent: light-dark(#1f6feb, #5b9dff);
+  --s-accent-2: light-dark(#7c3aed, #a78bfa);
+  --s-glow: light-dark(rgba(61, 139, 255, 0.28), rgba(61, 139, 255, 0.22));
+  --s-header-bg: light-dark(rgba(255, 255, 255, 0.72), rgba(11, 15, 23, 0.72));
+  /* 影は色でないので light-dark にできない。色だけを分ける */
+  --s-shadow-1: light-dark(rgba(15, 23, 42, 0.06), rgba(0, 0, 0, 0.4));
+  --s-shadow-2: light-dark(rgba(15, 23, 42, 0.18), rgba(0, 0, 0, 0.7));
+  --s-shadow: 0 1px 2px var(--s-shadow-1), 0 12px 32px -12px var(--s-shadow-2);
   --s-radius: 14px;
   --s-header-h: 60px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --s-bg: #0b0f17;
-    --s-bg-alt: #0f1521;
-    --s-surface: #121a28;
-    --s-text: #e6edf6;
-    --s-muted: #95a1b5;
-    --s-border: #222c3d;
-    --s-accent: #5b9dff;
-    --s-accent-2: #a78bfa;
-    --s-glow: rgba(61, 139, 255, 0.22);
-    --s-header-bg: rgba(11, 15, 23, 0.72);
-    --s-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px -16px rgba(0, 0, 0, 0.7);
-  }
 }
 
 html {
@@ -108,6 +96,7 @@ img {
 .s-nav {
   display: flex;
   align-items: center;
+  margin-left: auto;
   gap: 4px;
   font-size: 14px;
 }
@@ -125,22 +114,115 @@ img {
   text-decoration: none;
 }
 
-.s-nav .s-lang {
-  margin-left: 4px;
+/* 言語・テーマの一覧（<details>。動きは menus.ts） */
+.s-switches {
+  display: flex;
+  gap: 6px;
+}
+
+.s-menu {
+  position: relative;
+  font-size: 14px;
+}
+
+.s-menu > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 8px 0 10px;
   border: 1px solid var(--s-border);
+  border-radius: 8px;
+  color: var(--s-muted);
+  font-weight: 500;
+  list-style: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.s-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.s-menu > summary:hover,
+.s-menu[open] > summary {
+  background: var(--s-bg-alt);
+  color: var(--s-text);
+}
+
+.s-menu svg {
+  flex-shrink: 0;
+}
+
+.s-menu-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  padding: 4px;
+  border: 1px solid var(--s-border);
+  border-radius: 10px;
+  background: var(--s-surface);
+  box-shadow: var(--s-shadow);
+}
+
+.s-menu-list > a,
+.s-menu-list > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 8px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--s-text);
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.s-menu-list > a:hover,
+.s-menu-list > button:hover {
+  background: var(--s-bg-alt);
+  text-decoration: none;
+}
+
+.s-menu-check {
+  color: var(--s-accent);
+  visibility: hidden;
+}
+
+[aria-current='true'] > .s-menu-check {
+  visibility: visible;
+}
+
+/* テーマのボタンには、いまのテーマのアイコンだけを出す（記憶したテーマは描く前に data-theme に入る） */
+.s-theme-icon {
+  display: none;
+}
+
+:root:not([data-theme]) .s-theme-system,
+:root[data-theme='light'] .s-theme-light,
+:root[data-theme='dark'] .s-theme-dark {
+  display: block;
 }
 
 .s-nav a {
   white-space: nowrap;
 }
 
-/* 狭い画面では、ドキュメント・体験・リリースノート・言語の切り替えだけを残す */
+/* 狭い画面では、ドキュメント・体験・リリースノートと、言語・テーマの切り替えだけを残す */
 @media (max-width: 560px) {
   .s-nav a:nth-child(4),
   .s-nav a:nth-child(5) {
     display: none;
   }
-  .s-brand span {
+  .s-brand span,
+  .s-menu > summary > span {
     display: none;
   }
   .s-nav a {
@@ -590,6 +672,11 @@ img {
   font-size: clamp(28px, 3.4vw, 38px);
   letter-spacing: -0.02em;
   line-height: 1.25;
+}
+
+/* 本文はビルド時に Windows の見本で描いてある。ほかの OS では、描き直すまで隠す（JS が無ければ data-platform も無く、隠さない） */
+:root[data-platform]:not([data-platform='win32']):not([data-platform-ready]) .doc-content {
+  visibility: hidden;
 }
 
 .doc-platform {
